@@ -1,23 +1,32 @@
 const { RichEmbed } = require('discord.js');
-const { exec } = require('discord.js');
+const { exec } = require('child_process');
+const { format } = require('date-fns')
 const fs = require("fs");
 
 
 exports.run = async (client, message, args) => {
 
-    client.user.setActivity(`Applying an update!`, { type: 1, browser: "DISCORD IOS"  });
+    client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
-    exec("git pull", (err, out, stderr) => {
+    exec("git pull", async (err, out, stderr) => {
         if(!err && stderr === ""){
             console.log(out);
+            let msg = await message.channel.send(client.embed(out))
+            const formatted = format(Date.now(), `EEEE yyyy/MM/dd H:m`)
             let update = {
                 applied: false,
-                channel: msg.channel.id
+                requested: message.author.tag,
+                requested_id: message.author.id,
+                channel: message.channel.id,
+                msg: message.id,
+                time: `${formatted}`,
+                output: out,
+                errors: err,
+                stderr: stderr
             };
-
-            fs.writeFileSync("update.json", JSON.stringify(update));
+            fs.writeFileSync(`update.json`, JSON.stringify(update));
+            msg.edit(client.embed(`Restarting . . . `))
             exec("pm2 restart TODO", (err, out, stderr) => {
-                console.log(out)
                 if(err && stderr !== "") {
                     message.channel.send(client.error(`${err} \n ${stderr}`))
                 }
