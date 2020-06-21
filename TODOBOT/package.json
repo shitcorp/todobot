@@ -9,7 +9,7 @@
   "author": "MeerBiene",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^7.0.1",
+    "better-sqlite3": "^7.1.0",
     "chalk": "^4.0.0",
     "dateformat": "^3.0.3",
     "discord-permissions": "^1.0.0",
