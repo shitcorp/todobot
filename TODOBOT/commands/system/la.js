@@ -4,6 +4,8 @@ const dateFormat = require('dateformat');
 
 
 exports.run = async (client, message, args, level) => {
+
+    message.channel.send(`Update worked`)
     
     const friendly = client.config.permLevels.find(l => l.level === level).name;
 
