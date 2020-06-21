@@ -25,7 +25,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   .setColor("#2C2F33")
 
 
-  msg.channel.send(`Update worked.`)
+  msg.channel.send(`Update worked. Now for real`)
 msg.edit(statembed).then(ms => {
   ms.delete(10000).catch(error => {client.discordlog(error, ms, "MESSAGE DELETE")})
 })
