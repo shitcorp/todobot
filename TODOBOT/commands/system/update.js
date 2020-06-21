@@ -6,7 +6,6 @@ const fs = require("fs");
 
 exports.run = async (client, message, args) => {
 
-    message.reply(`If you see this the update worked. now? Is this change applied?`)
 
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
