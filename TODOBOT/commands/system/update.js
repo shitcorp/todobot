@@ -6,6 +6,8 @@ const fs = require("fs");
 
 exports.run = async (client, message, args) => {
 
+    message.relpy(`aaa.`)
+
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
     exec("git pull", async (err, out, stderr) => {
