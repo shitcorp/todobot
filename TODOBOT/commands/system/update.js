@@ -13,6 +13,7 @@ exports.run = async (client, message, args) => {
     exec("git pull", async (err, out, stderr) => {
         if(!err && stderr !== ""){
             console.log(out);
+            
             let msg = await message.channel.send(client.embed(out))
             const formatted = format(Date.now(), `EEEE yyyy/MM/dd H:m`)
             let update = {
