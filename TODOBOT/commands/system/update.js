@@ -8,7 +8,7 @@ exports.run = async (client, message, args) => {
 
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
-    exec("git pull", async (err, out, stderr) => {
+    exec("git pull origin master", async (err, out, stderr) => {
         if(!err && stderr === ""){
             console.log(out);
             let msg = await message.channel.send(client.embed(out))
