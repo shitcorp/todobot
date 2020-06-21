@@ -28,7 +28,7 @@ exports.run = async (client, message, args) => {
             };
             fs.writeFileSync(`update.json`, JSON.stringify(update));
             msg.edit(client.embed(`Restarting . . . `))
-            exec("pm2 restart TODO", (err, out, stderr) => {
+            exec("pm2 restart TODO2", (err, out, stderr) => {
                 if(err && stderr !== "") {
                     message.channel.send(client.error(`${err} \n ${stderr}`))
                 }
