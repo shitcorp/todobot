@@ -6,7 +6,7 @@ const fs = require("fs");
 
 exports.run = async (client, message, args) => {
 
-    message.relpy(`aaa.`)
+    message.relpy(`If you see this the update worked.`)
 
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
