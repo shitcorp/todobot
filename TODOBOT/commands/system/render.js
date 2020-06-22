@@ -10,14 +10,17 @@ exports.run = async (client, message, args, level) => {
 async function renderer(boolean) {
 
     if (args[0].includes('```md') || args[0].includes('```html')) {
+        
+        let puppeteerArgs = {
+            args: ['--no-sandbox']
+        }
+        
         const markdown = message.content.split('\n').splice(1).join('\n').replace(/`{3}.*/g, '').trim()
         const html = converter.makeHtml(markdown)
         const img = await imgMaker({ 
             html, 
             transparent: boolean, 
-            puppeteerArgs: {
-                
-            } 
+            puppeteerArgs
         })
         let dur = Date.now() - message.createdTimestamp
         let mdr = new RichEmbed()
