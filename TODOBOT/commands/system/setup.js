@@ -51,6 +51,9 @@ exports.run = async (client, message, args, level) => {
                 todochannel.stop()
                 console.log(channelmsg.content)
                 channelmsg.delete().catch(error => {})
+                if (channelmsg.content.includes('@everyone')) return message.channel.send(`You can't use @everyone as your staffrole.`).then(msg => {
+                    msg.delete(msgdel).catch(console.error);
+                })
 
             
 
@@ -58,7 +61,7 @@ exports.run = async (client, message, args, level) => {
                 let checkchan = message.guild.channels.get(finale)
                 
                 let cobject = {
-                    guildid: message.guild.id,
+                    guildid: `${message.guild.id}`,
                     prefix: `${prefixmsg.content}`,
                     color: `later`,
                     staffrole: `${rolemsg.mentions.roles.first().id}`,
