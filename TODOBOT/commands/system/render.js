@@ -12,7 +12,7 @@ async function renderer(boolean) {
     if (args[0].includes('```md') || args[0].includes('```html')) {
         const markdown = message.content.split('\n').splice(1).join('\n').replace(/`{3}.*/g, '').trim()
         const html = converter.makeHtml(markdown)
-        const img = await imgMaker({ html, transparent: boolean, puppeteerArgs: '--no-sandbox' })
+        const img = await imgMaker({ html, transparent: boolean, puppeteerArgs: ['--no-sandbox'] })
         let dur = Date.now() - message.createdTimestamp
         let mdr = new RichEmbed()
           .setFooter(`Rendered for ${message.author.tag} in ${dur/1000} s`, message.author.avatarURL)
