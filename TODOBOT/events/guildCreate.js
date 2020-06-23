@@ -38,7 +38,7 @@ module.exports = (client, guild) => {
   .setTitle(`New guild has been joined.`)
   .setThumbnail(guild.iconURL)
   .setDescription(`${guild.name} (ID: ${guild.id})`)
-  .addField(`Owner:`, `> ${guild.owner} (${guild.owner.name})`, true)
+  .addField(`Owner:`, `> ${guild.owner} (${guild.owner.username})`, true)
   .addField(`Region:`, `> ${guild.region}`, true)
   .addField(`Membercount:`, `> ${guild.memberCount}`, true)
   .setColor("#2C2F33")
