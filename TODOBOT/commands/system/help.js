@@ -5,6 +5,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     
     const settings = client.dbgetconfig(message)
 
+    
     if (args[0]) {
         message.delete().catch(console.error());
         if (client.commands.has(args[0])) {
