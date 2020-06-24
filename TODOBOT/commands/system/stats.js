@@ -10,6 +10,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const duration = moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
   
   const msg = await message.channel.send(".");
+
+  const pkg = require('../../package.json')
   
   const statembed = new Discord.RichEmbed()
   .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL)
@@ -17,7 +19,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   .addField("• Uptime", `> ${duration}`, true)
   .addField("• Users ", `> ${client.users.size.toLocaleString()}`, true)
   .addField("• Servers", `> ${client.guilds.size.toLocaleString()}`, true)
-  .addField("• Discord.js", `> v${version}`, true)
+  .addField("• Version", `> v${pkg.version}`, true)
   .addField("• Node", `> ${process.version}`, true)
   .addField("• Ping", `> ${msg.createdTimestamp - message.createdTimestamp}ms.`, true)
   .addField("• API Latency", `> ${Math.round(client.ping)}ms`, true)
