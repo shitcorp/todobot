@@ -8,7 +8,7 @@ module.exports = async client => {
     client.user.setActivity(`//help  || invite.todo-bot.xyz`, { type: 3, browser: "DISCORD IOS"  });
   
   
-    var job = new CronJob('0 */10 * * * *', function() {
+    var job = new CronJob('0 */1 * * * *', function() {
      
 
       let stati = [
