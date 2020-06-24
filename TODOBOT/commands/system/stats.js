@@ -1,7 +1,8 @@
 const { version } = require("discord.js");
 const moment = require("moment");
 require("moment-duration-format");
-const Discord = require('discord.js')
+const Discord = require('discord.js');
+const { stat } = require("fs");
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
 
@@ -12,7 +13,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   const msg = await message.channel.send(".");
 
   const pkg = require('../../package.json')
-  
+
+  let output = "";
+
+  for (const key in pkg.dependencies) {
+    let value = pkg.dependencies[key]
+    output += `>> \`${key}\` \`${value}\`\n`
+  }
+
   const statembed = new Discord.RichEmbed()
   .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL)
   .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
@@ -25,6 +33,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   .addField("• API Latency", `> ${Math.round(client.ping)}ms`, true)
   .addField("• Author", `> MeerBiene#7060 (<@686669011601326281>)`, true)
   .setColor("#2C2F33")
+
+  if (message.flags.includes("l") || message.flags.includes("lib")) {
+    statembed.addField("Used Libraries:", output)
+    statembed.addField("License:", pkg.license)
+  }
 
 
 
@@ -45,6 +58,6 @@ exports.conf = {
 exports.help = {
   name: "stats",
   category: "System",
-  description: "Gives some useful bot statistics",
-  usage: "stats"
+  description: "Gives some useful bot statistics. \n> To learn about the used libraries, use the -l or -lib flag.",
+  usage: "stats | stats -l | stats -lib"
 };
