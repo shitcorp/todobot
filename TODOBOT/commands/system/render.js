@@ -9,7 +9,30 @@ exports.run = async (client, message, args, level) => {
 
 async function renderer(boolean) {
 
-    if (args[0].includes('```md') || args[0].includes('```html')) {
+    if (args[0].includes('```md')) {
+        
+        let puppeteerArgs = {
+            args: ['--no-sandbox']
+        }
+        
+        const markdown = message.content.split('\n').splice(1).join('\n').replace(/`{3}.*/g, '').trim()
+        const html = converter.makeHtml(markdown)
+        const img = await imgMaker({ 
+            html, 
+            transparent: boolean, 
+            puppeteerArgs
+        })
+        let dur = Date.now() - message.createdTimestamp
+        let mdr = new RichEmbed()
+          .setFooter(`Rendered for ${message.author.tag} in ${dur/1000} s`, message.author.avatarURL)
+          .setColor('#303136')
+          .attachFiles([new Attachment(img, 'render.png')])
+          .setImage('attachment://render.png')
+          
+        let emsg = await message.channel.send(mdr)
+      } else if (args[0].includes('```html')) {
+        
+        if (message.author.id !== "686669011601326281") return;
         
         let puppeteerArgs = {
             args: ['--no-sandbox']
