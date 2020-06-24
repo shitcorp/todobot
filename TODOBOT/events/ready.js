@@ -1,4 +1,4 @@
-var cron = require('node-cron');
+var CronJob = require('cron').CronJob;
 
 module.exports = async client => {
  
@@ -8,7 +8,9 @@ module.exports = async client => {
     client.user.setActivity(`//help  || invite.todo-bot.xyz`, { type: 3, browser: "DISCORD IOS"  });
   
   
-    cron.schedule('*/7 * * * *', () => {
+    var job = new CronJob('0 */10 * * * *', function() {
+     
+
       let stati = [
         '//help  || invite.todo-bot.xyz',
         'Use //suggest to suggest new features!',
@@ -17,7 +19,9 @@ module.exports = async client => {
       ]
       const randomstatus = stati[Math.floor(Math.random()*stati.length)]
       client.user.setActivity(randomstatus, { type: 3, browser: "DISCORD IOS"  });
-    });
+
+    }, null, true, 'America/Los_Angeles');
+    job.start();
  
  
     /*
