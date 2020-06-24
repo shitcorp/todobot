@@ -29,7 +29,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
 
 msg.edit(statembed).then(ms => {
-  ms.delete(10000).catch(error => {client.discordlog(error, ms, "MESSAGE DELETE")})
+  ms.delete(60000).catch(error => {client.discordlog(error, ms, "MESSAGE DELETE")})
 })
 };
 
