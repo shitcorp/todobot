@@ -15,12 +15,8 @@ exports.run = async (client, message, args) => {
             let whites = '⬜'
             let reds = '🟥'
             let output = ['🟥'];
-            let msg = await message.channel.send(client.embed(output))
+            let msg = await message.channel.send(client.embed("Loading . . . . "))
             console.log(out);
-            while(true) {
-                output.push(red)
-                msg.edit(client.embed(output))
-            }
            
             const formatted = format(Date.now(), `EEEE yyyy/MM/dd H:m`)
             let update = {
