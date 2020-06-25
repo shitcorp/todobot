@@ -1,3 +1,5 @@
+const { stat } = require('fs');
+
 var CronJob = require('cron').CronJob;
 
 module.exports = async client => {
@@ -8,9 +10,8 @@ module.exports = async client => {
     client.user.setActivity(`//help  || invite.todo-bot.xyz`, { type: 3, browser: "DISCORD IOS"  });
   
   
+    let i = 0;
     var job = new CronJob('0 */7 * * * *', function() {
-     
-
       let stati = [
         '//help  || invite.todo-bot.xyz',
         'Use //suggest to suggest new features!',
@@ -21,8 +22,12 @@ module.exports = async client => {
         'Take care of each other.',
         '#BLM ✊'
       ]
-      const randomstatus = stati[Math.floor(Math.random()*stati.length)]
+      const randomstatus = stati[i]
       client.user.setActivity(randomstatus, { type: 3, browser: "DISCORD IOS"  });
+      i++
+      if (i === stati.length) {
+        i = 0;
+      }
 
     }, null, true, 'America/Los_Angeles');
     job.start();
