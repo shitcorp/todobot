@@ -13,7 +13,6 @@ module.exports = async client => {
     let i = 0;
     var job = new CronJob('0 */7 * * * *', function() {
       let stati = [
-        '//help  || invite.todo-bot.xyz',
         'Use //suggest to suggest new features!',
         'Use //support to join the official support server',
         'Bot is updating in roughly 3 - 4 days, just so that you know. Since I`m moving databases there could be some data loss!',
@@ -21,10 +20,11 @@ module.exports = async client => {
         'Drink more water.',
         'Take care of each other.',
         '#BLM ✊',
-        'Yandere Simulator'
+        'Yandere Simulator',
+        '//help  || invite.todo-bot.xyz'
       ]
-      const randomstatus = stati[i]
-      client.user.setActivity(randomstatus, { type: 3, browser: "DISCORD IOS"  });
+      
+      client.user.setActivity(stati[i], { type: 3, browser: "DISCORD IOS"  });
       i++
       if (i === stati.length) {
         i = 0;
