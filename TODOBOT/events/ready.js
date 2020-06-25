@@ -15,7 +15,11 @@ module.exports = async client => {
         '//help  || invite.todo-bot.xyz',
         'Use //suggest to suggest new features!',
         'Use //support to join the official support server',
-        'Bot is updating in roughly 3 - 4 days, just so that you know. Since I`m moving databases there could be some data loss!'
+        'Bot is updating in roughly 3 - 4 days, just so that you know. Since I`m moving databases there could be some data loss!',
+        'Subscribe to Pewdiepie!',
+        'Drink more water.',
+        'Take care of each other.',
+        '#BLM ✊'
       ]
       const randomstatus = stati[Math.floor(Math.random()*stati.length)]
       client.user.setActivity(randomstatus, { type: 3, browser: "DISCORD IOS"  });
