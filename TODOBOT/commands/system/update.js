@@ -17,10 +17,11 @@ exports.run = async (client, message, args) => {
             let output = ['🟥'];
             let msg = await message.channel.send(client.embed(output))
             console.log(out);
-            for (let i=0; i<10;i++) {
+            while(true) {
                 output.push(red)
                 msg.edit(client.embed(output))
             }
+           
             const formatted = format(Date.now(), `EEEE yyyy/MM/dd H:m`)
             let update = {
                 applied: false,
