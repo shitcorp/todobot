@@ -11,8 +11,16 @@ exports.run = async (client, message, args) => {
 
     exec("git pull", async (err, out, stderr) => {
         if(!err){
+            message.channel.send(client.embed(out))
+            let whites = '⬜'
+            let reds = '🟥'
+            let output = ['🟥'];
+            let msg = await message.channel.send(client.embed(output))
             console.log(out);
-            let msg = await message.channel.send(client.embed(out))
+            for (let i=0; i<10;i++) {
+                output.push(red)
+                msg.edit(client.embed(output))
+            }
             const formatted = format(Date.now(), `EEEE yyyy/MM/dd H:m`)
             let update = {
                 applied: false,
