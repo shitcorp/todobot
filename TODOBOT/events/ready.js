@@ -20,7 +20,8 @@ module.exports = async client => {
         'Subscribe to Pewdiepie!',
         'Drink more water.',
         'Take care of each other.',
-        '#BLM ✊'
+        '#BLM ✊',
+        'Yandere Simulator'
       ]
       const randomstatus = stati[i]
       client.user.setActivity(randomstatus, { type: 3, browser: "DISCORD IOS"  });
