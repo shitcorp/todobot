@@ -52,7 +52,7 @@ module.exports = async (client, message) => {
           message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) })
         }
       } else if (check.includes("%%REPLY%%")) {
-        if (message.mentions.user.first()) {
+        if (message.mentions.users.first()) {
           message.channel.send(message.mentions.users.first(), client.embed(check.replace("%%REPLY%%", "")))
         } else {
           message.channel.send(message.author, client.embed(check.replace("%%REPLY%%", "")))

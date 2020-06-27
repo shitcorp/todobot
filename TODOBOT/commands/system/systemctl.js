@@ -83,7 +83,8 @@ exports.run = async (client, message, args, level) => {
                 .setTimestamp()
                 for (var i=0; i<res[0].tags.size;i++) {
                   //embed.addField(ky.next().value, `> ${it.next().value}`, true)
-                  output += `• \`${ky.next().value}\` =>  ${it.next().value} \n`
+                  let sanitized = it.next().value.slice(0, 69)
+                  output += `• \`${ky.next().value}\` =>  ${sanitized} \n`
                 }
                 embed.setDescription(output)
                 if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
