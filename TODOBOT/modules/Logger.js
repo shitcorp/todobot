@@ -20,10 +20,13 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content}`);
     }
     case "ready": {
-      return console.log(`${timestamp} ${chalk.black.bgGreen(type.toUpperCase())} ${content}`);
+      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content}`);
     }
     case "dba": {
       return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `)
+    }
+    case "mongo": {
+      return console.log(`${timestamp} ${chalk.black.bgGreenBright(type.toUpperCase())} ${content}`)
     }
 
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd or error.");
@@ -40,3 +43,5 @@ exports.debug = (...args) => this.log(...args, "debug");
 exports.cmd = (...args) => this.log(...args, "cmd");
 
 exports.dba = (...args) => this.log(...args, "dba");
+
+exports.mongo = (...args) => this.log(...args, "mongo");

@@ -17,6 +17,7 @@
     "enmap": "^5.2.4",
     "fs": "0.0.1-security",
     "moment": "^2.25.3",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "mongoose": "^5.9.20"
   }
 }
