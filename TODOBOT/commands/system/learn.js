@@ -1,5 +1,3 @@
-const Discord = require('discord.js');
-const mongoose = require('mongoose');
 const { configmodel } = require('../../modules/models/configmodel')
 
 exports.run = async (client, message, args, level) => {
