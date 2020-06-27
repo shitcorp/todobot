@@ -57,7 +57,7 @@ exports.conf = {
 
 exports.help = {
     name: "suggest",
-    category: "System",
+    category: "Bot_Support",
     description: "Suggest feature requests.",
     usage: "suggest <suggestiontext> \n> To add an image, pass a screenshot URL right after the command, prefixed with a dash(-). \n> To hide where the suggestion was created pass the -hide flag (after the image flag if you use an image).",
     flags: ['-hide => Hides the server, where the suggestion was sent in.']

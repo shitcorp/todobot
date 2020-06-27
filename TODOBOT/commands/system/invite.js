@@ -29,7 +29,7 @@ exports.conf = {
 
 exports.help = {
     name: "invite",
-    category: "System",
+    category: "Bot_Support",
     description: "Returns the bots invite link.",
     usage: "invite [no args]"
 };

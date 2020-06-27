@@ -282,7 +282,7 @@ exports.conf = {
 
 exports.help = {
     name: "todo",
-    category: "System",
+    category: "TODO",
     description: "Submit a new TODO.",
     usage: "Run todo \n> Then simply answer the questions the bot asks you."
 };

@@ -31,7 +31,7 @@ exports.conf = {
 
 exports.help = {
     name: "support",
-    category: "System",
+    category: "Bot_Support",
     description: "Gives you the invite to this bots support server.",
     usage: "support [no args]"
 };
