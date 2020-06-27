@@ -78,12 +78,13 @@ exports.conf = {
     guildOnly: true,
     party: false,
     aliases: [],
-    permLevel: "User"
+    permLevel: "ADMIN"
 };
 
 exports.help = {
     name: "render",
     category: "System",
     description: "Renders some markdown or html for you.",
-    usage: "render ```markdown or html codeblock```"
+    usage: '//render ```markdown or html codeblock``` \n**Credits:** \n>  \`puf17640\` [Find them on github](https://github.com/puf17640 "puf17640 on github")',
+    flags: [ '-t/-trans/-transparent => Render the final Image as transparent PNG.' ]
 };
