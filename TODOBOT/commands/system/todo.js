@@ -132,9 +132,6 @@ exports.run = async (client, message, args) => {
 
 
                 var ID = makeid(12)
-                
-                
-                
                 //if theres no rows in the bugtable create the first one follwoing this scheme
                 if (thisguild[0] === undefined) {
                     let bugtable = {
