@@ -70,7 +70,26 @@ exports.run = async (client, message, args, level) => {
 
     // Handler
     if (message.flags[0] === "view" || message.flags[0] === "v") {
-        showsettings();
+        if (args[0] === "tags") {
+            configmodel.find({ _id: message.guild.id }).then(res => {
+                
+                if (!res[0]) return message.channel.send(client.error(`I couldnt find any config for your guild.`))
+                let it = res[0].tags.values();
+                let ky = res[0].tags.keys();
+               
+                let embed = new Discord.RichEmbed()
+                .setTitle(`${message.guild.name} available Tags`);
+               
+                for (var i=0; i<res[0].tags.size;i++) {
+                  //console.log(ky.next().value, it.next().value)
+                  embed.addField(ky.next().value, it.next().value, true)
+                }
+
+                message.channel.send(embed)
+            })
+        } else {
+            showsettings();
+        }
     } else if (message.flags[0] === "set" || message.flags[0] === "s") {
         switch(args[0]) {
             case "prefix":
