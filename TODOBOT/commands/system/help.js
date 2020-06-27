@@ -11,7 +11,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         if (client.commands.has(args[0])) {
             let command = client.commands.get(args[0]);
             let detailembed = new Discord.RichEmbed()
-                .setTitle(`**Command Usage**`)
                 .addField(`**Command:**`, `> ${args[0]}`)
                 if (command.conf.aliases && command.conf.aliases.length > 0) {
                 detailembed.addField(`**Aliases:**`, `> ${command.conf.aliases}`)

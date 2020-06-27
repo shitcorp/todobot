@@ -13,7 +13,8 @@ configmodel.find({ _id: message.guild.id }).then(res => {
     let check = res[0].tags.get(tag)
     if (check && !message.flags.includes(`force`)) return message.channel.send(client.error(`This tag already exists, unlearn it first before overwriting, or use this command with the \`-force\` flag.`))
     args.shift();
-    let desc = args.join(' ')   
+    let desc = args.join(' ')
+    if (desc.length > 1700) return message.channel.send(client.error(`Your description was too long. You used \`${desc.length}\` out of \`1700\` available characters.`))
     res[0].tags.set(tag, desc)
     configmodel.updateOne({ _id: message.guild.id }, res[0], function(err, affected, resp) {
         if (err) console.log(err)
@@ -34,5 +35,5 @@ exports.help = {
     name: "learn",
     category: "System",
     description: "Let the bot learn a new tag...",
-    usage: "learn tag description \n>Example: //learn sql Sql stands for structured query language and is used..."
+    usage: "learn <tag> <description> \n> Example: //learn sql Sql stands for structured query language and is used... \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`"
 };

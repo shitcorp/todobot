@@ -86,7 +86,9 @@ exports.run = async (client, message, args, level) => {
                   output += `• \`${ky.next().value}\` =>  ${it.next().value} \n`
                 }
                 embed.setDescription(output)
+                if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
                 embed.addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `)
+                }
                 message.channel.send(embed)
             })
         } else {
