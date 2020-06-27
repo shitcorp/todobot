@@ -44,7 +44,23 @@ module.exports = async (client, message) => {
   configmodel.find({ _id: message.guild.id }).then(resp => {
     if (!resp[0]) return;
     let check = resp[0].tags.get(command)
-    if (check) return message.channel.send(client.embed(check))
+    if (check) {
+      if (check.includes("%%SENDDM%%") && message.mentions.users.first()) {
+        try {
+        message.mentions.users.first().send(client.embed(check.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) }) })
+        } catch(e) {
+          message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) })
+        }
+      } else if (check.includes("%%REPLY%%")) {
+        if (message.mentions.user.first()) {
+          message.channel.send(message.mentions.users.first(), client.embed(check.replace("%%REPLY%%", "")))
+        } else {
+          message.channel.send(message.author, client.embed(check.replace("%%REPLY%%", "")))
+        }
+      } else {
+        message.channel.send(client.embed(check))
+      }
+    }
   })
 
   
