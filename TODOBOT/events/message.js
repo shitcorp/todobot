@@ -31,11 +31,23 @@ module.exports = async (client, message) => {
 
   if (message.content.indexOf(Prefix) !== 0) return;
 
+ 
 
   const args = message.content.slice(Prefix.length).trim().split(/ +/g);
 
-
   const command = args.shift().toLowerCase();
+
+
+
+  const { configmodel } = require('../modules/models/configmodel')
+
+  configmodel.find({ _id: message.guild.id }).then(resp => {
+    if (!resp[0]) return;
+    let check = resp[0].tags.get(command)
+    if (check) return message.channel.send(client.embed(check))
+  })
+
+  
 
 
   if (message.guild && !message.member) await message.guild.fetchMember(message.author);

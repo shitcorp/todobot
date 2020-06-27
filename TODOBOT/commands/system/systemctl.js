@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 exports.run = async (client, message, args, level) => {
 
+    const { configmodel } = require('../../modules/models/configmodel')
     const userMention = message.mentions.members.first() || message.guild.members.get(args[1]);
     const msgdel = client.config.msgdelete
 
@@ -52,6 +53,21 @@ exports.run = async (client, message, args, level) => {
                 message.channel.send(client.success(`Saved ⠀\`${message.mentions.roles.first().name}\`⠀ as your new staffrole!`)).then(msg => { msg.delete(msgdel).catch(error => { }) });
     }
 
+    function initconfig() {
+        let conf = {
+            _id: message.guild.id,
+            prefix: "//",
+            tags: {
+                example: "This is an example tag. Create and delete tags by using the learn and unlearn command."
+            }
+        }
+        const init = new configmodel(conf)
+        init.save(function(err) {
+            if (err) console.log(err)
+            message.channel.send(client.success(`The initial config for your guild has been saved.`))
+        })
+    }
+
     // Handler
     if (message.flags[0] === "view" || message.flags[0] === "v") {
         showsettings();
@@ -70,7 +86,7 @@ exports.run = async (client, message, args, level) => {
                 message.channel.send(client.warning(`This is not implemented yet.`))
             break;
             case "init":
-                message.channel.send(client.warning(`This is not implemented yet.`))
+                initconfig();
             break;
             default:
                 message.channel.send(client.warning(`This is not a valid key. Available keys are: prefix, staffrole, todochannel and color.`)).then(msg => {

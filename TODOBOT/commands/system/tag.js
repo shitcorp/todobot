@@ -7,16 +7,19 @@ exports.run = async (client, message, args, level) => {
  if (!args[0]) return message.channel.send(client.error(`You forgot to give a tag.`))
  if (!args[1]) return message.channel.send(client.error(`You forgot to give a description for your tag.`))
 
- args.shift();
-
- let desc = args.join(' ')
-
 configmodel.find({ _id: message.guild.id }).then(res => {
-    console.log(res)
     if (!res[0]) return message.channel.send(client.error(`There was no config found for your guild.`))
+    let tag = args[0];
+    let check = res[0].tags.get(tag)
+    if (check && !message.flags.includes(`force`)) return message.channel.send(client.error(`This tag already exists, unlearn it first before overwriting, or use this command with the \`-force\` flag.`))
+    args.shift();
+    let desc = args.join(' ')   
+    res[0].tags.set(tag, desc)
+    configmodel.updateOne({ _id: message.guild.id }, res[0], function(err, affected, resp) {
+        if (err) console.log(err)
+        message.channel.send(client.success(`Saved the tag \`${tag}\` with the description \`${desc}\` successfully.`))
+    })
 })
-
-// message.channel.send(client.success(`The tag \`${args[0]}\` with the description \`${desc}\` has been saved successfully.`))
 
 }
 
@@ -31,8 +34,8 @@ exports.conf = {
 };
 
 exports.help = {
-    name: "tag",
+    name: "learn",
     category: "System",
-    description: "Returns your current permission level.",
-    usage: "la,  ||  systemctl -la"
+    description: "Let the bot learn a new tag...",
+    usage: "learn tag description \n>Example: //learn sql Sql stands for structured query language and is used..."
 };
