@@ -89,6 +89,11 @@ module.exports = async (client, message) => {
   while (args[0] && args[0][0] === "-") {
     message.flags.push(args.shift().slice(1));
   }
+  message.persists = [];
+  while (args[0] && args[0][0] === "~") {
+    message.persists.push(args.shift().slice(1));
+  }
+
 
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {

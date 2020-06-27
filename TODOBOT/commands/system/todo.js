@@ -34,6 +34,17 @@ exports.run = async (client, message, args) => {
         screenshotURL: "None"
     }
 
+    function quicksave() {
+        info.title = message.persists[0]
+        if (message.persists[1]) info.recreate = message.persists[1]
+        if (message.persists[2]) info.screenshotURL = message.persists[2]
+    }
+
+    
+    if (message.persists[0]) return quicksave();
+
+
+
     message.channel.send(client.embed("Hey gamer! Give your new TODO a title: (1 minute)")).then(msg => {
         msg.delete(msgdel).catch(error => {})
     });
