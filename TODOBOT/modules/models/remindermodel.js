@@ -8,6 +8,6 @@ const reminderschema = new mongoose.Schema({
     content: String
 })
 
-const remindermodel = new mongoose.model("todoconfig", reminderschema)
+const remindermodel = new mongoose.model("reminders", reminderschema)
 
 module.exports = { remindermodel };

@@ -18,8 +18,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 detailembed.addField(`**Description:**`, `> ${command.help.description}`)
                 detailembed.addField(`**Usage:**`, `> ${command.help.usage}`)
                 detailembed.setColor("#2C2F33")
-                detailembed.setFooter(`requested by: ${message.author.username}#${message.author.discriminator}  -  this embed will kill itself in 1 minute.`, message.author.avatarURL)
-            message.channel.send(detailembed).then(msg => {
+                detailembed.setFooter(`requested by ${message.author.username}#${message.author.discriminator}  -  this embed will kill itself in 1 minute.`, message.author.avatarURL)
+                if (command.help.flags) {
+                    detailembed.addField(`**Flags:**`, `> ${command.help.flags.join('\n> ')}`)
+                }
+                message.channel.send(detailembed).then(msg => {
                 setTimeout(function () {
                     msg.delete().catch(error => {});
                 }, 60000)

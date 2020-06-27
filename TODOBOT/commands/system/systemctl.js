@@ -136,5 +136,6 @@ exports.help = {
     name: "systemctl",
     category: "System",
     description: "View or change settings for your server.",
-    usage: "systemctl -[flag] <key> <value>\n> Available flags: \n> -s | -set\n> -v | -view \n> __Examples:__ \n> systemctl -s prefix %t \n> systemctl -s todochannel #channelmention"
+    usage: "systemctl -[flag] <key> <value>\n> Available flags: \n> -s | -set\n> -v | -view \n> __Examples:__ \n> systemctl -s prefix %t \n> systemctl -s todochannel #channelmention",
+    flags: ['-v => View your guilds settings.', '-s => Change your guilds settings.']
 };

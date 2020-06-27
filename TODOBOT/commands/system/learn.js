@@ -28,12 +28,13 @@ exports.conf = {
     guildOnly: true,
     party: false,
     aliases: [],
-    permLevel: "Staff"
+    permLevel: "STAFF"
 };
 
 exports.help = {
     name: "learn",
     category: "System",
     description: "Let the bot learn a new tag...",
-    usage: "learn <tag> <description> \n> Example: //learn sql Sql stands for structured query language and is used... \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`"
+    usage: "learn <tag> <description> \n> Example: //learn sql Sql stands for structured query language and is used... \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`",
+    flags: ['-force => Force overwrite a tag']
 };
