@@ -33,7 +33,7 @@ exports.conf = {
 
 exports.help = {
     name: "learn",
-    category: "Tags",
+    category: "Utility",
     description: "Let the bot learn a new tag...",
     usage: "learn <tag> <description> \n> Example: //learn sql Sql stands for structured query language and is used... \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`",
     flags: ['-force => Force overwrite a tag']

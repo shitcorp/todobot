@@ -27,7 +27,7 @@ exports.conf = {
 
 exports.help = {
     name: "unlearn",
-    category: "Tags",
+    category: "Utility",
     description: "Unlearn tags that you dont need anymore.",
     usage: "unlearn <tag> \n> Example: //unlearn sql \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`"
 };

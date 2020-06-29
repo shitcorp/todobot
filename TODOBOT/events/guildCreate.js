@@ -18,7 +18,7 @@ module.exports = (client, guild) => {
     
   }
 
-  let message = "aa"
+  let message = "aa";
 
   client.dbsetconfigobject(message, object)
 
@@ -38,10 +38,10 @@ module.exports = (client, guild) => {
   .setTitle(`New guild has been joined.`)
   .setThumbnail(guild.iconURL)
   .setDescription(`${guild.name} (ID: ${guild.id})`)
-  .addField(`Owner:`, `> ${guild.owner} (${guild.owner.username})`, true)
+  .addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
   .addField(`Region:`, `> ${guild.region}`, true)
   .addField(`Membercount:`, `> ${guild.memberCount}`, true)
-  .setColor("#2C2F33")
+  .setColor("GREEN")
 
   G.send(newserv);
 

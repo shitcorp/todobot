@@ -2,6 +2,10 @@ const Discord = require('discord.js')
 
 exports.run = async (client, message, args, level) => {
 
+    // IDEA: use this for server owners to let users
+    // submit bugs. 
+    // Important: integrate with poxel issuetracker somehow 
+
     let embed = new Discord.RichEmbed()
         .setAuthor(`${message.author.tag}`, message.author.avatarURL)
         .addField("update", "worked")
@@ -21,7 +25,7 @@ exports.conf = {
 
 exports.help = {
     name: "bug",
-    category: "Bot_Support",
-    description: "Report a bug to the developer(s).",
+    category: "Utility",
+    description: "Report a bug.",
     usage: "bug <describe your bug here> \n__Example:__\n> //bug The render command is not working pls fix."
 };
