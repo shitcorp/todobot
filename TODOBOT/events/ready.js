@@ -22,7 +22,7 @@ module.exports = async client => {
         'Drink more water.',
         'Take care of each other.',
         '#BLM ✊',
-        'Yandere Simulator',
+        'Yandere Dev on Youtube',
         '//help  || invite.todo-bot.xyz'
       ]
       
