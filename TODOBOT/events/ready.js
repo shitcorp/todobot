@@ -24,7 +24,9 @@ module.exports = async client => {
         '#BLM ✊',
         'Yandere Dev on Youtube',
         'Peace',
-        'the world burn',
+        'the world burn.',
+        'you.',
+        'not p*rnhub cause we dont support rape. Do your homework.',
         '//help  || invite.todo-bot.xyz'
       ]
       
