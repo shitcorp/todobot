@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { configmodel } = require('./models/configmodel')
+
 
     function dbinit (client) {
 
@@ -13,4 +15,16 @@ const mongoose = require('mongoose');
         })
     }
 
-    module.exports = { dbinit };
+
+    function configset (obj) {
+        let newconf = new configmodel(obj)
+
+        newconf.save(function(err, doc) {
+            if (err) {
+                client.logger.debug(err)
+            }
+
+        }) 
+    }
+
+module.exports = { dbinit, configset };

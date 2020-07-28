@@ -1,5 +1,13 @@
+// TODO: replace moment with date-fns
+
+// TODO: make debug logger write to file
+
+const { createWriteStream } = require('fs');
 const chalk = require("chalk");
 const moment = require("moment");
+const { format } = require('date-fns');
+
+let writer = createWriteStream('../logs/debug.txt')
 
 exports.log = (content, type = "log") => {
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
@@ -14,13 +22,14 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
     }
     case "debug": {
-      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
+      console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
+      return writer.write(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `)
     }
     case "cmd": {
-      return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content}`);
+      return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);
     }
     case "ready": {
-      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content}`);
+      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
     }
     case "dba": {
       return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `)
