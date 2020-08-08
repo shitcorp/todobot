@@ -1,12 +1,10 @@
 const Discord = require('discord.js');
-
 const { MessageEmbed } = require('discord.js');
-
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./data/data.sqlite');
-
 const dateFormat = require('dateformat');
 
+// TODO: make repeating todos
 
 exports.run = async (client, message, args) => {
 
@@ -40,6 +38,8 @@ exports.run = async (client, message, args) => {
     
     if (message.persists[0]) return quicksave();
 
+    
+
 
 
     message.channel.send(client.embed("Hey gamer! Give your new TODO a title: (1 minute)")).then(msg => {
@@ -53,7 +53,7 @@ exports.run = async (client, message, args) => {
         titlemsg.delete({ timeout: msgdel }).catch(error => {})
         bugtitle.stop();
         info.title = titlemsg.content;
-        message.channel.send(client.embed("OK, next, enter the TODO message: (1 minute)")).then(msg => {
+        message.channel.send(client.embed("OK, next, enter the TODO message: \nType `no` if you don\`t want to set a TODO message. (1 minute)")).then(msg => {
             msg.delete({ timeout: msgdel }).catch(error => {})
         })
         // 300000
@@ -63,7 +63,12 @@ exports.run = async (client, message, args) => {
         bugremake.on('collect', remakemsg => {
             remakemsg.delete({ timeout: msgdel }).catch(error => {})
             bugremake.stop();
-            info.recreate = remakemsg.content;
+            if (remakemsg.content.toLowerCase().includes('no')) {
+                info.recreate = '';
+            } else {
+                info.recreate = remakemsg.content;
+            }
+            
             message.channel.send(client.embed("OK, now, do you want to attach an Image? If so, enter a link to that image now, otherwise type `no` if you don't. (1 minute)")).then(msg => {
                 msg.delete({ timeout: msgdel }).catch(error => {})
             })
@@ -74,24 +79,13 @@ exports.run = async (client, message, args) => {
                 scrnmsg.delete({ timeout: msgdel }).catch(error => {})
                 scrnurl.stop();
                 if (scrnmsg.content.toLowerCase() == "no") {
-
+                    info.screenshotURL = '';
                 } else if (!scrnmsg.content.startsWith('https://')) {
 
-                   
-                    
-            
                     return message.channel.send(client.warning(`Please enter a real URL if you want to attach an image.`)).then(msg => {
                         msg.delete({ timeout: msgdel }).catch(error => {})
                     })
                 } else if (scrnmsg.content.startsWith('https://')) {
-
-                    
-                    let test = new MessageEmbed()
-                    .setTitle(`aa`)
-                    .setImage(scrnmsg.content)
-                    
-                    
-                    
 
                     info.screenshotURL = scrnmsg.content;
 
@@ -167,16 +161,16 @@ exports.run = async (client, message, args) => {
                 // send embed to bugchannel in discord
 
                
-                User.findOne({ where: {user_id: 474334350482210870} }).then(project => {
-                  if (typeof project[0] !== "undefined") {
-                    return project[0];
-                  } else {
-                    User.create({
-                        user_id: user.id,
-                        user_name: user.username
-                      })
-                    }
-                })
+                // User.findOne({ where: {user_id: message.author.id} }).then(project => {
+                //   if (typeof project[0] !== "undefined") {
+                //     return project[0];
+                //   } else {
+                //     User.create({
+                //         user_id: user.id,
+                //         user_name: user.username
+                //       })
+                //     }
+                // })
               
                              
 
@@ -187,9 +181,11 @@ exports.run = async (client, message, args) => {
                     var embed = new MessageEmbed()
                         .setColor("#2C2F33")
                         .setTitle(info.title)
-                        //.addField("⠀", "```" + info.title + "```")
-                        .addField("ᴄᴏɴᴛᴇɴᴛ", `> ${info.recreate}`)
                         //.setFooter("ID: " + ID)
+
+                    if (info.recreate !== '') {
+                        embed.addField("Content", `> ${info.recreate}`)
+                    }
 
                     if (info.screenshotURL !== "None") {
                         //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", info.screenshotURL)
@@ -230,9 +226,11 @@ exports.run = async (client, message, args) => {
                     var embed = new MessageEmbed()
                         .setColor("#2C2F33")
                         .setTitle(info.title)
-                        //.addField("⠀", "```" + info.title + "```")
-                        .addField("ᴄᴏɴᴛᴇɴᴛ", `> ${info.recreate}`)
                         //.setFooter("ID: " + ID)
+                    
+                    if (info.recreate !== '') {
+                        embed.addField("Content", `> ${info.recreate}`)
+                    }
 
                     if (info.screenshotURL !== "None") {
                         //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", info.screenshotURL)
@@ -240,7 +238,7 @@ exports.run = async (client, message, args) => {
                     }
 
                     let chan = client.dbgetconfig(message)
-                    let askingchannel = message.guild.channels.get(chan[0].todochannel)
+                    let askingchannel = message.guild.channels.cache.get(chan[0].todochannel)
 
 
 

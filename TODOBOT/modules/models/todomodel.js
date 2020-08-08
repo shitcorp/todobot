@@ -8,6 +8,8 @@ const todoschema = new mongoose.Schema({
     submittedby: String,
     timestamp: String,
     state: String,
+    severity: Number,
+    repeating: Boolean,
     todomsg: String,
     assigned: String,
     category: String
