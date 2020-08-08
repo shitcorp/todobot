@@ -2,14 +2,14 @@ const { version } = require("discord.js");
 const moment = require("moment");
 require("moment-duration-format");
 const Discord = require('discord.js');
-const { stat } = require("fs");
+const { MessageEmbed } = require('discord.js')
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
 
   message.delete().catch(console.error());
 
   const duration = moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
-  
+
   const msg = await message.channel.send(".");
 
   const pkg = require('../../package.json')
@@ -21,12 +21,12 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     output += `>> \`${key}\` \`${value}\`\n`
   }
 
-  const statembed = new Discord.RichEmbed()
+  const statembed = new MessageEmbed()
   .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL)
   .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
   .addField("• Uptime", `> ${duration}`, true)
-  .addField("• Users ", `> ${client.users.size.toLocaleString()}`, true)
-  .addField("• Servers", `> ${client.guilds.size.toLocaleString()}`, true)
+  .addField("• Users ", `> ${client.users.cache.size}`, true)
+  .addField("• Guilds", `> ${client.guilds.cache.size}`, true)
   .addField("• Version", `> v${pkg.version}`, true)
   .addField("• Node", `> ${process.version}`, true)
   .addField("• Ping", `> ${msg.createdTimestamp - message.createdTimestamp}ms.`, true)
@@ -42,7 +42,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
 
 msg.edit(statembed).then(ms => {
-  ms.delete(60000).catch(error => {client.discordlog(error, ms, "MESSAGE DELETE")})
+  ms.delete({timeout: 60000}).catch(error => {client.discordlog(error, ms, "MESSAGE DELETE")})
 })
 };
 

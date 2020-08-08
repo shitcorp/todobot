@@ -1,5 +1,6 @@
 const { configmodel } = require('../../modules/models/configmodel')
 
+
 exports.run = async (client, message, args, level) => {
 
  if (!args[0]) return message.channel.send(client.error(`You forgot to give a tag.`))

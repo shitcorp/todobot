@@ -1,4 +1,4 @@
-const Discord = require('discord.js')
+const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 
@@ -6,7 +6,7 @@ exports.run = async (client, message, args, level) => {
     // submit bugs. 
     // Important: integrate with poxel issuetracker somehow 
 
-    let embed = new Discord.RichEmbed()
+    let embed = new MessageEmbed()
         .setAuthor(`${message.author.tag}`, message.author.avatarURL)
         .addField("update", "worked")
         .setColor("#2C2F33")

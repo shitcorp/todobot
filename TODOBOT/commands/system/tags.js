@@ -1,12 +1,9 @@
 exports.run = async (client, message, args, level) => {
-
     let cmd = client.commands.get('systemctl')
     let flags = ['v']
     let argo = ['tags']
     message.flags = flags
     cmd.run(client, message, argo, level);
-
-
 }
 
 exports.conf = {

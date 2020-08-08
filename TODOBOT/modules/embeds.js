@@ -1,11 +1,11 @@
-const { RichEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = (client) => {
 
 
 
     client.noPerms = (perms) => {
-        const noPerm = new RichEmbed()
+        const noPerm = new MessageEmbed()
             .setAuthor('❌ No Permissions')
             .setDescription(`You lack the permission \`${perms.toUpperCase()}\` to use this command!`)
             .setColor("RED")
@@ -15,7 +15,7 @@ module.exports = (client) => {
 
 
     client.embed = (desc) => {
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .setDescription(`${desc}`)
             .setColor("#2C2F33")
         return embed;
@@ -25,7 +25,7 @@ module.exports = (client) => {
 
     client.error = (desc) => {
 
-        const erre = new RichEmbed()
+        const erre = new MessageEmbed()
             .setAuthor('❌ Error')
             .setDescription(`${desc}`)
             .setColor("RED")
@@ -36,7 +36,7 @@ module.exports = (client) => {
 
     client.warning = (desc) => {
 
-        const warne = new RichEmbed()
+        const warne = new MessageEmbed()
             .setAuthor(`⚠️ Warning`)
             .setDescription(`${desc}`)
             .setColor("#fffb0a")
@@ -46,7 +46,7 @@ module.exports = (client) => {
 
     client.success = (desc) => {
 
-        const successe = new RichEmbed()
+        const successe = new MessageEmbed()
             .setAuthor(`✅ Success!`)
             .setDescription(`${desc}`)
             .setColor("GREEN")

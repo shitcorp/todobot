@@ -3,7 +3,6 @@ const { exec } = require('child_process');
 const { format } = require('date-fns')
 const fs = require("fs");
 
-
 exports.run = async (client, message, args) => {
 
 

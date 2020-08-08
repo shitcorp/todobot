@@ -1,20 +1,15 @@
-const Discord = require('discord.js')
+const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
-
-    
     
     const friendly = client.config.permLevels.find(l => l.level === level).name;
 
-    let embed = new Discord.RichEmbed()
+    let embed = new MessageEmbed()
         .setAuthor(`${message.author.tag}`, message.author.avatarURL)
         .setDescription(`Your permission level is: \n> **${friendly}**.`)
-        .addField("update", "worked")
         .setColor("#2C2F33")
     
-    message.channel.send(embed).then(msg => { msg.delete(client.config.msgdelete).catch(error => {}) })
-
-
+    message.channel.send(embed).then(msg => { msg.delete({ timeout: client.config.msgdelete}).catch(error => {}) })
 }
 
 

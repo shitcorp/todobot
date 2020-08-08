@@ -1,6 +1,6 @@
 const converter = new (require('showdown')).Converter(),
 imgMaker = require('node-html-to-image')
-const { Attachment, RichEmbed } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 
 
 
@@ -23,10 +23,10 @@ async function renderer(boolean) {
             puppeteerArgs
         })
         let dur = Date.now() - message.createdTimestamp
-        let mdr = new RichEmbed()
+        let mdr = new MessageEmbed()
           .setFooter(`Rendered for ${message.author.tag} in ${dur/1000} s`, message.author.avatarURL)
           .setColor('#303136')
-          .attachFiles([new Attachment(img, 'render.png')])
+          .attachFiles([new MessageAttachment(img, 'render.png')])
           .setImage('attachment://render.png')
           
         let emsg = await message.channel.send(mdr)
@@ -46,10 +46,10 @@ async function renderer(boolean) {
             puppeteerArgs
         })
         let dur = Date.now() - message.createdTimestamp
-        let mdr = new RichEmbed()
+        let mdr = new MessageEmbed()
           .setFooter(`Rendered for ${message.author.tag} in ${dur/1000} s`, message.author.avatarURL)
           .setColor('#303136')
-          .attachFiles([new Attachment(img, 'render.png')])
+          .attachFiles([new MessageAttachment(img, 'render.png')])
           .setImage('attachment://render.png')
           
         let emsg = await message.channel.send(mdr)

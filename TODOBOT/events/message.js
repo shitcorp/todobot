@@ -105,6 +105,11 @@ module.exports = async (client, message) => {
     message.flags.push(args.shift().slice(1));
   }
 
+  message.persists = [];
+  while (args[0] && args[0][0] === "-") {
+    message.persists.push(args.shift().slice(1));
+  }
+
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {
     return message.reply(client.warning(`Please wait  \`${client.config.cooldown / 1000}\`  seconds before doing this command again!`)).then(msg => {

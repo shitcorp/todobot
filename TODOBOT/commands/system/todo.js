@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 
+const { MessageEmbed } = require('discord.js');
+
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./data/data.sqlite');
 
@@ -13,15 +15,10 @@ exports.run = async (client, message, args) => {
 
     let check = client.dbgetconfig(message)
     if (check[0].todochannel === "") return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
-        msg.delete(msgdel).catch(error => {})
+        msg.delete({ timeout: msgdel }).catch(error => {})
     })
 
     
-
-
-   
-
-
 
     message.delete().catch(error => {
         client.discordlog(error, message)
@@ -46,35 +43,35 @@ exports.run = async (client, message, args) => {
 
 
     message.channel.send(client.embed("Hey gamer! Give your new TODO a title: (1 minute)")).then(msg => {
-        msg.delete(msgdel).catch(error => {})
+        msg.delete({ timeout: msgdel }).catch(error => {})
     });
 
     var bugtitle = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
         time: 60000
     });
     bugtitle.on('collect', titlemsg => {
-        titlemsg.delete(msgdel).catch(error => {})
+        titlemsg.delete({ timeout: msgdel }).catch(error => {})
         bugtitle.stop();
         info.title = titlemsg.content;
         message.channel.send(client.embed("OK, next, enter the TODO message: (1 minute)")).then(msg => {
-            msg.delete(msgdel).catch(error => {})
+            msg.delete({ timeout: msgdel }).catch(error => {})
         })
         // 300000
         var bugremake = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
             time: 60000
         });
         bugremake.on('collect', remakemsg => {
-            remakemsg.delete(msgdel).catch(error => {})
+            remakemsg.delete({ timeout: msgdel }).catch(error => {})
             bugremake.stop();
             info.recreate = remakemsg.content;
             message.channel.send(client.embed("OK, now, do you want to attach an Image? If so, enter a link to that image now, otherwise type `no` if you don't. (1 minute)")).then(msg => {
-                msg.delete(msgdel).catch(error => {})
+                msg.delete({ timeout: msgdel }).catch(error => {})
             })
             var scrnurl = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
                 time: 60000
             });
             scrnurl.on('collect', scrnmsg => {
-                scrnmsg.delete(msgdel).catch(error => {})
+                scrnmsg.delete({ timeout: msgdel }).catch(error => {})
                 scrnurl.stop();
                 if (scrnmsg.content.toLowerCase() == "no") {
 
@@ -84,12 +81,12 @@ exports.run = async (client, message, args) => {
                     
             
                     return message.channel.send(client.warning(`Please enter a real URL if you want to attach an image.`)).then(msg => {
-                        msg.delete(msgdel).catch(error => {})
+                        msg.delete({ timeout: msgdel }).catch(error => {})
                     })
                 } else if (scrnmsg.content.startsWith('https://')) {
 
                     
-                    let test = new Discord.RichEmbed()
+                    let test = new MessageEmbed()
                     .setTitle(`aa`)
                     .setImage(scrnmsg.content)
                     
@@ -102,7 +99,7 @@ exports.run = async (client, message, args) => {
 
                 //send success message
                 message.channel.send(client.embed("Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO")).then(msg => {
-                    msg.delete(msgdel).catch(error => {
+                    msg.delete({ timeout: msgdel }).catch(error => {
                         client.discordlog(error, message, "MESSAGE DELETE")
                     });
                 })
@@ -187,7 +184,7 @@ exports.run = async (client, message, args) => {
 
                     //take care of very first bug
 
-                    var embed = new Discord.RichEmbed()
+                    var embed = new MessageEmbed()
                         .setColor("#2C2F33")
                         .setTitle(info.title)
                         //.addField("⠀", "```" + info.title + "```")
@@ -208,7 +205,7 @@ exports.run = async (client, message, args) => {
                         askingchannel.send(embed).catch(error => {
 
                             message.channel.send(client.warning(`This is not a valid URL!`)).then(msg => {
-                                msg.delete(msgdel).catch(error => {})
+                                msg.delete({ timeout: msgdel }).catch(error => {})
                             })
                             return
 
@@ -218,7 +215,7 @@ exports.run = async (client, message, args) => {
                             client.dbupdatetodo(message, "bugmsg", `${msg.id}`, ID)
                         }).catch(error => {
                             message.channel.send(client.error(`There was an error trying to post your TODO! It was probably a malformatted Screenshot URL. Try again.`)).then(msg => {
-                                msg.delete(msgdel).catch(error => {})
+                                msg.delete({ timeout: msgdel }).catch(error => {})
                             })
                         })
 
@@ -230,7 +227,7 @@ exports.run = async (client, message, args) => {
 
                     //every other bug
 
-                    var embed = new Discord.RichEmbed()
+                    var embed = new MessageEmbed()
                         .setColor("#2C2F33")
                         .setTitle(info.title)
                         //.addField("⠀", "```" + info.title + "```")
@@ -257,7 +254,7 @@ exports.run = async (client, message, args) => {
                         }).catch(error => {
                             //console.error(error)
                             message.channel.send(client.error(`There was an error trying to post your TODO! It was probably a malformatted Screenshot URL. Try again.`)).then(msg => {
-                                msg.delete(msgdel).catch(error => {})
+                                msg.delete({ timeout: msgdel }).catch(error => {})
                             })
                         })
 

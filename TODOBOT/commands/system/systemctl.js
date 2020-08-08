@@ -1,34 +1,34 @@
-const Discord = require('discord.js')
+const { MessageEmbed } =require('discord.js')
 exports.run = async (client, message, args, level) => {
 
     const { configmodel } = require('../../modules/models/configmodel')
-    const userMention = message.mentions.members.first() || message.guild.members.get(args[1]);
+    const userMention = message.mentions.members.first() || message.guild.members.cache.get(args[1]);
     const msgdel = client.config.msgdelete
 
-    message.delete().catch(console.error());
+    //message.delete().catch(console.error());
     // Functions
 
     async function showsettings() {
         const settings = await client.dbgetconfig(message)
         console.log(settings[0])
-        let getembed = new Discord.RichEmbed()
+        let getembed = new MessageEmbed()
             .setColor("#2C2F33")
             .setAuthor(`${message.guild.name} - Settings`)
             .setDescription("```" + `Current Values:` + "```")
             .addField(`⠀`, `__**Prefix: **__  ⠀\`${settings[0].prefix}\``)
             if (settings[0].staffrole !== '') {
-                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
+                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.cache.get(settings[0].staffrole).name}\``)
             } else {
                 getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`Not set.\``)
             }
             if (settings[0].todochannel !== '') {
-                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
+                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.cache.get(settings[0].todochannel).name}\``)
             } else {
                 getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`Not set.\``)
             }
             //.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
             //.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
-        message.channel.send(getembed).then(msg => { msg.delete(msgdel).catch(error => { }) })
+        message.channel.send(getembed).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) })
     }
     function ischannel(message, args) {
         if (!args[1].startsWith('<#')) return false;
@@ -45,23 +45,23 @@ exports.run = async (client, message, args, level) => {
     function setPrefix() {
         if (!args[1]) return message.channel.send(client.error(`Please enter a new value.`))
         .then(msg => {
-            msg.delete(msgdel).catch(error => {
+            msg.delete({ timeout: msgdel }).catch(error => {
             })
         })
     client.dbupdateconfig(message, "prefix", `${args[1]}`);
-    message.channel.send(client.success(`Saved ⠀\`${args[1]}\`⠀ as your new prefix!`)).then(msg => { msg.delete(msgdel).catch(error => { }) });
+    message.channel.send(client.success(`Saved ⠀\`${args[1]}\`⠀ as your new prefix!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
     function settodochannel() {
-        if (!args[1].startsWith(`<#`)) return message.channel.send(client.error(`Please mention a real channel.`)).then(msg => { msg.delete(msgdel).catch(error => { }) })
+        if (!args[1].startsWith(`<#`)) return message.channel.send(client.error(`Please mention a real channel.`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) })
         if (ischannel(message, args) === false) return message.channel.send(client.error(`This channel does not seem to exist. Please try again.`))
         client.dbupdateconfig(message, "todochannel", `${ischannel(message, args).id}`);
-        message.channel.send(client.success(`Saved⠀\`${ischannel(message, args).name}\`⠀as your new todo channel!`)).then(msg => { msg.delete(msgdel).catch(error => { }) });
+        message.channel.send(client.success(`Saved⠀\`${ischannel(message, args).name}\`⠀as your new todo channel!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
 
     function setstaffrole() {
-        if (!message.mentions.roles.first()) return message.channel.send(client.error(`Please mention a real role.`)).then(msg => { msg.delete(msgdel).catch(error => { }) })
+        if (!message.mentions.roles.first()) return message.channel.send(client.error(`Please mention a real role.`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) })
                 client.dbupdateconfig(message, "staffrole", `${message.mentions.roles.first().id}`)
-                message.channel.send(client.success(`Saved ⠀\`${message.mentions.roles.first().name}\`⠀ as your new staffrole!`)).then(msg => { msg.delete(msgdel).catch(error => { }) });
+                message.channel.send(client.success(`Saved ⠀\`${message.mentions.roles.first().name}\`⠀ as your new staffrole!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
 
     function initconfig() {
@@ -87,7 +87,7 @@ exports.run = async (client, message, args, level) => {
                 let it = res[0].tags.values();
                 let ky = res[0].tags.keys();
                 let output = "";
-                let embed = new Discord.RichEmbed()
+                let embed = new MessageEmbed()
                 .setTitle(`Available Tags in ${message.guild.name}`)
                 .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL)
                 .setColor("#2C2F33")
@@ -125,7 +125,7 @@ exports.run = async (client, message, args, level) => {
             break;
             default:
                 message.channel.send(client.warning(`This is not a valid key. Available keys are: prefix, staffrole, todochannel and color.`)).then(msg => {
-                    msg.delete(msgdel).catch(error => {})
+                    msg.delete({ timeout: msgdel }).catch(error => {})
                 })
             break;
         }

@@ -5,7 +5,7 @@ exports.run = async (client, message, args, level) => {
     // imports
     const { remindermodel } = require('../../modules/models/remindermodel');
     const { format, parseISO, formatDistance } = require('date-fns');
-    const { RichEmbed } = require('discord.js');
+    const { MessageEmbed } = require('discord.js');
     const uniqid = require('uniqid');
 
     //Handler
@@ -21,7 +21,7 @@ exports.run = async (client, message, args, level) => {
         break;
         default: 
         message.channel.send(client.error(`You forgot to give a flag. Use one of the following: \n> \`-v\` => View all your reminders. \n> \`-c\` \`-3h\` => Create a new reminder. \n> \`-rm\` \`-ID\` => Delete the reminder with the given ID.`)).then(msg => {
-            msg.delete(60000).catch(console.error())
+            msg.delete({ timeout: 60000 }).catch(console.error())
         })
         break;
     }
@@ -40,7 +40,7 @@ exports.run = async (client, message, args, level) => {
             cache.push(doc)
         }
         let cursor = 0;
-        let em = new RichEmbed()
+        let em = new MessageEmbed()
         .setAuthor(`${message.author.username}'s Reminders [${output}]`, message.author.avatarURL)
         .setFooter(`[${cursor+1}/${output}]`)
         console.log(output, cache[0])

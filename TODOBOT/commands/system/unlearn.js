@@ -16,7 +16,6 @@ configmodel.find({ _id: message.guild.id }).then(res => {
     })
 })
 }
-
 exports.conf = {
     enabled: true,
     guildOnly: true,
