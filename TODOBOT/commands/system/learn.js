@@ -1,5 +1,5 @@
 const { configmodel } = require('../../modules/models/configmodel')
-
+const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 
@@ -39,3 +39,10 @@ exports.help = {
     usage: "learn <tag> <description> \n> Example: //learn sql Sql stands for structured query language and is used... \n\nTo view all available tags, use \`systemctl -v tags\` \nTo view the manual, use \`systemctl -v -man tags\`",
     flags: ['-force => Force overwrite a tag']
 };
+
+exports.manual = (message) => {
+    const em = new MessageEmbed()
+    .setTitle("Tags Manual")
+    .addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `)
+    message.channel.send(em);
+}

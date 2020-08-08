@@ -9,11 +9,11 @@ module.exports = async client => {
   // Log that the bot is online.
     client.logger.log(`${client.user.tag}, ready to serve ${client.users.size} users in ${client.guilds.size} servers.`, "ready");
       // Make the bot "play the game" which is the help command with default prefix.
-    client.user.setActivity(`//help  || invite.todo-bot.xyz`, { type: 3, browser: "DISCORD IOS"  });
+     
   
   
     let i = 0;
-    var job = new CronJob('0 */7 * * * *', function() {
+    var job = new CronJob('0 */10 * * * *', function() {
       let stati = [
         'Use //suggest to suggest new features!',
         'Use //support to join the official support server',
@@ -27,11 +27,13 @@ module.exports = async client => {
         'Peace',
         'the world burn.',
         'you.',
-        'not p*rnhub since we do not support rape. Do your homework.',
+        'not p*rnhub since we do not support rape and or sex trafficing. Do your homework.',
         '//help  || invite.todo-bot.xyz'
       ]
+
       
-      client.user.setActivity(stati[i], { type: 3, browser: "DISCORD IOS"  });
+      
+      client.user.setActivity(stati[i]);
       i++
       if (i === stati.length) {
         i = 0;

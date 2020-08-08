@@ -8,8 +8,6 @@ const chalk = require("chalk")
 const client = new Discord.Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
-//const Constants = require('discord.js/src/util/Constants.js')
-//Constants.DefaultOptions.ws.properties.$browser = `Discord iOS`
 
 client.config = require("./config.js");
 
