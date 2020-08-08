@@ -1,8 +1,7 @@
 const Discord = require('discord.js')
-
-const talkedRecently = new Set();
+//const talkedRecently = new Set();
 const cmdRecently = new Set();
-const cache = new Map();
+//const cache = new Map();
 
 module.exports = async (client, message) => {
 
@@ -105,11 +104,6 @@ module.exports = async (client, message) => {
   while (args[0] && args[0][0] === "-") {
     message.flags.push(args.shift().slice(1));
   }
-  message.persists = [];
-  while (args[0] && args[0][0] === "~") {
-    message.persists.push(args.shift().slice(1));
-  }
-
 
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {
@@ -125,8 +119,6 @@ module.exports = async (client, message) => {
       cmdRecently.delete(message.author.id)
     }, client.config.cooldown)
 
-
-
     client.logger.cmd(`[CMD] ${client.config.permLevels.find(l => l.level === level).name} ${message.author.username} (ID: ${message.author.id}) ran the command '${cmd.help.name}', in the guild '${message.guild.name}' (ID: ${message.guild.id})`);
     try {
       cmd.run(client, message, args, level);
@@ -134,13 +126,5 @@ module.exports = async (client, message) => {
 
     }
   }
-
-
-
-
-
-
-
-
 
 }

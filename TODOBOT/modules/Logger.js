@@ -7,7 +7,7 @@ const chalk = require("chalk");
 const moment = require("moment");
 const { format } = require('date-fns');
 
-let writer = createWriteStream('../logs/debug.txt')
+//let writer = createWriteStream('../logs/debug.txt')
 
 exports.log = (content, type = "log") => {
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;

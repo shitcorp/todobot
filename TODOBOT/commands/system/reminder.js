@@ -46,7 +46,7 @@ exports.run = async (client, message, args, level) => {
         console.log(output, cache[0])
         if (cache[0]) {
             const test = parseISO(cache[cursor].expires)
-            em.addField(`${cursor+1})  ID: ${cache[cursor]._id}`, `Content: \n> ${cache[cursor].content} \n:clock10: [${format(test, 'PPPP')}]`)
+            em.addField(`${cursor+1})  ID: ${cache[cursor]._id}`, `Content: \n> ${cache[cursor].content} \n:clock10: [${test}]`)
         }
         message.channel.send(em)
     }

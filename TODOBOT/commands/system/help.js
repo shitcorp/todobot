@@ -1,16 +1,14 @@
-const Discord = require('discord.js')
-
+const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     
     const settings = client.dbgetconfig(message)
 
-    
     if (args[0]) {
         message.delete().catch(console.error());
         if (client.commands.has(args[0])) {
             let command = client.commands.get(args[0]);
-            let detailembed = new Discord.RichEmbed()
+            let detailembed = new MessageEmbed()
                 .addField(`**Command:**`, `> ${args[0]}`)
                 if (command.conf.aliases && command.conf.aliases.length > 0) {
                 detailembed.addField(`**Aliases:**`, `> ${command.conf.aliases}`)
@@ -50,7 +48,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         let currentCategory = "";
         let arr = [];
         let output = "";
-        let embed = new Discord.RichEmbed()
+        let embed = new MessageEmbed()
             .setThumbnail(client.user.avatarURL)
             .setTitle(`${message.guild.me.displayName}  -  Command List \n`)
             .addField(`ʀᴇᴀᴅ ᴍᴏʀᴇ`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ")
@@ -67,7 +65,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         });
         //${table.table(possibleInvites)}
         embed.setDescription(`${output}`)
-        message.delete(20).catch(error => {});
+        message.delete({ timeout: 20 }).catch(error => {});
         message.channel.send(embed).then(msg => {
             setTimeout(function () {
                 msg.delete().catch(error => {})

@@ -8,15 +8,26 @@ exports.run = async (client, message, args, level) => {
     message.delete().catch(console.error());
     // Functions
 
-    function showsettings() {
-        const settings = client.dbgetconfig(message)
+    async function showsettings() {
+        const settings = await client.dbgetconfig(message)
+        console.log(settings[0])
         let getembed = new Discord.RichEmbed()
             .setColor("#2C2F33")
             .setAuthor(`${message.guild.name} - Settings`)
             .setDescription("```" + `Current Values:` + "```")
             .addField(`⠀`, `__**Prefix: **__  ⠀\`${settings[0].prefix}\``)
-            .addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
-            .addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
+            if (settings[0].staffrole !== '') {
+                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
+            } else {
+                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`Not set.\``)
+            }
+            if (settings[0].todochannel !== '') {
+                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
+            } else {
+                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`Not set.\``)
+            }
+            //.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
+            //.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
         message.channel.send(getembed).then(msg => { msg.delete(msgdel).catch(error => { }) })
     }
     function ischannel(message, args) {
