@@ -18,7 +18,7 @@ exports.conf = {
     enabled: true,
     guildOnly: true,
     party: false,
-    aliases: [],
+    aliases: ['man'],
     permLevel: "STAFF"
 };
 

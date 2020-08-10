@@ -10,7 +10,9 @@ configmodel.find({ _id: message.guild.id }).then(res => {
     if (!res[0]) return message.channel.send(client.error(`There was no config found for your guild.`))
     let tag = args[0];
     let cmdcheck = client.commands.get(tag)
+    let alcheck = client.aliases.get(tag)
     if (cmdcheck) return message.channel.send(client.error(`You cant override bot commands with tags.`))
+    if (alcheck) return message.channel.send(client.error(`You cant override bot commands or aliases with tags.`))
     let check = res[0].tags.get(tag)
     if (check && !message.flags.includes(`force`)) return message.channel.send(client.error(`This tag already exists, unlearn it first before overwriting, or use this command with the \`-force\` flag.`))
     args.shift();

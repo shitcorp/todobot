@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { configmodel } = require('./models/configmodel')
+const { configmodel } = require('./models/configmodel');
+const { todomodel } = require('./models/todomodel');
 
 
     function dbinit (client) {
@@ -16,7 +17,7 @@ const { configmodel } = require('./models/configmodel')
     }
 
 
-    function configset (obj) {
+    function setconfig (obj) {
         let newconf = new configmodel(obj)
 
         newconf.save(function(err, doc) {
@@ -27,4 +28,29 @@ const { configmodel } = require('./models/configmodel')
         }) 
     }
 
-module.exports = { dbinit, configset };
+    function getconfig (_id) {
+        return configmodel.findOne({ _id }, (err, doc) => {
+            if (err) return console.error(err)
+            return doc;
+        })
+    }
+
+    function getguildtodos (guildid) {
+        return todomodel.find(), (err, doc) => {
+            if (err) return console.error(err);
+            return doc;
+        }
+    }
+
+    function getonetodo (_id) {
+        return todomodel.findOne({ _id }, (err, doc) => {
+            if (err) return console.error(err);
+            return doc;
+        })
+    }
+
+    
+
+
+
+module.exports = { dbinit, setconfig, getconfig, getguildtodos, getonetodo };

@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageCollector } = require('discord.js');
 const SQLite = require("better-sqlite3");
 const sql = new SQLite('./data/data.sqlite');
+const { getconfig } = require('../../modules/mongohandler');
 const dateFormat = require('dateformat');
 
 // TODO: make repeating todos
@@ -9,95 +9,122 @@ const dateFormat = require('dateformat');
 exports.run = async (client, message, args) => {
 
     const msgdel = client.config.msgdelete
+    const guildconf = await getconfig(message.guild.id);
+    
 
-
-    let check = client.dbgetconfig(message)
-    if (check[0].todochannel === "") return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
-        msg.delete({ timeout: msgdel }).catch(error => {})
+    if (guildconf.todochannel === "") return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
+        msg.delete({ timeout: msgdel }).catch(error => { console.error(error) })
     })
 
     
-
     message.delete().catch(error => {
-        client.discordlog(error, message)
+        console.error(error)
     });
 
 
-    var info = {
+    var todoobj = {
         title: "",
         recreate: "",
         screenshotURL: "None"
     }
 
     function quicksave() {
-        info.title = message.persists[0]
-        if (message.persists[1]) info.recreate = message.persists[1]
-        if (message.persists[2]) info.screenshotURL = message.persists[2]
+        todoobj.title = message.persists[0]
+        if (message.persists[1]) todoobj.recreate = message.persists[1]
+        if (message.persists[2]) todoobj.screenshotURL = message.persists[2]
     }
 
+    // TODO: make function that asks questions and returns todo object
     
-    if (message.persists[0]) return quicksave();
+    message.persists[0] ? quicksave() :
+        test()
 
+    async function questioneer() {
     
-
-
-
-    message.channel.send(client.embed("Hey gamer! Give your new TODO a title: (1 minute)")).then(msg => {
-        msg.delete({ timeout: msgdel }).catch(error => {})
-    });
-
-    var bugtitle = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
-        time: 60000
-    });
-    bugtitle.on('collect', titlemsg => {
-        titlemsg.delete({ timeout: msgdel }).catch(error => {})
-        bugtitle.stop();
-        info.title = titlemsg.content;
-        message.channel.send(client.embed("OK, next, enter the TODO message: \nType `no` if you don\`t want to set a TODO message. (1 minute)")).then(msg => {
+        message.channel.send(client.embed("Hey gamer! Give your new TODO a title: (1 minute)")).then(msg => {
             msg.delete({ timeout: msgdel }).catch(error => {})
-        })
-        // 300000
-        var bugremake = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
+        });
+    
+        let todotitle = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
             time: 60000
         });
-        bugremake.on('collect', remakemsg => {
-            remakemsg.delete({ timeout: msgdel }).catch(error => {})
-            bugremake.stop();
-            if (remakemsg.content.toLowerCase().includes('no')) {
-                info.recreate = '';
-            } else {
-                info.recreate = remakemsg.content;
-            }
-            
-            message.channel.send(client.embed("OK, now, do you want to attach an Image? If so, enter a link to that image now, otherwise type `no` if you don't. (1 minute)")).then(msg => {
+
+        todotitle.on('collect', titlemsg => {
+            titlemsg.delete({ timeout: msgdel }).catch(error => {})
+            todotitle.stop();
+            todoobj.title = titlemsg.content;
+            // next question
+            message.channel.send(client.embed("OK, next, enter the TODO message: \nType `no` if you don\`t want to set a TODO message. (1 minute)")).then(msg => {
                 msg.delete({ timeout: msgdel }).catch(error => {})
             })
-            var scrnurl = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {
+
+            let todomsg = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
                 time: 60000
             });
-            scrnurl.on('collect', scrnmsg => {
-                scrnmsg.delete({ timeout: msgdel }).catch(error => {})
-                scrnurl.stop();
-                if (scrnmsg.content.toLowerCase() == "no") {
-                    info.screenshotURL = '';
-                } else if (!scrnmsg.content.startsWith('https://')) {
-
-                    return message.channel.send(client.warning(`Please enter a real URL if you want to attach an image.`)).then(msg => {
-                        msg.delete({ timeout: msgdel }).catch(error => {})
-                    })
-                } else if (scrnmsg.content.startsWith('https://')) {
-
-                    info.screenshotURL = scrnmsg.content;
-
-                } 
-
-                //send success message
-                message.channel.send(client.embed("Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO")).then(msg => {
-                    msg.delete({ timeout: msgdel }).catch(error => {
-                        client.discordlog(error, message, "MESSAGE DELETE")
-                    });
+            todomsg.on('collect', todomessagemsg => {
+                todomessagemsg.delete({ timeout: msgdel }).catch(error => {})
+                todomsg.stop();
+                
+                todomessagemsg.content.toLowerCase().includes('no') ? todoobj.recreate = '' : 
+                    todoobj.recreate = todomessagemsg.content;
+                
+                // next question
+                message.channel.send(client.embed("OK, now, do you want to attach an Image? If so, enter a link to that image now, otherwise type `no` if you don't. (1 minute)")).then(msg => {
+                    msg.delete({ timeout: msgdel }).catch(error => {})
                 })
-                //start db stuff here
+
+                let scrnurl = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
+                    time: 60000
+                });
+                scrnurl.on('collect', scrnmsg => {
+                    scrnmsg.delete({ timeout: msgdel }).catch(error => {})
+                    scrnurl.stop();
+                    if (scrnmsg.content.toLowerCase() == "no") {
+                        todoobj.screenshotURL = '';
+                    } else if (!scrnmsg.content.startsWith('https://')) {
+    
+                        return message.channel.send(client.warning(`Please enter a real URL if you want to attach an image.`)).then(msg => {
+                            msg.delete({ timeout: msgdel }).catch(error => {})
+                        })
+                    } else if (scrnmsg.content.startsWith('https://')) {
+    
+                        todoobj.screenshotURL = scrnmsg.content;
+    
+                    } 
+
+                    
+    
+                    //send success message
+                    message.channel.send(client.embed("Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO")).then(msg => {
+                        msg.delete({ timeout: msgdel }).catch(error => {
+                            client.discordlog(error, message, "MESSAGE DELETE")
+                        });
+                    });
+
+                    return true;
+
+                    
+
+                });
+
+            });
+            
+        });
+
+        
+        
+    }
+
+
+    async function test() {
+        console.log(await questioneer());
+        
+    }
+
+    async function longsave() {
+
+    
+    
 
 
                 //define bugtable and create if not exists
@@ -129,9 +156,9 @@ exports.run = async (client, message, args) => {
                         guildid: message.guild.id,
                         guildspecificindex: 1,
                         bugid: ID,
-                        bugtitle: info.title,
-                        bugrecreation: info.recreate,
-                        screenshoturl: info.screenshotURL,
+                        todotitle: todoobj.title,
+                        bugrecreation: todoobj.recreate,
+                        screenshoturl: todoobj.screenshotURL,
                         submittedby: message.author.id,
                         timestamp: dateFormat(),
                         state: "open",
@@ -146,9 +173,9 @@ exports.run = async (client, message, args) => {
                     let bugtableau = {
                         guildid: message.guild.id,
                         bugid: ID,
-                        bugtitle: info.title,
-                        bugrecreation: info.recreate,
-                        screenshoturl: info.screenshotURL,
+                        todotitle: todoobj.title,
+                        bugrecreation: todoobj.recreate,
+                        screenshoturl: todoobj.screenshotURL,
                         submittedby: message.author.id,
                         timestamp: dateFormat(),
                         state: "open",
@@ -180,20 +207,20 @@ exports.run = async (client, message, args) => {
 
                     var embed = new MessageEmbed()
                         .setColor("#2C2F33")
-                        .setTitle(info.title)
+                        .setTitle(todoobj.title)
                         //.setFooter("ID: " + ID)
 
-                    if (info.recreate !== '') {
-                        embed.addField("Content", `> ${info.recreate}`)
+                    if (todoobj.recreate !== '') {
+                        embed.addField("Content", `> ${todoobj.recreate}`)
                     }
 
-                    if (info.screenshotURL !== "None") {
-                        //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", info.screenshotURL)
-                        embed.setImage(info.screenshotURL)
+                    if (todoobj.screenshotURL !== "None") {
+                        //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", todoobj.screenshotURL)
+                        embed.setImage(todoobj.screenshotURL)
                     }
 
                     let chan = client.dbgetconfig(message)
-                    let askingchannel = message.guild.channels.get(chan[0].todochannel)
+                    let askingchannel = message.guild.channels.cache.get(chan[0].todochannel)
 
 
                     try {
@@ -216,7 +243,9 @@ exports.run = async (client, message, args) => {
                         })
 
                     } catch (e) {
-                        console.log("aa")
+                        message.channel.send(client.error(`There was an error trying to post your TODO! It was probably a malformatted Screenshot URL. Try again.`)).then(msg => {
+                            msg.delete({ timeout: msgdel }).catch(error => {})
+                        })
                     }
 
                 } else {
@@ -225,16 +254,16 @@ exports.run = async (client, message, args) => {
 
                     var embed = new MessageEmbed()
                         .setColor("#2C2F33")
-                        .setTitle(info.title)
+                        .setTitle(todoobj.title)
                         //.setFooter("ID: " + ID)
                     
-                    if (info.recreate !== '') {
-                        embed.addField("Content", `> ${info.recreate}`)
+                    if (todoobj.recreate !== '') {
+                        embed.addField("Content", `> ${todoobj.recreate}`)
                     }
 
-                    if (info.screenshotURL !== "None") {
-                        //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", info.screenshotURL)
-                        embed.setImage(info.screenshotURL)
+                    if (todoobj.screenshotURL !== "None") {
+                        //embed.addField("**ᴀᴛᴛᴀᴄʜᴇᴍᴇɴᴛꜱ**", todoobj.screenshotURL)
+                        embed.setImage(todoobj.screenshotURL)
                     }
 
                     let chan = client.dbgetconfig(message)
@@ -261,9 +290,10 @@ exports.run = async (client, message, args) => {
                     }
 
                 }
-            })
-        })
-    })
+            
+
+}
+
 }
 
 
