@@ -32,6 +32,15 @@ exports.run = async (client, message, args) => {
     console.log(message.persists);
 
     async function quicksave() {
+        
+        
+        /**
+         *  Idea: First persists => title
+         *        Second persist => content
+         *        Third persist  => Screenshot/Attachlink
+         *        Fourth persist => Category
+         */
+        
         todoobj.title = message.persists[0]
         if (message.persists[1]) todoobj.recreate = message.persists[1]
         if (message.persists[2]) todoobj.screenshotURL = message.persists[2]

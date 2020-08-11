@@ -13,7 +13,7 @@ const todoschema = new mongoose.Schema({
     todomsg: String,
     assigned: String,
     category: String
-})
+});
 
 const todomodel = new mongoose.model("todos_dev", todoschema)
 
