@@ -3,6 +3,7 @@ const SQLite = require("better-sqlite3");
 const sql = new SQLite('./data/data.sqlite');
 const { getconfig } = require('../../modules/mongohandler');
 const dateFormat = require('dateformat');
+const { settodo } = require('../../modules/mongohandler');
 
 // TODO: make repeating todos
 
@@ -14,7 +15,7 @@ exports.run = async (client, message, args) => {
 
     if (guildconf.todochannel === "") return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
         msg.delete({ timeout: msgdel }).catch(error => { console.error(error) })
-    })
+    });
 
     
     message.delete().catch(error => {
@@ -28,11 +29,29 @@ exports.run = async (client, message, args) => {
         screenshotURL: "None"
     }
 
-    function quicksave() {
+    console.log(message.persists);
+
+    async function quicksave() {
         todoobj.title = message.persists[0]
         if (message.persists[1]) todoobj.recreate = message.persists[1]
         if (message.persists[2]) todoobj.screenshotURL = message.persists[2]
-    }
+        let sanitizedobjet = {
+            _id: message.id,
+            guildid: message.guild.id,
+            title: todoobj.title,
+            content: todoobj.recreate,
+            attachlink: todoobj.screenshotURL,
+            submittedby: message.author.id,
+            timestamp: Date.now(),
+            state: "open",
+            severity: 5,
+            repeating: false,
+            todomsg: "later",
+            assigned: "",
+            category: ""
+        }
+        await settodo(sanitizedobjet);
+    };
 
     // TODO: make function that asks questions and returns todo object
     
@@ -76,6 +95,7 @@ exports.run = async (client, message, args) => {
                 let scrnurl = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
                     time: 60000
                 });
+                
                 scrnurl.on('collect', scrnmsg => {
                     scrnmsg.delete({ timeout: msgdel }).catch(error => {})
                     scrnurl.stop();
@@ -117,9 +137,8 @@ exports.run = async (client, message, args) => {
 
 
     async function test() {
-        console.log(await questioneer());
-        
-    }
+        console.log(await questioneer());        
+    };
 
     async function longsave() {
 

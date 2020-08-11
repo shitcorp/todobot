@@ -1,5 +1,4 @@
-
-
+const { MessageCollector } = require('discord.js');
 
 module.exports = (client) => { 
 
@@ -56,6 +55,15 @@ client.permlevel = message => {
     }
     return permlvl;
   };
+
+
+  client.awaitreply = (message, question, time = 60000) => {
+    message.channel.send(question)  
+    let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
+        time
+      });
+      return collector;
+  }
 
 
 
