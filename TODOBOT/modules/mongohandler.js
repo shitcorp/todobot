@@ -1,6 +1,9 @@
-const mongoose = require('mongoose');
-const { configmodel } = require('./models/configmodel');
-const { todomodel } = require('./models/todomodel');
+const mongoose = require('mongoose'),
+{ MONGO_CONNECTION } = require('../config'),
+{ configmodel } = require('./models/configmodel'),
+{ todomodel } = require('./models/todomodel'),
+{ remindermodel } = require('./models/remindermodel');
+
 
 
     exports.dbinit = (client) => {
@@ -60,5 +63,19 @@ const { todomodel } = require('./models/todomodel');
         let newtodo = new todomodel(todoobj);
         return newtodo.save((err, doc) => {
             if (err) console.error(err);
+        })
+    };
+
+    exports.setreminder = (reminderobj) => {
+        let newreminder = new remindermodel(reminderobj);
+        return newreminder.save((err, doc) => {
+            if (err) console.error(err)
+        })
+    };
+
+    exports.getreminderbyuser = (user) => {
+        return remindermodel.find({ user }, (err, docs) => {
+            if (err) console.error(err)
+            return docs;
         })
     };

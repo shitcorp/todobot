@@ -58,7 +58,7 @@ exports.run = async (client, message, args) => {
             todomsg: "later",
             assigned: "",
             category: ""
-        }
+        };
         await settodo(sanitizedobjet);
     };
 
