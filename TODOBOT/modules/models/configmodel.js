@@ -17,6 +17,4 @@ const configschema = new mongoose.Schema({
     tags: Map
 })
 
-const configmodel = new mongoose.model("todoconfig", configschema)
-
-module.exports = { configmodel };
+exports.configmodel = new mongoose.model("todoconfig", configschema)

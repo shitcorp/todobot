@@ -9,6 +9,4 @@ const reminderschema = new mongoose.Schema({
     content: String
 })
 
-const remindermodel = new mongoose.model("reminders", reminderschema)
-
-module.exports = { remindermodel };
+exports.remindermodel = new mongoose.model("reminders", reminderschema)

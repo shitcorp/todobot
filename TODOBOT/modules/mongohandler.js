@@ -3,7 +3,7 @@ const { configmodel } = require('./models/configmodel');
 const { todomodel } = require('./models/todomodel');
 
 
-    function dbinit (client) {
+    exports.dbinit = (client) => {
 
         mongoose.connect("mongodb://localhost/todobotconf", { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -17,7 +17,7 @@ const { todomodel } = require('./models/todomodel');
     };
 
 
-    function setconfig (obj) {
+    exports.setconfig = (obj) => {
         let newconf = new configmodel(obj)
 
         return newconf.save(function(err, doc) {
@@ -28,43 +28,37 @@ const { todomodel } = require('./models/todomodel');
         }) 
     };
 
-    function getconfig (_id) {
+    exports.getconfig = (_id) => {
         return configmodel.findOne({ _id }, (err, doc) => {
             if (err) return console.error(err)
             return doc;
         })
     };
 
-    function getguildtodos (guildid) {
+    exports.getguildtodos = (guildid) => {
         return todomodel.find({guildid}), (err, doc) => {
             if (err) return console.error(err);
             return doc;
         }
     };
 
-    function getusertodos (user) {
+    exports.getusertodos = (user) => {
         return todomodel.find({ assigned: user }, (err, docs) => {
             if (err) return console.error(err)
             return docs;
         })
     };
 
-    function getonetodo (_id) {
+    exports.getonetodo = (_id) => {
         return todomodel.findOne({ _id }, (err, doc) => {
             if (err) return console.error(err);
             return doc;
         })
     };
 
-    function settodo (todoobj) {
+    exports.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
         return newtodo.save((err, doc) => {
             if (err) console.error(err);
         })
     };
-
-    
-
-
-
-module.exports = { dbinit, settodo, setconfig, getconfig, getguildtodos, getusertodos, getonetodo };

@@ -16,6 +16,4 @@ const suggestionschema = new mongoose.Schema({
     deletedcomments: Array
 })
 
-const suggestionmodel = new mongoose.model("suggestions", suggestionschema)
-
-module.exports = { suggestionmodel };
+exports.suggestionmodel = new mongoose.model("suggestions", suggestionschema)
