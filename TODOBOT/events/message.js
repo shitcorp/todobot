@@ -46,7 +46,7 @@ module.exports = async (client, message) => {
     if (check) {
       if (check.includes("%%SENDDM%%") && message.mentions.users.first()) {
         try {
-        message.mentions.users.first().send(client.embed(check.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) }) })
+        message.mentions.users.first().send(client.embed(check.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete({ timeout: 60000}).catch(console.error) }) })
         } catch(e) {
           message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) })
         }
