@@ -9,26 +9,12 @@ exports.run = async (client, message, args, level) => {
 
     async function showsettings() {
         const settings = await client.getconfig(message.guild.id)
-        console.log(settings[0])
-        let getembed = new MessageEmbed()
-            .setColor("#2C2F33")
-            .setAuthor(`${message.guild.name} - Settings`)
-            .setDescription("```" + `Current Values:` + "```")
-            .addField(`⠀`, `__**Prefix: **__  ⠀\`${settings[0].prefix}\``)
-            if (settings[0].staffrole !== '') {
-                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.cache.get(settings[0].staffrole).name}\``)
-            } else {
-                getembed.addField(`⠀`, `__**Staffrole**__ ⠀\`Not set.\``)
-            }
-            if (settings[0].todochannel !== '') {
-                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.cache.get(settings[0].todochannel).name}\``)
-            } else {
-                getembed.addField(`⠀`, `__**TODO Channel:**__ ⠀\`Not set.\``)
-            }
-            //.addField(`⠀`, `__**Staffrole**__ ⠀\`${message.guild.roles.get(settings[0].staffrole).name}\``)
-            //.addField(`⠀`, `__**TODO Channel:**__ ⠀\`${message.guild.channels.get(settings[0].todochannel).name}\``)
-        message.channel.send(getembed).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) })
+        console.log(settings)
+        message.channel.send(settings, {
+            code: "json"
+        })    
     }
+
     function ischannel(message, args) {
         if (!args[1].startsWith('<#')) return false;
         let tocheck = args[1].replace("<#", "").replace(">", "")
@@ -63,76 +49,54 @@ exports.run = async (client, message, args, level) => {
                 message.channel.send(client.success(`Saved ⠀\`${message.mentions.roles.first().name}\`⠀ as your new staffrole!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
 
-    function initconfig() {
-        let conf = {
-            _id: message.guild.id,
-            prefix: "//",
-            tags: {
-                example: "This is an example tag. Create and delete tags by using the learn and unlearn command."
-            }
-        }
-        const init = new configmodel(conf)
-        init.save(function(err) {
-            if (err) console.log(err)
-            message.channel.send(client.success(`The initial config for your guild has been saved.`))
-        })
-    }
+
 
     // Handler
-    if (message.flags[0] === "view" || message.flags[0] === "v") {
-        if (args[0] === "tags") {
-            configmodel.find({ _id: message.guild.id }).then(res => {
-                if (!res[0]) return message.channel.send(client.error(`I couldnt find any config for your guild.`))
-                let it = res[0].tags.values();
-                let ky = res[0].tags.keys();
-                let output = "";
-                let embed = new MessageEmbed()
-                .setTitle(`Available Tags in ${message.guild.name}`)
-                .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL)
-                .setColor("#2C2F33")
-                .setTimestamp()
-                for (var i=0; i<res[0].tags.size;i++) {
-                  //embed.addField(ky.next().value, `> ${it.next().value}`, true)
-                  let sanitized = it.next().value.slice(0, 69)
-                  output += `• \`${ky.next().value}\` =>  ${sanitized} \n`
-                }
-                embed.setDescription(output)
-                if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
-                embed.addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `)
-                }
-                message.channel.send(embed)
-            })
-        } else {
-            showsettings();
-        }
-    } else if (message.flags[0] === "set" || message.flags[0] === "s") {
-        switch(args[0]) {
-            case "prefix":
-                setPrefix();
-            break;
-            case "staffrole":
-                setstaffrole();
-            break;
-            case "todochannel":
-                settodochannel();
-            break;
-            case "color":
-                message.channel.send(client.warning(`This is not implemented yet.`))
-            break;
-            case "init":
-                initconfig();
-            break;
-            default:
-                message.channel.send(client.warning(`This is not a valid key. Available keys are: prefix, staffrole, todochannel and color.`)).then(msg => {
-                    msg.delete({ timeout: msgdel }).catch(error => {})
-                })
-            break;
-        }
-    } else {
-        let hcmd = client.commands.get("help")
-        let arg = ['systemctl']
-        hcmd.run(client, message, arg, level)
+    
+    
+    switch(message.flags[0]) {
+        case "v":
+        case "view":
+            switch(args[0]) {
+                case "tags":
+                    tagshower(configmodel, message, client);
+                break;
+                case "settings":
+                    showsettings();
+                break;
+                default:
+                    message.channel.send(client.warning("This command takes in 'settings' or 'tags' as arguments."))
+                break;
+            }
+        break;
+        case "s":
+        case "set":
+            switch(args[0]) {
+                case "prefix":
+                    setPrefix();
+                break;
+                case "staffrole":
+                    setstaffrole();
+                break;
+                case "todochannel":
+                    settodochannel();
+                break;
+                case "color":
+                    message.channel.send(client.warning(`This is not implemented yet.`))
+                break;
+                default:
+                    message.channel.send(client.warning(`This is not a valid key. Available keys are: prefix, staffrole, todochannel and color.`)).then(msg => {
+                        msg.delete({ timeout: msgdel }).catch(error => {})
+                    })
+                break;
+            }
+        break;
+        default:
+            let hcmd = client.commands.get("help")
+            let arg = ['systemctl']
+            hcmd.run(client, message, arg, level) 
     }
+    
     // TODO: make sysctl inspect command that returns if everything is set up properly and reminds users
 };
 exports.conf = {
@@ -149,3 +113,28 @@ exports.help = {
     usage: "systemctl -[flag] <key> <value>\n> Available flags: \n> -s | -set\n> -v | -view \n> __Examples:__ \n> systemctl -s prefix %t \n> systemctl -s todochannel #channelmention",
     flags: ['-v => View your guilds settings.', '-s => Change your guilds settings.']
 };
+
+function tagshower(configmodel, message, client) {
+    configmodel.find({ _id: message.guild.id }).then(res => {
+        if (!res[0])
+            return message.channel.send(client.error(`I couldnt find any config for your guild.`));
+        let it = res[0].tags.values();
+        let ky = res[0].tags.keys();
+        let output = "";
+        let embed = new MessageEmbed()
+            .setTitle(`Available Tags in ${message.guild.name}`)
+            .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL)
+            .setColor("#2C2F33")
+            .setTimestamp();
+        for (var i = 0; i < res[0].tags.size; i++) {
+            //embed.addField(ky.next().value, `> ${it.next().value}`, true)
+            let sanitized = it.next().value.slice(0, 69);
+            output += `• \`${ky.next().value}\` =>  ${sanitized} \n`;
+        }
+        embed.setDescription(output);
+        if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
+            embed.addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `);
+        }
+        message.channel.send(embed);
+    });
+}

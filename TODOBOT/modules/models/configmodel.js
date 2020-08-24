@@ -12,6 +12,8 @@ const configschema = new mongoose.Schema({
     suggestion_vote_minimum_amount: Number,
     suggestion_comments_enabled: Boolean,
     suggestion_edits_enabled: Boolean,
+    suggestions_enabled: Boolean,
+    bugs_enabled: Boolean,
     staffroles: Array,
     categories: Array,
     tags: Map

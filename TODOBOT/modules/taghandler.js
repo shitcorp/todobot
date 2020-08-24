@@ -1,5 +1,9 @@
 module.exports = (client) => {
     client.taghandler = (message, tag) => {
+
+
+      
+
         if (tag.includes("%%SENDDM%%") && message.mentions.users.first()) {
             try {
             message.mentions.users.first().send(client.embed(tag.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete({ timeout: 60000}).catch(console.error) }) })

@@ -7,7 +7,7 @@ const mongoose = require('mongoose'),
 module.exports = (client) => {
     
     client.dbinit = async () => {
-        mongoose.connect("mongodb://localhost/todobotconf", { useNewUrlParser: true, useUnifiedTopology: true });
+        mongoose.connect(MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
 
         const db = mongoose.connection;
         
@@ -24,6 +24,7 @@ module.exports = (client) => {
         return newconf.save(function(err, doc) {
             if (err) {
                 client.logger.debug(err)
+                return err;
             }
 
         }) 
@@ -81,10 +82,4 @@ module.exports = (client) => {
     };
 
 
-}
-
-
-
-    
-
-    
+};
