@@ -55,7 +55,6 @@ exports.run = async (client, message, args, level) => {
 
                 const finale = channelmsg.content.replace("<#", "").replace(">", "")
                 const checkchan = message.guild.channels.cache.get(finale)                
-                const toiterate = rolemsg.mentions.roles.first(5)
 
                 let newconfig = {
                     _id: message.guild.id,
@@ -90,7 +89,7 @@ exports.run = async (client, message, args, level) => {
                 }
 
                 let roles = "";
-                toiterate.forEach(element => {
+                rolemsg.mentions.roles.first(5).forEach(element => {
                     roles += `\`${element.name}\` `
                 });
 
@@ -101,12 +100,12 @@ exports.run = async (client, message, args, level) => {
         });
     
     
-    })
+    });
 
 
 
 
-}
+};
 
 
 

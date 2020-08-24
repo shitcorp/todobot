@@ -5,11 +5,12 @@ exports.run = async (client, message, args, level) => {
     message.delete().catch(console.error());
     
     let embed = new MessageEmbed()
-        .setAuthor(`${client.user.tag}`, client.user.avatarURL)
+        
+        .setAuthor(`${client.user.username}`, client.user.avatarURL())
         .setDescription(`To join the bots support server [click here](https://discord.gg/yJUbads "https://discord.gg/yJUbads").`)
-        .setColor("#2C2F33")
-    
-    message.channel.send(embed).then(msg => { msg.delete({timeout:90000}).catch(error => {}) })
+        .setColor("YELLOW")
+
+    message.channel.send(embed);
 
 }
 

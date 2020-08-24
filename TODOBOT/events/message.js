@@ -9,7 +9,7 @@ module.exports = async (client, message) => {
   const msgdel = client.config.msgdelete
   let settings = await client.getconfig(message.guild.id)
   
-  console.log(settings)
+  console.log(message.member.hasPermission("MANAGE_GUILD"))
 
   settings ? Prefix = settings.prefix :
     Prefix = "//";
