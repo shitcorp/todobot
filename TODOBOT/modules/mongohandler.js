@@ -4,10 +4,9 @@ const mongoose = require('mongoose'),
 { todomodel } = require('./models/todomodel'),
 { remindermodel } = require('./models/remindermodel');
 
-
-
-    exports.dbinit = (client) => {
-
+module.exports = (client) => {
+    
+    client.dbinit = async () => {
         mongoose.connect("mongodb://localhost/todobotconf", { useNewUrlParser: true, useUnifiedTopology: true });
 
         const db = mongoose.connection;
@@ -20,9 +19,8 @@ const mongoose = require('mongoose'),
     };
 
 
-    exports.setconfig = (obj) => {
-        let newconf = new configmodel(obj)
-
+    client.setconfig = (configobj) => {
+        let newconf = new configmodel(configobj)
         return newconf.save(function(err, doc) {
             if (err) {
                 client.logger.debug(err)
@@ -31,51 +29,62 @@ const mongoose = require('mongoose'),
         }) 
     };
 
-    exports.getconfig = (_id) => {
+
+
+    client.getconfig = (_id) => {
         return configmodel.findOne({ _id }, (err, doc) => {
             if (err) return console.error(err)
             return doc;
         })
     };
 
-    exports.getguildtodos = (guildid) => {
+    client.getguildtodos = (guildid) => {
         return todomodel.find({guildid}), (err, doc) => {
             if (err) return console.error(err);
             return doc;
         }
     };
 
-    exports.getusertodos = (user) => {
+    client.getusertodos = (user) => {
         return todomodel.find({ assigned: user }, (err, docs) => {
             if (err) return console.error(err)
             return docs;
         })
     };
 
-    exports.getonetodo = (_id) => {
+    client.getonetodo = (_id) => {
         return todomodel.findOne({ _id }, (err, doc) => {
             if (err) return console.error(err);
             return doc;
         })
     };
 
-    exports.settodo = (todoobj) => {
+    client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
         return newtodo.save((err, doc) => {
             if (err) console.error(err);
         })
     };
 
-    exports.setreminder = (reminderobj) => {
+    client.setreminder = (reminderobj) => {
         let newreminder = new remindermodel(reminderobj);
         return newreminder.save((err, doc) => {
             if (err) console.error(err)
         })
     };
 
-    exports.getreminderbyuser = (user) => {
+    client.getreminderbyuser = (user) => {
         return remindermodel.find({ user }, (err, docs) => {
             if (err) console.error(err)
             return docs;
         })
     };
+
+
+}
+
+
+
+    
+
+    

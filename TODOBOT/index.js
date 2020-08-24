@@ -13,7 +13,8 @@ client.config = require("./config.js");
 
 client.logger = require("./modules/Logger");
 
-require("./modules/dbhandler.js")(client);
+require("./modules/mongohandler.js")(client);
+require("./modules/taghandler.js")(client);
 require("./modules/functions.js")(client);
 require("./modules/embeds.js")(client);
 

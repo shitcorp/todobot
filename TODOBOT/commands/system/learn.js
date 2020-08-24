@@ -1,5 +1,4 @@
 const { configmodel } = require('../../modules/models/configmodel')
-const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => {
 
@@ -17,14 +16,14 @@ configmodel.find({ _id: message.guild.id }).then(res => {
     if (check && !message.flags.includes(`force`)) return message.channel.send(client.error(`This tag already exists, unlearn it first before overwriting, or use this command with the \`-force\` flag.`))
     args.shift();
     let desc = args.join(' ')
-    if (desc.length > 1700) return message.channel.send(client.error(`Your description was too long. You used \`${desc.length}\` out of \`1700\` available characters.`))
+    if (desc.length > 1000) return message.channel.send(client.error(`Your description was too long. You used \`${desc.length}\` out of \`1000\` available characters.`))
     res[0].tags.set(tag, desc)
     configmodel.updateOne({ _id: message.guild.id }, res[0], function(err, affected, resp) {
-        if (err) console.log(err)
-        message.channel.send(client.success(`Saved the tag \`${tag}\` with the description \`${desc}\` for you.`))
+        err ? console.error(err) :
+            message.channel.send(client.success(`Saved the tag \`${tag}\` with the description \`${desc}\` for you.`));
     })
-})
-}
+  })
+};
 
 exports.conf = {
     enabled: true,
@@ -43,8 +42,10 @@ exports.help = {
 };
 
 exports.manual = (message) => {
+    const { MessageEmbed } = require('discord.js');
     const em = new MessageEmbed()
-    .setTitle("Tags Manual")
-    .addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `)
+    //.setTitle("Tags Manual")
+    .addField(`__Learn Command Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `)
+    .setColor("RED")
     message.channel.send(em);
-}
+};

@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     
-    const settings = client.dbgetconfig(message)
+    const settings = client.getconfig(message.guild.id)
 
     if (args[0]) {
         message.delete().catch(console.error());
@@ -19,12 +19,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 detailembed.setFooter(`requested by ${message.author.username}#${message.author.discriminator}  -  this embed will kill itself in 1 minute.`, message.author.avatarURL)
                 if (command.help.flags) {
                     detailembed.addField(`**Flags:**`, `> ${command.help.flags.join('\n> ')}`)
-                }
+                };
                 message.channel.send(detailembed).then(msg => {
-                setTimeout(function () {
-                    msg.delete().catch(error => {});
-                }, 60000)
-            })
+                    msg.delete({ timeout: 60000 }).catch(console.error());
+                });
         } else {
             message.channel.send(client.warning(`I'm sorry but it seems as if there is no such command named "${args[0]}"`)).then(msg => {
                 setTimeout(function () {
@@ -51,7 +49,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         let embed = new MessageEmbed()
             .setThumbnail(client.user.avatarURL)
             .setTitle(`${message.guild.me.displayName}  -  Command List \n`)
-            .addField(`ʀᴇᴀᴅ ᴍᴏʀᴇ`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ")
+            .addField(`Read More`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ")
             .setColor("#2C2F33")
 	    .setFooter("If you see no commands in here you are lacking the role that is required to interact with this bot.")
         const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 : p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1);
@@ -73,11 +71,6 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         });
 
     }
-
-
-
-
-
 
 
 };

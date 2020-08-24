@@ -1,23 +1,19 @@
-const Discord = require('discord.js')
-//const talkedRecently = new Set();
 const cmdRecently = new Set();
-//const cache = new Map();
+
 
 module.exports = async (client, message) => {
 
-
-  if (message.author.bot) return
+  if (message.author.bot) return;
 
   let Prefix;
   const msgdel = client.config.msgdelete
-  let settings = await client.dbgetconfig(message)
-  //console.log(settings[0])
+  let settings = await client.getconfig(message.guild.id)
+  
+  console.log(settings)
 
-  if (typeof settings[0] !== "undefined") {
-    Prefix = settings[0].prefix
-  } else if (typeof settings[0] === "object") {
-    Prefix = "//"
-  }
+  settings ? Prefix = settings.prefix :
+    Prefix = "//";
+  
 
 
 
@@ -40,26 +36,9 @@ module.exports = async (client, message) => {
 
   const { configmodel } = require('../modules/models/configmodel')
 
-  configmodel.find({ _id: message.guild.id }).then(resp => {
-    if (!resp[0]) return;
-    let check = resp[0].tags.get(command)
-    if (check) {
-      if (check.includes("%%SENDDM%%") && message.mentions.users.first()) {
-        try {
-        message.mentions.users.first().send(client.embed(check.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete({ timeout: 60000}).catch(console.error) }) })
-        } catch(e) {
-          message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) })
-        }
-      } else if (check.includes("%%REPLY%%")) {
-        if (message.mentions.users.first()) {
-          message.channel.send(message.mentions.users.first(), client.embed(check.replace("%%REPLY%%", "")))
-        } else {
-          message.channel.send(message.author, client.embed(check.replace("%%REPLY%%", "")))
-        }
-      } else {
-        message.channel.send(client.embed(check))
-      }
-    }
+  configmodel.findOne({ _id: message.guild.id }).then(doc => {
+    if (!doc) return;
+    let check = doc.tags.get(command); check ? client.taghandler(message, check) : console.log("");
   })
 
   

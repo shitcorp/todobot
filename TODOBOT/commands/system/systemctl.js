@@ -5,11 +5,10 @@ exports.run = async (client, message, args, level) => {
     const userMention = message.mentions.members.first() || message.guild.members.cache.get(args[1]);
     const msgdel = client.config.msgdelete
 
-    //message.delete().catch(console.error());
     // Functions
 
     async function showsettings() {
-        const settings = await client.dbgetconfig(message)
+        const settings = await client.getconfig(message.guild.id)
         console.log(settings[0])
         let getembed = new MessageEmbed()
             .setColor("#2C2F33")
