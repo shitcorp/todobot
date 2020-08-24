@@ -19,3 +19,10 @@ exports.help = {
     description: "Show all available tags.",
     usage: "Run todo and the bot will display all the tags created on this server."
 };
+
+exports.manual = (message) => {
+    console.log("s")
+    const cmd = client.commands.get("learn")
+    console.log(cmd)
+    cmd.manual(message);
+};
