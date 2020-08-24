@@ -33,7 +33,7 @@ exports.run = async (client, message, args, level) => {
     function ischannel(message, args) {
         if (!args[1].startsWith('<#')) return false;
         let tocheck = args[1].replace("<#", "").replace(">", "")
-        let channelcheck = message.guild.channels.get(tocheck)
+        let channelcheck = message.guild.channels.cache.get(tocheck)
         if (typeof channelcheck === "undefined") return false;
         return channelcheck;
     }

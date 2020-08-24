@@ -11,15 +11,15 @@
   "license": "MIT",
   "dependencies": {
     "better-sqlite3": "^7.1.0",
-    "chalk": "^4.0.0",
-    "date-fns": "^2.14.0",
+    "chalk": "^4.1.0",
+    "date-fns": "^2.15.0",
     "dateformat": "^3.0.3",
-    "discord.js": "^12.2.0",
-    "enmap": "^5.2.4",
+    "discord.js": "^12.3.1",
+    "enmap": "^5.7.0",
     "fs": "0.0.1-security",
-    "moment": "^2.25.3",
+    "moment": "^2.27.0",
     "moment-duration-format": "^2.3.2",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.10.0",
     "uniqid": "^5.2.0"
   }
 }
