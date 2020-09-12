@@ -5,8 +5,8 @@
 ## New Commands
 
 
-+ `//learn`, `//unlearn` and `//edit` as part of the new [Tagsystem.](##Tagsystem)
-+ `//manual`[`man`*] => Learn more [here](##Manual)
++ `//learn`, `//unlearn` and `//edit` as part of the new [Tagsystem.](## Tagsystem)
++ `//manual`[`man`*] => Learn more [here](## Manual)
 + `//reminder` as part of the new [Remindersystem](##Remindersystem)
 
 **The words behind the command in brackets are the aliases of the command.*
