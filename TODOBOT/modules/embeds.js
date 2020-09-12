@@ -22,6 +22,13 @@ module.exports = (client) => {
         
     }
 
+    client.coloredEmbed = (desc, color) => {
+        const embed = new MessageEmbed()
+            .setDescription(`${desc}`)
+            .setColor(color)
+        return embed;
+    }
+
 
     client.error = (desc) => {
 

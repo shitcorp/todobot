@@ -28,3 +28,7 @@ exports.help = {
     description: "Returns your current permission level.",
     usage: "la,  ||  systemctl -la"
 };
+
+exports.manual = (message) => {
+    
+}
