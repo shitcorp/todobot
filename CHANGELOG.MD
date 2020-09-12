@@ -6,7 +6,7 @@
 
 
 + `//learn`, `//unlearn` and `//edit` as part of the new [Tagsystem.](## Tagsystem)
-+ `//manual`[`man`*] => Learn more [here](## Manual)
++ `//manual`[`man`*] => Learn more [here](#Manual)
 + `//reminder` as part of the new [Remindersystem](##Remindersystem)
 
 **The words behind the command in brackets are the aliases of the command.*
@@ -58,7 +58,7 @@ The following placeholders are available:
 + <PROCESSED> => Will be replaced by the amount of processed tasks of the message author
 ```
 
-## Manual
+# Manual
 
 Theres now a new manual command, that takes in a commandname and shows you a detailled manual of how to use the command. For example:
 ```
