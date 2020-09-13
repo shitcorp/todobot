@@ -2,7 +2,10 @@ const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     
-    const settings = client.getconfig(message.guild.id)
+    const settings1 = await client.getconfig(message.guild.id)
+    const settings = [
+        settings1
+    ]
 
     if (args[0]) {
         message.delete().catch(console.error());

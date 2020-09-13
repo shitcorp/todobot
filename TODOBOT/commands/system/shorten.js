@@ -6,19 +6,8 @@ exports.run = async (client, message, args, level) => {
 
 
 
-    const normal = {
-        1: {
-            baseURL: "https://stlf.me/",
-            URL: "stlf.me"
-        }
-    }
-
-    const zws = {
-        1: {
-            baseURL: "https://stlf.me/",
-            URL: "https://stlf.me/?url="
-        }
-    }
+    const normal = require('../../data/normal_urls.json');
+    const zws = require('../../data/zws_urls.json');
 
 
     const guildconf = await client.getconfig(message.guild.id)
@@ -27,7 +16,7 @@ exports.run = async (client, message, args, level) => {
     guildconf.urldomain ? fetchindex = guildconf.urldomain : fetchindex = 1
     guildconf.urlengine ? engine = guildconf.engine : engine = "normal"
 
-    console.log(engine)
+    console.log(zws[fetchindex].URL)
 
     switch (engine) {
         case "zws":
@@ -68,7 +57,15 @@ exports.run = async (client, message, args, level) => {
         
             res.on('end', () => {
                 const json = JSON.parse(data)
-                console.log(json)
+                console.log(engine)
+                switch(engine) {
+                    case "zws":
+
+                    break;
+                    case "mini":
+
+                    break;
+                }
                 message.channel.send(`Heres your shortened URL: ${baseURL}${json.zws}`)
                 
             });
@@ -128,7 +125,7 @@ exports.help = {
     > 
     > **[1]** => stlf.me/
     > **[2]** => im.rickast.li/
-    > **[3]** => u.todo-bot.xyz/
+    > **[3]** => m.todo-bot.xyz/
     > **[4]** => join-the.best/
     > **[5]** => ordielikethe.rest/
     > **[6]** => micasaesu.casa/urls
@@ -136,7 +133,7 @@ exports.help = {
     > __Engines:__
     > 
     > **[zws]** => Zero width shortener, uses invisible characters. Works only on discord and telegram. Read more about it [here](https://github.com/zws-im/zws  "Github").
-    > **[normal]** => Uses normal characters and looks like this: \`stlf.me/hSfuHeK\`
+    > **[mini]** => Uses normal characters and looks like this: \`stlf.me/hSfuHeK\`. Powererd by [mini]()
     > 
     > __Examples:__
     > \`\`\` //shorten -2 -zws https://google.com => im.rickast.li/\`\`\`
