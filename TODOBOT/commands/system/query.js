@@ -1,10 +1,14 @@
 //const { MessageEmbed } = require('discord.js');
 const Pagination = require('discord-paginationembed');
+const { todomodel } = require('../../modules/models/todomodel')
 
 exports.run = async (client, message, args, level) => {
 
+    const conf = await client.getconfig(message.guild.id)
   
     const parser = async (argarr) => {
+
+        
 
 
         /**
@@ -25,37 +29,146 @@ exports.run = async (client, message, args, level) => {
         if (argarr.includes("WHERE")) {
             newind = argarr.indexOf("WHERE");
             argind = newind + 1;
-            console.log(argarr[newind], argarr[argind])
+            
+            if (!argarr[argind]) {
+                return errormessage(`You didnt give any search criteria afer the \`WHERE\` keyword.`)
+            }
+            
+            let raw = argarr[newind]
+            let arg = argarr[argind]
+            let parsedarguments = arg.split("=")
+            console.log(parsedarguments)
+
+            switch(parsedarguments[0]) {
+                case "state":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "severity":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "repeating":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "title":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "content":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "subittedby":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "assigned":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                case "category":
+                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
+                break;
+                default:
+                    errormessage(`
+                    This is not a valid query selector. Run \`//help query\` for more information on how to use the query command.
+                    `)
+                break;
+            }
+
+
+            
+
+
+        
+
+
+
+
+
         }
 
     }
     
     
     
-    
-    
-    
-    
-    
-    const todoquery = async () => {
+    const wherequery = async (argarr, key, val) => {
 
-        const todos = await client.getusertodos(message.author.id)
+        let limit;
 
+        const lastarg = argarr[argarr.length - 1]
+        //console.log(lastarg)
+        const patt = /([1-9])\w+/g
+        const result = patt.test(lastarg)
+        //console.log(result)
+        
+
+        let obj = {
+            guildid: message.guild.id
+        }
+
+        obj[key] = val
+        console.log(limit)
+        todomodel.find(obj, (err, docs) => {
+            
+            if (err) {
+                errormessage(`Something went wrong when trying to query the database.`)
+            }
+
+            if (!docs) return returnerrormessage(`There was nothing found matching your search criteria.`);
+
+
+            if (result) {
+                limit = lastarg
+            } else {
+                limit = docs.length
+            }
+
+            if (docs.length <= 0) {
+                return errormessage(`There was nothing found matching your search criteria.`)
+            }
+
+            
+            
+            display(docs, limit)
+        }, { limit: limit })
+        
+    }
+
+    
+    
+
+    const display = async (TODOS, limit) => {
+        
         let arr = []
-        todos.forEach(todo => {
+        
+        for (let i = 0; i < limit; i++) {
+
+            let todo = TODOS[i]
+
             if (!todo.title) return;
+
             let obj = {}
 
-            todo.title ? obj.title = todo.title : "None";
+            todo.title ? obj.title = todo.title : "empty";
             todo.content ? obj.content = todo.content : obj.content = "empty";
             todo.attachlink ? obj.attachment = todo.attachlink : obj.attachment = "empty";
-            todo.category ? obj.category = todo.category : obj.category = "emtpy";
-            todo.processed ? obj.processed = todo.processed : obj.processed = "None";
+            todo.category ? obj.category = todo.category : obj.category = "empty";
+            todo.processed ? obj.processed = todo.processed : obj.processed = "empty";
             todo.state ? obj.state = todo.state : obj.state = "open";
+            obj.timestamp = todo.timestamp;
+        
             arr.push(obj)
-        })
 
-        //console.log(arr)
+        }
+
+        
+
+        /**
+         * Web:
+         * https://discord.com/channels/709541114633519177/710020770369110038/754594372791828521
+         *                              {  GUILDID  }      {  CHANNEL  }      { MSG ID }
+         * 
+         * Client:
+         * https://discordapp.com/channels/709541114633519177/710020973746716694/754719857001627740
+         * 
+         */
+
 
         const FieldsEmbed = new Pagination.FieldsEmbed()
             .setArray(arr)
@@ -77,24 +190,47 @@ exports.run = async (client, message, args, level) => {
             // Set your own customised emojis
             .setFunctionEmojis({
                 '🔄': (user, instance) => {
-                    const field = instance.embed.fields[0];
-                    console.log(instance.page)
-                    console.log(todos[instance.page])
-                    message.channel.send(client.todo(todos[instance.page - 1]));
+
+                    const dcbase = "https://discord.com/channels/"
+                    const URL = dcbase + message.guild.id + "/" + conf.todochannel + "/" + TODOS[instance.page - 1].todomsg
+
+                    message.channel.send(client.todo(TODOS[instance.page - 1]));
+                    message.channel.send(client.embed(`[Original Message](${URL})`))
+                    console.log(TODOS[instance.page - 1])
                 }
             })
             // Sets whether function emojis should be deployed after navigation emojis
             .setEmojisFunctionAfterNavigation(false);
 
         FieldsEmbed.embed
-            .setColor(0xFF00AE)
-            .setDescription('Test Description');
-
+            .setColor("BLUE")
+            // .setDescription('Test Description')
+            .setFooter(`Click the 🔄 reaction to repost the task that you are on right now.`);
         await FieldsEmbed.build();
 
         // Will not log until the instance finished awaiting user responses
         // (or techinically emitted either `expire` or `finish` event)
         console.log('done');
+
+
+
+
+
+    }
+
+
+    
+    
+    
+    const todoquery = async () => {
+
+        const todos = await client.getusertodos(message.author.id)
+
+        
+
+        //console.log(arr)
+
+        
 
 
     }
@@ -105,7 +241,7 @@ exports.run = async (client, message, args, level) => {
      */
 
     const suggestionquery = async () => {
-        let index = args.indexOf("SUGGESTIONS")
+        let index = args.indexOf("T")
         args.splice(index, 1);
         parser(args)
     }
@@ -142,7 +278,7 @@ exports.run = async (client, message, args, level) => {
      */
 
     args.includes("TODOS") ? todoquery() 
-        : args.includes("SUGGESTIONS") ? suggestionquery() 
+        : args.includes("T") ? suggestionquery() 
         : errormessage(`**This query is not supported at the moment.**\n\ 
         Supported query keywords are \`TODO\` and \`SUGGESTIONS\`. 
         Make sure the letters are all uppercase when trying again.

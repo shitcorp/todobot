@@ -46,6 +46,14 @@ module.exports = (client) => {
         }
     };
 
+    client.querytodos = (queryobj) => {
+        
+        return todomodel.find({queryobj} , (err, docs) => {
+            if (err) return console.error(err)
+            return docs;
+        })
+    }
+
     client.getusertodos = (user) => {
         return todomodel.find({ submittedby: user }, (err, docs) => {
             if (err) return console.error(err)
