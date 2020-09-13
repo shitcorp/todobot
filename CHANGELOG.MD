@@ -18,8 +18,15 @@ OR
 //todo title // category=someothercategory // [loop*]
 ```
 **optional*
+*Note: The loop flag has to always be passed in as the last argument of your command!*
 
 #### - Flags and persistent flags
+
+A word about flags and persistent flags. 
+
+Flags look like this `-someflag`. To find out what flags a command supports, run the command `//help {commandname}`. 
+
+**Its important that the flags are passed in before any arguments are passed in!**
 
 ## New Commands
 

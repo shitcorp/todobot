@@ -5,10 +5,11 @@ module.exports = async (client, message) => {
 
   if (message.author.bot) return;
 
+  if (message.channel.type === "dm") return;
   let Prefix;
   const msgdel = client.config.msgdelete
-  let settings = await client.getconfig(message.guild.id)
-  
+  let settings;
+  message.guild ? settings = await client.getconfig(message.guild.id) : null;
   console.log(message.member.hasPermission("MANAGE_GUILD"))
 
   settings ? Prefix = settings.prefix :

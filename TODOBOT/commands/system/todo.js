@@ -32,15 +32,25 @@ exports.run = async (client, message, args) => {
          */
         
         todoobj.title = message.persists[0]
+
+        if (message.persists.includes("loop")) {
+            todoobj.repeating = true;
+            message.persists.splice(message.persists.indexOf("loop"))
+        } else {
+            todoobj.repeating = false;
+        }
+
         const index = message.persists.findIndex(value => /^category=/i.test(value));
         if (index > -1) {
-            todoobj.category = message.persists[index].replace(/^category=/i, "")
-            message.persists[index] = null;
+            var cache = message.persists[index].replace(/^category=/i, "")
+            todoobj.category = cache;
+            message.persists[3] = cache;
+            message.persists[index] = "";
         }
         message.persists[1] ? todoobj.content = message.persists[1] : todoobj.content = null;
         message.persists[2] ? todoobj.attachlink = message.persists[2]: todoobj.attachlink = null;
         message.persists[3] ? todoobj.category = message.persists[3] : todoobj.category = null;
-        message.persists.includes("loop") ? todoobj.repeating = true : todoobj.repeating = false;
+        
         
         saverboi(todoobj);
         
@@ -51,6 +61,7 @@ exports.run = async (client, message, args) => {
         let chan = message.guild.channels.cache.get(guildconf.todochannel)
         if (!chan) return message.channel.send(client.error("There seems to be a problem with your todo channel. At least I couldnt find it. Check your settings with 'systemctl -s settings'"));
         let msg = await chan.send(client.todo(todoobj))
+        if (!msg) return message.channel.send(client.error("I wasnt able to post your todo. Please make sure I have the permission to read and write in your desired todo channel."))
         let sanitizedobjet = {
             _id: message.id,
             guildid: message.guild.id,
@@ -73,25 +84,41 @@ exports.run = async (client, message, args) => {
     // TODO: make function that asks questions and returns todo object
     
     message.persists[0] ? quicksave() 
-    : longsave()
+    : longsave(todoobj)
 
 
 
-    async function longsave () {
+    async function longsave (todoobj) {
         
-        const parsed = args.join(" ").split("//")
+        const parsed = args.join(" ").split(" // ")
+
+        //console.log(parsed)
 
         parsed[0] ? todoobj.title = parsed[0] : message.channel.send(client.error("You need to at least give a title for your task."))
+        
+        if (parsed.includes("loop")) {
+            todoobj.repeating = true;
+            parsed.splice(parsed.indexOf("loop"), 1);
+        } else {
+            todoobj.repeating = false;
+        }
+        
+        
         const index = parsed.findIndex(value => /^category=/i.test(value));
         if (index > -1) {
-            todoobj.category = parsed[index].replace(/^category=/i, "");
-            parsed[index] = null;
+            var cache = parsed[index].replace(/^category=/i, "");
+            parsed[index] = "";
+            todoobj.category = cache
+            parsed[3] = cache;
         }
+        
+       
+        
+       
         parsed[1] ? todoobj.content = parsed[1] : todoobj.content = null;
         parsed[2] ? todoobj.attachlink = parsed[2] : todoobj.attachlink = null;
         parsed[3] ? todoobj.category = parsed[3] : todoobj.category = null;
-        parsed.includes("loop") ? todoobj.repeating = true : todoobj.repeating = false;
-
+        //console.log(todoobj)
         saverboi(todoobj);
 
     }

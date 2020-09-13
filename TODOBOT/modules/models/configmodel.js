@@ -16,7 +16,9 @@ const configschema = new mongoose.Schema({
     bugs_enabled: Boolean,
     staffroles: Array,
     categories: Array,
-    tags: Map
+    tags: Map,
+    urldomain: Number,
+    urlengine: String
 })
 
 exports.configmodel = new mongoose.model("todoconfig", configschema)
