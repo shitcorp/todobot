@@ -24,7 +24,7 @@ exports.run = async (client, message, args, level) => {
         > ||${json.deletionToken}||
         `)).catch(e => {
             message.channel.send(client.error(`
-            I am unable to send you direct messages so heres your **deletion token**. Save is somewhere as it will be required when you want to delete the pasty again.
+            I am unable to send you direct messages so heres your **deletion token**. Save it as it will be required when you want to delete the pasty again.
             
             > **Token:** ||${json.deletionToken}||
             `))
