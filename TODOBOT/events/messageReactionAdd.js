@@ -4,6 +4,8 @@ const sql = new SQLite('./data/data.sqlite');
 
 module.exports = async (client, messageReaction, user) => {
 
+    return;
+
     if (messageReaction.message.channel.type === "dm") return
 
     if (messageReaction.partial) {

@@ -47,7 +47,7 @@ module.exports = (client) => {
     };
 
     client.getusertodos = (user) => {
-        return todomodel.find({ assigned: user }, (err, docs) => {
+        return todomodel.find({ submittedby: user }, (err, docs) => {
             if (err) return console.error(err)
             return docs;
         })

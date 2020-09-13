@@ -4,8 +4,8 @@
   "description": "Todo bot for mick, maybe going to make this somewhat advanced",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon TODOBOT/index.js",
-    "start": "node index.js"
+    "dev": "nodemon index.js",
+    "start": "nodemon index.js"
   },
   "author": "MeerBiene",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "date-fns": "^2.16.1",
     "dateformat": "^3.0.3",
     "delayed-stream": "^1.0.0",
+    "discord-paginationembed": "^2.1.0",
     "discord.js": "^12.3.1",
     "enmap": "^5.7.1",
     "fs": "0.0.1-security",

@@ -1,6 +1,25 @@
 ## General Additions
 
-> + Reoccuring Tasks (TODO)
+#### - Changed TODO Command:
+> The todo command now takes in the tasks title and description, as well as an Image/Media Link, followed by the category as the last argument. Pass them in prefixed as persistent flags like so: 
+```
+//todo ~title ~description ~link ~category [~loop*]
+
+OR
+
+//todo ~title ~category=somecoolcategory
+
+OR
+
+//todo this is a title // this is the content // category // [loop*]
+
+OR
+
+//todo title // category=someothercategory // [loop*]
+```
+**optional*
+
+#### - Flags and persistent flags
 
 ## New Commands
 

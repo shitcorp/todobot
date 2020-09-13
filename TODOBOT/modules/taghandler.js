@@ -4,6 +4,10 @@ module.exports = (client) => {
   client.taghandler = (message, tag) => {
 
 
+    
+
+
+
 
     const getJoinRank = (ID, guild) => { // Call it with the ID of the user and the guild
       if (!guild.member(ID)) return; // It will return undefined if the ID is not valid
@@ -22,7 +26,7 @@ module.exports = (client) => {
       //sconsole.log(tag.includes(key), key)
       if (tag.includes(key)) {
         
-          value(tag)
+          value(tag, key)
         
       } else {
         if (!donethestuff) {
@@ -42,8 +46,15 @@ module.exports = (client) => {
     }
 
 
-    const JOIN_POS = async (tag) => {
-      message.channel.send(tag.replace("<JOIN_POS>", getJoinRank(message.author.id, message.guild)))
+
+
+
+
+
+
+
+    const JOIN_POS = async () => {
+      return getJoinRank(message.author.id, message.guild)
     }
 
     const REPLY = async (tag) => {
@@ -52,7 +63,7 @@ module.exports = (client) => {
     }
 
     const MEMCOUNT = async (tag) => {
-      message.channel.send(tag.replace("<MEMCOUNT>", message.guild.memberCount))
+      return message.guild.memberCount
     }
 
     const PROCESSED = async (tag) => {
@@ -70,13 +81,37 @@ module.exports = (client) => {
 
 
 
-    new Map([
-      ['<JOIN_POS>', JOIN_POS],
-      ['<MEMCOUNT>', MEMCOUNT],
-      ['<PROCESSED>', PROCESSED],
-      ['<EMBED>', EMBED],
-      ['<REPLY>', REPLY]
-    ]).forEach(handler);
+    // new Map([
+    //   ['<JOIN_POS>', JOIN_POS],
+    //   ['<MEMCOUNT>', MEMCOUNT],
+    //   ['<PROCESSED>', PROCESSED],
+    //   ['<EMBED>', EMBED],
+    //   ['<REPLY>', REPLY]
+    // ]).forEach(handler);
+
+    const PLACEHOLDERS = {
+      "<JOIN_POS>": JOIN_POS,
+      "<MEMCOUNT>": MEMCOUNT
+    }
+
+
+    const newhandler = (tag) => {
+      var finaltag;
+      Object.entries(PLACEHOLDERS).forEach(async ([key, value]) => (tag = {
+        ...tag,
+        content: tag.replace(new RegExp(key, 'g'), await value())
+              
+      }))
+      return tag
+      
+    }
+    //console.log(tag)
+    let finaltag = newhandler(tag)
+    message.channel.send(finaltag)
+    console.log(finaltag)
+
+
+
 
 
 

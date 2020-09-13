@@ -61,6 +61,24 @@ module.exports = (client) => {
 
     }
 
+    client.todo = (todoobj) => {
+        console.log(todoobj.state)
+
+        
+
+        
+
+        let embed = new MessageEmbed()
+            .setDescription(`**${todoobj.title}**`)
+            .setColor("RED")
+            todoobj.content ? embed.addField("Content:", todoobj.content) : null;
+            todoobj.attachlink ? embed.addField("Attachements:", todoobj.attachlink) : null;
+            todoobj.category ? embed.addField("Category:", todoobj.category) : null;
+
+
+        return embed;
+    }
+
 
 
 
