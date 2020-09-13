@@ -1,12 +1,15 @@
 const ratecache = new Set()
 const fetch = require("node-fetch")
-const https = require('https');
 
 exports.run = async (client, message, args, level) => {
 
+    const engineerror = () => {
+        return message.channel.send(client.error(`
+            \`${message.flags[1]}\` does not seem to be a valid shortening engine. The only supported engined are: \`zws\` and \`mini\`. Run \`//help shorten\` for more information.
+            `))
+    }
 
-
-    const normal = require('../../data/normal_urls.json');
+    const normal = require('../../data/normal_urls.json'); // mini
     const zws = require('../../data/zws_urls.json');
 
 
@@ -14,89 +17,104 @@ exports.run = async (client, message, args, level) => {
     let fetchindex;
     let engine;
     guildconf.urldomain ? fetchindex = guildconf.urldomain : fetchindex = 1
-    guildconf.urlengine ? engine = guildconf.engine : engine = "normal"
+    guildconf.urlengine ? engine = guildconf.engine : engine = "zws"
 
-    console.log(zws[fetchindex].URL)
 
-    switch (engine) {
-        case "zws":
-            console.log(zws[fetchindex].URL)
-            fetcher(zws[fetchindex].URL, zws[fetchindex].baseURL)
-            break;
-        case "normal":
-            console.log(normal[fetchindex].URL)
-            fetcher(normal[fetchindex].URL, normal[fetchindex].baseURL)
-            break;
+    message.flags[0] ? fetchindex = message.flags[0] : null;
+    message.flags[1] ? engine = message.flags[1] : null;
+
+    if (typeof zws[fetchindex] === "undefined") {
+        return message.channel.send(client.error(`\`${fetchindex}\` does not seem to be a valid domain selector. Run \`//help shorten\` for more information.`));
+    }
+
+    if (typeof normal[fetchindex] === "undefined") {
+        return message.channel.send(client.error(`\`${fetchindex}\` does not seem to be a valid domain selector. Run \`//help shorten\` for more information.`));
+    }
+
+    async function handler() {
+        switch (engine) {
+            case "zws":
+                zwsfetch(zws[fetchindex].URL, zws[fetchindex].baseURL)
+                break;
+            case "mini":
+                minifetch(normal[fetchindex].URL, normal[fetchindex].baseURL)
+                break;
+            default:
+                engineerror()
+                break;
+        }
     }
 
 
-    async function fetcher(hostname, baseURL) {
 
-
-        const data = JSON.stringify({  });
-
-        const path = `/?url=${args[0]}`
-        
-        const options = {
-            protoco: 'https',
-            hostname,
-            path,
+    async function zwsfetch(host, baseURL) {
+        fetch(baseURL + `/?url=${args[0]}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
-        };
-        
-        
-        const req = https.request(options, (res) => {
-            let data = '';
-        
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-        
-            res.on('end', () => {
-                const json = JSON.parse(data)
-                console.log(engine)
-                switch(engine) {
-                    case "zws":
-
-                    break;
-                    case "mini":
-
-                    break;
-                }
-                message.channel.send(`Heres your shortened URL: ${baseURL}${json.zws}`)
-                
-            });
-
-            res.on('error', () => {
-                console.log("b")
+            },
+            body: JSON.stringify({
+                content: "content"
             })
-        
-        }).on("error", (err) => {
-            console.log("Error: ", err.message);
-        });
-        
-        req.write(data);
-        req.end();
-        
+        })
+            .then(res => res.json())
+            .then(json => {
+                let URL = baseURL + json.zws
+                message.channel.send(client.success(`
+            Heres your shortened link: ${URL}`))
+                console.log(json)
 
-
-
-
+            })
+            .catch(e => {
+                const bettererror = e.toString().substring(0, 35);
+                message.channel.send(client.error(`
+            Something went wrong while trying to shorten your link. Try again later of join the official support server (//support) and show me this error:
+            \`\`\`${bettererror}\`\`\`
+            `))
+            })
     }
 
+    async function minifetch(host, baseURL) {
+        const urlToShort = args[0]
+        fetch(baseURL + "/shorten/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                urlToShort
+            })
+        })
+            .then(res => res.json())
+            .then(json => {
+                let URL = json.url.replace("http", "https")
+                message.channel.send(client.success(`
+            Heres your shortened link: ${URL}`))
+            })
+            .catch(e => {
+                const bettererror = e.toString().substring(0, 35);
+                message.channel.send(client.error(`
+            Something went wrong while trying to shorten your link. Try again later of join the official support server (//support) and show me this error:
+            \`\`\`${bettererror}\`\`\`
+            `))
+            })
+    }
 
-    // if (ratecache.has(message.author.id)) {
-    //     return;
-    // } else {
-    //     fetcher()
-    //     ratecache.add(message.author.id)
-    //     setTimeout(() => {
-    //         ratecache.delete(message.author.id)
-    //     }, 5000)
-    // }
+    /**
+     * Ratelimiting is handled here.
+     */
+
+    if (ratecache.has(message.author.id)) {
+        return message.channel.send(client.error(`
+        You are being ratelimited. Ratelimit is set to 30 seconds.
+         `));
+    } else {
+        handler()
+        ratecache.add(message.author.id)
+        setTimeout(() => {
+            ratecache.delete(message.author.id)
+        }, 30000)
+    }
 
 
 
@@ -137,7 +155,8 @@ exports.help = {
     > 
     > __Examples:__
     > \`\`\` //shorten -2 -zws https://google.com => im.rickast.li/\`\`\`
-    > \`\`\`//shorten -1 -normal https://google.com => stlf.me/hSfuHeK\`\`\` 
+    > \`\`\`//shorten -1 -mini https://google.com => m.stlf.me/hSfuHeK\`\`\`
+    > \`\`\`//shorten -3 -mini https://google.com => m.todo-bot.xyz/hSfuHeK\`\`\` 
     
     `,
     usage: "shorten <URL>",

@@ -38,7 +38,7 @@ exports.run = async (client, message, args, level) => {
     .catch(e => {
         console.log(e)
         const bettererror = e.toString().substring(0, 35);
-        message.channel.send(client.error(`Something went wrong when trying to save your pasty. Try again later of join the official support server (//support) and show me this error:
+        message.channel.send(client.error(`Something went wrong while trying to save your pasty. Try again later of join the official support server (//support) and show me this error:
         \`\`\`${bettererror}\`\`\`
         `))
     })
