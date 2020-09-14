@@ -79,6 +79,10 @@ exports.run = async (client, message, args) => {
         };
         console.log(sanitizedobjet)
         await client.settodo(sanitizedobjet);
+        await msg.react("📌")
+        await message.channel.send(`
+        Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO
+        `)
     }
 
     // TODO: make function that asks questions and returns todo object
