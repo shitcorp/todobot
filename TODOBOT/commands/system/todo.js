@@ -83,6 +83,7 @@ exports.run = async (client, message, args) => {
         await message.channel.send(`
         Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO
         `)
+        //test
     }
 
     // TODO: make function that asks questions and returns todo object
