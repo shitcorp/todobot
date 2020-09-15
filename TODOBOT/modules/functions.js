@@ -2,6 +2,8 @@ const { MessageCollector } = require('discord.js');
 
 module.exports = (client) => { 
 
+
+
 client.loadCommand = (category, commandName) => {
     try {
       let name = category.toUpperCase()
@@ -10,6 +12,7 @@ client.loadCommand = (category, commandName) => {
       if (props.init) {
         props.init(client);
       }
+      props.help.category = category;
       client.commands.set(props.help.name, props);
       props.conf.aliases.forEach(alias => {
         client.aliases.set(alias, props.help.name);

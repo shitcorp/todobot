@@ -36,7 +36,7 @@ exports.conf = {
 
 exports.help = {
     name: "manual",
-    category: "System",
+    category: "Utility",
     description: "View the bots manual.",
     usage: "reminder -v => View all your current reminders. \n> reminder -c -1h Food! => Create a reminder in 1h from now.\n> reminder -rm -ID => Delete the reminder with the given ID.",
     flags: ['-v => View all your reminders.', '-c => Create a new reminder.', '-rm => Remove/delete the given reminder.']

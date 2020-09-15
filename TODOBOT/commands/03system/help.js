@@ -13,13 +13,14 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             let command = client.commands.get(args[0]);
             let detailembed = new MessageEmbed()
                 .addField(`**Command:**`, `> ${args[0]}`)
+                //.setTitle("TODO - Bot Wiki")
                 if (command.conf.aliases && command.conf.aliases.length > 0) {
                 detailembed.addField(`**Aliases:**`, `> ${command.conf.aliases}`)
                 }
+                detailembed.setThumbnail(client.user.avatarURL())
                 detailembed.addField(`**Description:**`, `> ${command.help.description}`)
                 detailembed.addField(`**Usage:**`, `> ${command.help.usage}`)
                 detailembed.setColor("#2C2F33")
-                detailembed.setFooter(`requested by ${message.author.username}#${message.author.discriminator}  -  this embed will kill itself in 1 minute.`, message.author.avatarURL)
                 if (command.help.flags) {
                     detailembed.addField(`**Flags:**`, `> ${command.help.flags.join('\n> ')}`)
                 };
@@ -45,6 +46,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         const commandNames = myCommands.keyArray();
         const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
         
+        const toProperCase = function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        };
+        
 
         let currentCategory = "";
         let arr = [];
@@ -54,12 +59,11 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             .setTitle(`${message.guild.me.displayName}  -  Command List \n`)
             .addField(`Read More`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ")
             .setColor("#2C2F33")
-	    .setFooter("If you see no commands in here you are lacking the role that is required to interact with this bot.")
         const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 : p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1);
         sorted.forEach( c => {
             const cat = c.help.category
             if (currentCategory !== cat) {
-                output += `\n __**${cat}:**__ \n`;
+                output += `\n __**${toProperCase(cat.slice(2, 45))}:**__ \n`;
                 currentCategory = cat;
             }
             output +=  " `" + `${c.help.name}` + "`" + `${" ".repeat(longest - c.help.name.length)} |`;

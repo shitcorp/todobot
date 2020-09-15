@@ -37,16 +37,16 @@ const init = async () => {
       });
     }
   
+    /**
+     * The foldernames where the commands are placed in will
+     *  be the categories they are shown in
+     */
     
-  
-    var categorys = [
-      'system'
-    ]
-  
-    categorys.forEach(c => {
-      load(c);
-    
+    let categories = await readdir('./commands');
+    categories.forEach(cat => {
+      load(cat)
     })
+ 
   
   
   
