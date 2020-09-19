@@ -1,24 +1,30 @@
 const ratecache = new Set()
 const fetch = require("node-fetch")
+const cooldown = 10000
 
 exports.run = async (client, message, args, level) => {
-
+    
+    const timeout = client.config.msgdelete
+    
+    if (message.deletable) message.delete({ timeout })
+   
     const engineerror = () => {
         return message.channel.send(client.error(`
             \`${message.flags[1]}\` does not seem to be a valid shortening engine. The only supported engined are: \`zws\` and \`mini\`. Run \`//help shorten\` for more information.
             `))
     }
 
+    // TODO: make a function for mega links
     const normal = require('../../data/normal_urls.json'); // mini
     const zws = require('../../data/zws_urls.json');
 
-
     const guildconf = await client.getconfig(message.guild.id)
+    
     let fetchindex;
     let engine;
+    
     guildconf.urldomain ? fetchindex = guildconf.urldomain : fetchindex = 1
     guildconf.urlengine ? engine = guildconf.engine : engine = "zws"
-
 
     message.flags[0] ? fetchindex = message.flags[0] : null;
     message.flags[1] ? engine = message.flags[1] : null;
@@ -34,10 +40,10 @@ exports.run = async (client, message, args, level) => {
     async function handler() {
         switch (engine) {
             case "zws":
-                zwsfetch(zws[fetchindex].URL, zws[fetchindex].baseURL)
+                zwsfetch(zws[fetchindex].baseURL)
                 break;
             case "mini":
-                minifetch(normal[fetchindex].URL, normal[fetchindex].baseURL)
+                minifetch(normal[fetchindex].baseURL)
                 break;
             default:
                 engineerror()
@@ -47,7 +53,7 @@ exports.run = async (client, message, args, level) => {
 
 
 
-    async function zwsfetch(host, baseURL) {
+    async function zwsfetch(baseURL) {
         fetch(baseURL + `/?url=${args[0]}`, {
             method: 'POST',
             headers: {
@@ -74,7 +80,7 @@ exports.run = async (client, message, args, level) => {
             })
     }
 
-    async function minifetch(host, baseURL) {
+    async function minifetch(baseURL) {
         const urlToShort = args[0]
         fetch(baseURL + "/shorten/", {
             method: 'POST',
@@ -100,20 +106,22 @@ exports.run = async (client, message, args, level) => {
             })
     }
 
+    
+
     /**
      * Ratelimiting is handled here.
      */
 
     if (ratecache.has(message.author.id)) {
         return message.channel.send(client.error(`
-        You are being ratelimited. Ratelimit is set to 30 seconds.
+        You are being ratelimited. Ratelimit is set to \`${cooldown / 1000}\` seconds.
          `));
     } else {
         handler()
         ratecache.add(message.author.id)
         setTimeout(() => {
             ratecache.delete(message.author.id)
-        }, 30000)
+        }, cooldown)
     }
 
 

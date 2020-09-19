@@ -79,7 +79,7 @@ client.permlevel = message => {
    * 
    */
 
-  client.invalidateCache = (_id) => {
+  client.invalidateCache = async (_id) => {
     client.cache.del(_id, (err) => {
       err ? client.logger.debug(err) :
         configmodel.findOne({ _id }, (err, doc) => {

@@ -6,3 +6,6 @@ data.sqlite-wal
 update.json
 
 *.log
+
+*.urls.json
+*.url.json
