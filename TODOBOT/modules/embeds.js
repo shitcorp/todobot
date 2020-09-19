@@ -80,6 +80,16 @@ module.exports = (client) => {
     }
 
 
+    client.reminder = (reminderobj) => {
+        let embed = new MessageEmbed()
+        .setTitle(`⚠️  Your Reminder!  ⚠️`)
+        .setDescription(`
+        \`\`\`${reminderobj.content}\`\`\`
+        `)
+        .setColor("YELLOW")
+        return embed
+    }
+
 
 
 }

@@ -1,11 +1,11 @@
 // TODO: replace moment with date-fns
 
-const { createWriteStream } = require('fs');
+const fs = require('fs');
 const chalk = require("chalk");
 const moment = require("moment");
 const { format } = require('date-fns');
-const { debug } = require("../config")
-const writer = createWriteStream("./logs/debug.log")
+const config = require("../config")
+//const writer = fs.createWriteStream("./logs/debug.log")
 
 exports.log = (content, type = "log") => {
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
@@ -20,10 +20,10 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
     }
     case "debug": {
-      if (debug) {
+      if (config.debug === "true") {  
         console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
-        return writer.write(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `)
       }
+      return fs.appendFileSync("./logs/debug.log", `${timestamp} ${content} `)
     }
     case "cmd": {
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);

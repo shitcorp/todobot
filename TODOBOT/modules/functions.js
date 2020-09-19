@@ -1,11 +1,12 @@
-const { MessageCollector } = require('discord.js');
-const { configmodel } = require("./models/configmodel");
+const { createMessageCollector } = require('discord.js'),
+  { configmodel } = require("./models/configmodel"),
+  { remindermodel } = require("./models/remindermodel");
 
-module.exports = (client) => { 
+module.exports = (client) => {
 
 
 
-client.loadCommand = (category, commandName) => {
+  client.loadCommand = (category, commandName) => {
     try {
       let name = category.toUpperCase()
       client.logger.log(`[${name}] Loading Command: ${commandName}`);
@@ -22,29 +23,29 @@ client.loadCommand = (category, commandName) => {
     } catch (e) {
       return `Unable to load command ${commandName}: ${e}`;
     }
-};
+  };
 
-client.discordlog = () => {
+  client.discordlog = () => {
 
 
     client.discordlog = (content, message, event) => {
-        if (client.config.debug !== "true") return
-          if (event) {
-            return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-          }
-    
-          return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-    
+      if (client.config.debug !== "true") return
+      if (event) {
+        return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
       }
 
+      return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
+
+    }
 
 
-};
+
+  };
 
 
 
 
-client.permlevel = message => {
+  client.permlevel = message => {
     let permlvl = 0;
 
     const permOrder = client.config.permLevels.slice(0).sort((p, c) => p.level < c.level ? 1 : -1);
@@ -61,12 +62,10 @@ client.permlevel = message => {
   };
 
 
-  client.awaitreply = (message, question, time = 60000) => {
-    message.channel.send(question)  
-    let collector = new MessageCollector(message.channel, m => m.author.id === message.author.id, {
-        time
-      });
-      return collector;
+  client.awaitreply = async (message, question, time = 60000) => {
+    message.channel.send(question)
+    const filter = m => m.author.id === message.author.id;
+    return collector = message.channel.createMessageCollector(filter, { limit: 1, time: 15000 });
   }
 
 
@@ -106,6 +105,20 @@ client.permlevel = message => {
     return map;
   };
 
+
+
+
+  client.remindercore = async () => {
+    for await (const doc of remindermodel.find()) {
+      if (doc.expires <= new Date()) {
+        client.guilds.cache.get(doc.guild.id).channels.cache.get(doc.guild.channel).send(`
+        ${client.users.cache.get(doc.user)},`, client.reminder(doc))
+        remindermodel.deleteOne({ _id: doc._id }, (err) => {
+          if (err) client.logger.debug(err)
+        })
+      }
+    }
+  };
 
 
 }

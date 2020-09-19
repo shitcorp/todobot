@@ -5,8 +5,10 @@ const reminderschema = new mongoose.Schema({
     user: String,
     systime: String,
     expires: String,
-    guild: String,
-    channel: String,
+    guild: {
+        id: String,
+        channel: String
+    },
     content: String
 })
 
