@@ -187,6 +187,12 @@ exports.run = async (client, message, args, level) => {
                     message.channel.send(client.todo(TODOS[instance.page - 1]));
                     message.channel.send(client.embed(`[Original Message](${URL})`))
                     console.log(TODOS[instance.page - 1])
+                },
+                "✏️": async (user, i) => {
+
+                },
+                "❌": async (user, i) => {
+
                 }
             })
             // Sets whether function emojis should be deployed after navigation emojis
@@ -194,8 +200,10 @@ exports.run = async (client, message, args, level) => {
 
         FieldsEmbed.embed
             .setColor("BLUE")
-            // .setDescription('Test Description')
-            .setFooter(`Click the 🔄 reaction to repost the task that you are on right now.`);
+            .setFooter(`Manual:
+✏️          Edit the TODO
+❌          Delete the TODO
+🗑️          Destroy this embed`);
         await FieldsEmbed.build();
 
         // Will not log until the instance finished awaiting user responses
