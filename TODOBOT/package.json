@@ -26,6 +26,7 @@
     "mongoose": "^5.10.5",
     "node-fetch": "^2.6.1",
     "node-html-to-image": "^3.0.1",
+    "redis": "^3.0.2",
     "showdown": "^1.9.1",
     "uniqid": "^5.2.0"
   }

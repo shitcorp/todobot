@@ -1,4 +1,6 @@
-const { MessageEmbed } =require('discord.js')
+const { MessageEmbed } =require('discord.js');
+
+
 exports.run = async (client, message, args, level) => {
 
     const { configmodel } = require('../../modules/models/configmodel')
@@ -8,11 +10,14 @@ exports.run = async (client, message, args, level) => {
     // Functions
 
     async function showsettings() {
-        const settings = await client.getconfig(message.guild.id)
-        console.log(settings)
-        message.channel.send(settings, {
+        let settings = await client.getconfig(message.guild.id)
+        console.log(Object.isSealed(settings))
+        settings["tags"] = "To view tags run the command //tags";
+        delete settings.__v
+        message.channel.send(JSON.stringify(settings), {
             code: "json"
         })    
+
     }
 
     function ischannel(message, args) {
@@ -29,11 +34,10 @@ exports.run = async (client, message, args, level) => {
     }
     function setPrefix() {
         if (!args[1]) return message.channel.send(client.error(`Please enter a new value.`))
-        .then(msg => {
-            msg.delete({ timeout: msgdel }).catch(error => {
-            })
-        })
-    client.dbupdateconfig(message, "prefix", `${args[1]}`);
+            .then(msg => { if (msg.deletable) msg.delete({ timeout: msgdel })})
+    let obj = {}
+    obj["prefix"] = `${args[1]}`;
+    client.updateconfig(message.guild.id, obj);
     message.channel.send(client.success(`Saved ⠀\`${args[1]}\`⠀ as your new prefix!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
     function settodochannel() {
@@ -65,7 +69,7 @@ exports.run = async (client, message, args, level) => {
                     showsettings();
                 break;
                 default:
-                    message.channel.send(client.warning("This command takes in 'settings' or 'tags' as arguments."))
+                    message.channel.send(client.warning("This flag takes in 'settings' or 'tags' as arguments."))
                 break;
             }
         break;
@@ -102,7 +106,7 @@ exports.run = async (client, message, args, level) => {
 exports.conf = {
     enabled: true,
     guildOnly: true,
-    aliases: ['sysctl'],
+    aliases: ['sysctl', "systemcontrol", "sys", "sysi"],
     permLevel: "ADMIN"
 };
 

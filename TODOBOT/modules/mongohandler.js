@@ -2,10 +2,14 @@ const mongoose = require('mongoose'),
 { MONGO_CONNECTION } = require('../config'),
 { configmodel } = require('./models/configmodel'),
 { todomodel } = require('./models/todomodel'),
-{ remindermodel } = require('./models/remindermodel');
+{ remindermodel } = require('./models/remindermodel'),
+{ promisify } = require("util");
+
 
 module.exports = (client) => {
-    
+
+    const getAsync = promisify(client.cache.get).bind(client.cache)
+
     client.dbinit = async () => {
         mongoose.connect(MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -15,12 +19,68 @@ module.exports = (client) => {
     
         db.once("open", function() {
             client.logger.mongo("Database connection was established.")
-        })
+            client.guilds.cache.forEach(async guild => {
+                const _id = guild.id
+                const inCache = await getAsync(_id)
+                
+                if (inCache === null) {
+                    // pull config from db and set to cache
+                    configmodel.findOne({ _id }, (err, doc) => {
+                        if (err) return;
+                        if (typeof doc === "object") {
+                            client.cache.set(_id, JSON.stringify(doc), (err) => {
+                                if (err) client.logger.debug(err)
+                            })
+                        }
+                    })
+                } else {
+                    // delete from cache and pull from db then set to cache
+                    client.cache.del(_id, (err) => {
+                        err ? client.logger.debug(err) :
+                            configmodel.findOne({ _id }, (err, doc) => {    
+                                if (err) console.log(err)
+                                if (typeof doc === "object") {
+                                    client.cache.set(_id, JSON.stringify(doc), (err) => {
+                                        if (err) client.logger.debug(err)
+                                    })
+                                }
+                            })
+                    })
+                }
+
+
+                //console.log("inCache:", inCache)
+
+
+              })
+        });
     };
 
+    /**
+     * Setconfig 
+     * @param {Object} configobj Configobject
+     * Takes in the config object and sets it
+     * to the db.
+     * 
+     * Invalidates cached version of configobj
+     * when called
+     */
 
     client.setconfig = (configobj) => {
-        let newconf = new configmodel(configobj)
+        const newconf = new configmodel(configobj)
+        const cache = getAsync(configobj.guildid)
+
+        if (cache !== null) {
+            client.cache.del(configobj.guildid, (err) => {
+                if (!err) {
+                    client.cache.set(configobj.guildid, JSON.stringify(configobj), (err) => {
+                        if (err) client.logger.debug(err)
+                    })
+                }
+            })
+        }
+
+
         return newconf.save(function(err, doc) {
             if (err) {
                 client.logger.debug(err)
@@ -31,17 +91,48 @@ module.exports = (client) => {
     };
 
 
+    /**
+     * 
+     * @param {String} _id Guildid
+     * 
+     * Gets and returns the guildconfig
+     * by id. It checks the redis cache
+     * first before querying mongodb.
+     */
+    
+    client.getconfig = async (_id) => {
+        
+        const cache = await getAsync(_id)
+        
+        if (cache !== null) {
+            return JSON.parse(cache) 
+        } else {
+            configmodel.findOne({ _id }, (err, doc) => {
+                if (err) return client.logger.debug(err)
+                return doc;
+            })
+        }
 
-    client.getconfig = (_id) => {
-        return configmodel.findOne({ _id }, (err, doc) => {
-            if (err) return console.error(err)
-            return doc;
+    };
+
+
+    /**
+     * 
+     * @param {String} _id 
+     * @param {Object} configobj 
+     */
+
+    client.updateconfig = async (_id, configobj) => {
+        configmodel.updateOne({ _id }, configobj, (err, affected, resp) => {
+            if (err) client.logger.debug(err)
+            client.invalidateCache(_id)
         })
     };
 
+
     client.getguildtodos = (guildid) => {
         return todomodel.find({guildid}), (err, doc) => {
-            if (err) return console.error(err);
+            if (err) return client.logger.debug(err)
             return doc;
         }
     };
@@ -49,21 +140,21 @@ module.exports = (client) => {
     client.querytodos = (queryobj) => {
         
         return todomodel.find({queryobj} , (err, docs) => {
-            if (err) return console.error(err)
+            if (err) return client.logger.debug(err)
             return docs;
         })
     }
 
     client.getusertodos = (user) => {
         return todomodel.find({ submittedby: user }, (err, docs) => {
-            if (err) return console.error(err)
+            if (err) return client.logger.debug(err)
             return docs;
         })
     };
 
     client.getonetodo = (_id) => {
         return todomodel.findOne({ _id }, (err, doc) => {
-            if (err) return console.error(err);
+            if (err) return client.logger.debug(err)
             return doc;
         })
     };
@@ -71,20 +162,20 @@ module.exports = (client) => {
     client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
         return newtodo.save((err, doc) => {
-            if (err) console.error(err);
+            if (err) client.logger.debug(err)
         })
     };
 
     client.setreminder = (reminderobj) => {
         let newreminder = new remindermodel(reminderobj);
         return newreminder.save((err, doc) => {
-            if (err) console.error(err)
+            if (err) client.logger.debug(err)
         })
     };
 
     client.getreminderbyuser = (user) => {
         return remindermodel.find({ user }, (err, docs) => {
-            if (err) console.error(err)
+            if (err) client.logger.debug(err)
             return docs;
         })
     };

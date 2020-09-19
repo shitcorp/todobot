@@ -1,4 +1,5 @@
 const { MessageCollector } = require('discord.js');
+const { configmodel } = require("./models/configmodel");
 
 module.exports = (client) => { 
 
@@ -67,6 +68,43 @@ client.permlevel = message => {
       });
       return collector;
   }
+
+
+  /**
+   * 
+   * @param {String} _id Guildid
+   * 
+   * Invalideates the cached object
+   * by id and pulls it back from the database
+   * 
+   */
+
+  client.invalidateCache = (_id) => {
+    client.cache.del(_id, (err) => {
+      err ? client.logger.debug(err) :
+        configmodel.findOne({ _id }, (err, doc) => {
+          err ? client.logger.debug(err) :
+            client.cache.set(_id, JSON.stringify(doc))
+        })
+
+    })
+  };
+
+
+
+  /**
+   * Client.MapBuilder
+   * @param {Object} obj 
+   * 
+   * Takes in an object and returns a map.
+   */
+  client.mapBuilder = async (obj) => {
+    let map = new Map();
+    Object.keys(obj).forEach(key => {
+      map.set(key, obj[key]);
+    });
+    return map;
+  };
 
 
 

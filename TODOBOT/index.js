@@ -2,12 +2,35 @@ const Discord = require("discord.js");
 const { promisify } = require("util");
 const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap");
-const chalk = require("chalk")
+const chalk = require("chalk");
+const redis = require("redis");
 
 
 const client = new Discord.Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 });
+
+const rclient = redis.createClient({
+  host: "127.0.0.1",
+  port: 6379
+})
+
+/**
+ * Handle caching and redis client here
+ */
+
+
+
+  client.cache = rclient;
+
+
+  client.cache.on("ready", () => {
+    console.log(`
+    Redis client is ready.
+    `)
+  })
+
+
 
 client.config = require("./config.js");
 
@@ -24,6 +47,11 @@ client.aliases = new Enmap();
 
 
 const init = async () => {
+
+
+  
+
+
   
     async function load(category) {
       let name = category.toUpperCase()

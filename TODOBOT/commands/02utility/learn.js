@@ -20,7 +20,8 @@ configmodel.find({ _id: message.guild.id }).then(res => {
     res[0].tags.set(tag, desc)
     configmodel.updateOne({ _id: message.guild.id }, res[0], function(err, affected, resp) {
         err ? console.error(err) :
-            message.channel.send(client.success(`Saved the tag \`${tag}\` with the description \`${desc}\` for you.`));
+            message.channel.send(client.success(`Saved the tag \`${tag}\` with the description \`${desc}\` for you.`))
+            client.invalidateCache(message.guild.id);
     })
   })
 };

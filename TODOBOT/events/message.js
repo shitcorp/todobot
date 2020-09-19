@@ -2,47 +2,58 @@ const cmdRecently = new Set();
 
 
 module.exports = async (client, message) => {
+  
+  const timeout = client.config.msgdelete
 
   if (message.author.bot) return;
-
   if (message.channel.type === "dm") return;
+  
   let Prefix;
-  const msgdel = client.config.msgdelete
   let settings;
+
   message.guild ? settings = await client.getconfig(message.guild.id) : null;
+  
   console.log(message.member.hasPermission("MANAGE_GUILD"))
 
   settings ? Prefix = settings.prefix :
     Prefix = "//";
-  
-
 
 
   const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
   if (message.content.match(prefixMention)) {
     return message.reply(client.embed(`My prefix on this guild is ${Prefix}`))
-      .then(msg => { msg.delete(msgdel).catch(error => { }) });
+      .then(msg => { if (msg.deleteable) msg.delete({ timeout }) })
   }
 
 
   if (message.content.indexOf(Prefix) !== 0) return;
 
- 
+
 
   const args = message.content.slice(Prefix.length).trim().split(/ +/g);
 
   const command = args.shift().toLowerCase();
 
-
-
-  const { configmodel } = require('../modules/models/configmodel')
-
-  configmodel.findOne({ _id: message.guild.id }).then(doc => {
-    if (!doc) return;
-    let check = doc.tags.get(command); check ? client.taghandler(message, check) : console.log("");
-  })
+  
+  /**
+   *  Begin Taghandler
+   */
+  
+  // convert settings.tag object into map
+  const tags = new Map();
+  Object.keys(settings.tags).forEach(key => {
+    tags.set(key, settings.tags[key]);
+  });
 
   
+  const check = tags.get(command); 
+  check ? client.taghandler(message, check) : null;
+
+
+  /**
+   *  End Taghandler
+   */
+
 
 
   if (message.guild && !message.member) await message.guild.fetchMember(message.author);
@@ -67,12 +78,7 @@ module.exports = async (client, message) => {
     return message.channel.send(client.warning(`You do not have permission to use this command.
     > Your permission level is **${client.config.permLevels.find(l => l.level === level).name}**
     > This command requires **${cmd.conf.permLevel}**`)).then(msg => {
-      message.delete(msgdel).catch(error => {
-
-      })
-      msg.delete(msgdel).catch(error => {
-
-      })
+      if (msg.deletable) msg.delete({ timeout })
     })
 
   }
@@ -93,10 +99,7 @@ module.exports = async (client, message) => {
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {
     return message.reply(client.warning(`Please wait  \`${client.config.cooldown / 1000}\`  seconds before doing this command again!`)).then(msg => {
-      msg.delete(msgdel).catch(error => {
-
-      })
-      message.delete(msgdel).catch(error => { });
+     if (msg.deletable) msg.delete({ timeout })
     })
   } else {
     cmdRecently.add(message.author.id)
