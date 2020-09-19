@@ -1,6 +1,6 @@
 /**
- * IDEA: use thisfor server owners to let ppls ubmit bugs,
- * then implement issuetracker shadboard thingy
+ * IDEA: use thisfor server owners to let ppl submit bugs,
+ * then implement issuetracker dashboard thingy
  * 
  *  Important: make it so only users with staff role
  *  can be assigned

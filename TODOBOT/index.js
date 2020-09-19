@@ -15,31 +15,33 @@ const rclient = redis.createClient({
   port: 6379
 })
 
-/**
- * Handle caching and redis client here
- */
-
-
-
-  client.cache = rclient;
-
-
-  client.cache.on("ready", () => {
-    console.log(`
-    Redis client is ready.
-    `)
-  })
-
-
 
 client.config = require("./config.js");
-
 client.logger = require("./modules/Logger");
+client.cache = rclient;
 
 require("./modules/mongohandler.js")(client);
 require("./modules/taghandler.js")(client);
 require("./modules/functions.js")(client);
 require("./modules/embeds.js")(client);
+
+
+
+/**
+ * Handle caching and redis client here
+ */
+
+  client.cache.on("error", (err) => {
+    client.logger.debug(err)
+  })
+
+  client.cache.on("ready", () => {
+    client.logger.ready(`Redis client is ready.`)
+  })
+
+
+
+
 
 
 client.commands = new Enmap();

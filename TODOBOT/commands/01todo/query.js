@@ -71,16 +71,6 @@ exports.run = async (client, message, args, level) => {
                 break;
             }
 
-
-            
-
-
-        
-
-
-
-
-
         }
 
     }
@@ -193,7 +183,7 @@ exports.run = async (client, message, args, level) => {
 
                     const dcbase = "https://discord.com/channels/"
                     const URL = dcbase + message.guild.id + "/" + conf.todochannel + "/" + TODOS[instance.page - 1].todomsg
-
+                    // TODO: delete reposted message after a while
                     message.channel.send(client.todo(TODOS[instance.page - 1]));
                     message.channel.send(client.embed(`[Original Message](${URL})`))
                     console.log(TODOS[instance.page - 1])

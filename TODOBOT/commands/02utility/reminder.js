@@ -1,4 +1,5 @@
 const { formatDistance, formatDistanceToNow } = require('date-fns');
+const Pagination = require('discord-paginationembed');
 
 exports.run = async (client, message, args, level) => {
 
@@ -27,29 +28,84 @@ exports.run = async (client, message, args, level) => {
     }
 
     // Functions
+    // TODO: delete reminders when expired
     // TODO: add mentioning users for admins
     async function reminderviewer() {
-        remindermodel.find({ user: message.author.id })
-        .limit(25)
-        .sort("systime");
+        
         let cache = [];
-        let output = 0;
         for await (const doc of remindermodel.find({ user: message.author.id })) {
-            //console.log(doc); // Prints documents one at a time
-            output++
+            console.log(doc); // Prints documents one at a time
             cache.push(doc)
         }
-        let cursor = 0;
-        let em = new MessageEmbed()
-        .setAuthor(`${message.author.username}'s Reminders [${output}]`, message.author.avatarURL)
-        .setFooter(`[${cursor+1}/${output}]`)
-        console.log(output, cache[0])
-        if (cache[0]) {
-            const test = parseISO(cache[cursor].expires)
-            em.addField(`${cursor+1})  ID: ${cache[cursor]._id}`, `Content: \n> ${cache[cursor].content} \n:clock10: [${test}]`)
-        }
-        message.channel.send(em)
+
+        newviewer(cache)
+
     }
+
+
+
+
+    const newviewer = async (arr) => {
+
+
+        const FieldsEmbed = new Pagination.FieldsEmbed()
+            .setArray(arr)
+            .setAuthorizedUsers([message.author.id])
+            .setChannel(message.channel)
+            .setElementsPerPage(1)
+            // Initial page on deploy
+            .setPage(1)
+            .setPageIndicator(true)
+            .formatField('Submitted', i => `\`\`\`${formatDistanceToNow(parseInt(i.systime))} ago.\`\`\``, false)
+            .formatField("Expires", i => `\`\`\`${formatDistanceToNow(parseInt(i.expires))}.\`\`\``, false)
+            .formatField('Content', i => `> ${i.content}`, false)
+            
+            // Deletes the embed upon awaiting timeout
+            .setDeleteOnTimeout(true)
+            // Disable built-in navigation emojis, in this case: 🗑 (Delete Embed)
+            //.setDisabledNavigationEmojis(['delete'])
+            // Set your own customised emojis
+            .setFunctionEmojis({
+                // '🔄': (user, instance) => {
+
+                //     const dcbase = "https://discord.com/channels/"
+                //     const URL = dcbase + message.guild.id + "/" + conf.todochannel + "/" + TODOS[instance.page - 1].todomsg
+                //     // TODO: delete reposted message after a while
+                //     message.channel.send(client.todo(TODOS[instance.page - 1]));
+                //     message.channel.send(client.embed(`[Original Message](${URL})`))
+                //     console.log(TODOS[instance.page - 1])
+                // },
+                "✏️": (user, i) => {
+                    // edit the remider on the current page
+                },
+                "❌": (user, i) => {
+                    // Delete the reminder on the current page
+
+                }
+            })
+            // Sets whether function emojis should be deployed after navigation emojis
+            .setEmojisFunctionAfterNavigation(false);
+
+        FieldsEmbed.embed
+            .setColor("BLUE")
+            // .setDescription('Test Description')
+            .setFooter(`Manual:
+✏️          Edit the reminder
+❌          Delete the reminder
+🗑️          Destroy this embed`);
+        await FieldsEmbed.build();
+
+        // Will not log until the instance finished awaiting user responses
+        // (or techinically emitted either `expire` or `finish` event)
+        console.log('done');
+
+
+
+    }
+
+
+
+
 
 
     async function remindercreator() {
@@ -98,7 +154,7 @@ exports.conf = {
     enabled: true,
     guildOnly: true,
     party: false,
-    aliases: [],
+    aliases: ["r"],
     permLevel: "STAFF"
 };
 
