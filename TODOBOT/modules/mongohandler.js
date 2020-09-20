@@ -150,6 +150,13 @@ module.exports = (client) => {
         })
     };
 
+    client.getprocessedtodos = (user) => {
+        return todomodel.find({ assigned: user }, (err, docs) => {
+            if (err) return client.logger.debug(err)
+            return docs;
+        })
+    }
+
     client.getonetodo = (_id) => {
         return todomodel.findOne({ _id }, (err, doc) => {
             if (err) return client.logger.debug(err)

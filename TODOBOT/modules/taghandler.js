@@ -1,13 +1,7 @@
 const { differenceInCalendarQuarters } = require("date-fns");
 
 module.exports = (client) => {
-  client.taghandler = (message, tag) => {
-
-
-    
-
-
-
+  client.taghandler = async (message, tag) => {
 
     const getJoinRank = (ID, guild) => { // Call it with the ID of the user and the guild
       if (!guild.member(ID)) return; // It will return undefined if the ID is not valid
@@ -20,125 +14,88 @@ module.exports = (client) => {
       }
     }
 
-    var donethestuff;
-    
-    const handler = (value, key, map) => {
-      //sconsole.log(tag.includes(key), key)
-      if (tag.includes(key)) {
-        
-          value(tag, key)
-        
-      } else {
-        if (!donethestuff) {
-          donethestuff = true;
-          send(tag)
-        }
-        
-      } 
-      
-    }
-
-    const send = async (tag) => { 
-      // if (!donethestuff) {
-      //   donethestuff = true;
-         message.channel.send(tag)
-      // }
-    }
-
-
-
-
-
-
-
-
-
     const JOIN_POS = async () => {
       return getJoinRank(message.author.id, message.guild)
     }
 
-    const REPLY = async (tag) => {
-      message.mentions.users.first() ? message.channel.send(tag.replace("<REPLY>", message.mentions.users.first())) :
-        message.channel.send(tag.replace("<REPLY>", ""))
-    }
-
-    const MEMCOUNT = async (tag) => {
+    const MEMCOUNT = async () => {
       return message.guild.memberCount
     }
 
-    const PROCESSED = async (tag) => {
-      const test = await client.getusertodos(message.author.id)
-      console.log(test)
+    const PROCESSED = async () => {
+      const howMany = await client.getprocessedtodos(message.author.id)
+      return howMany.length
     }
 
-    const EMBED = (tag) => {
-      const toparse = tag.split(" ")
-      const color = toparse[toparse.indexOf("</COLOR>") - toparse.indexOf("<COLOR>")]
-      toparse.splice(toparse.indexOf("</COLOR>") - toparse.indexOf("<COLOR>"), 1)
-      tag = toparse.join(" ")
-      message.channel.send(client.coloredEmbed(tag.replace("<EMBED>", "").replace("<COLOR>", "").replace("</COLOR>", ""), color))
+    const SUBMITTED = async () => {
+      const submitted = await client.getusertodos(message.author.id)
+      return submitted.length
     }
 
 
-
-    // new Map([
-    //   ['<JOIN_POS>', JOIN_POS],
-    //   ['<MEMCOUNT>', MEMCOUNT],
-    //   ['<PROCESSED>', PROCESSED],
-    //   ['<EMBED>', EMBED],
-    //   ['<REPLY>', REPLY]
-    // ]).forEach(handler);
-
+    
     const PLACEHOLDERS = {
       "<JOIN_POS>": JOIN_POS,
-      "<MEMCOUNT>": MEMCOUNT
+      "<MEMCOUNT>": MEMCOUNT,
+      "<PROCESSED>": PROCESSED,
+      "<SUBMITTED>": SUBMITTED
     }
 
 
-    const newhandler = (tag) => {
-      var finaltag;
-      Object.entries(PLACEHOLDERS).forEach(async ([key, value]) => (tag = {
-        ...tag,
-        content: tag.replace(new RegExp(key, 'g'), await value())
-              
-      }))
-      return tag
-      
+    const handler = async (tag) => {
+      for (let key in PLACEHOLDERS) {
+        let cache = await PLACEHOLDERS[key]()
+        tag = await tag.replace(new RegExp(key, "g"), cache)
+      }
+      return tag;
     }
-    //console.log(tag)
-    let finaltag = newhandler(tag)
-    message.channel.send(finaltag)
-    console.log(finaltag)
+
+    const embedhandler = async (tag) => {
+      let cont = tag.replace("<EMBED>", "")
+      let obj = {}
+
+      if (tag.includes("<COLOR>")) {
+        let temp = cont.split(" ")
+        let index = temp.indexOf("<COLOR>")
+        let endindex = temp.indexOf("</COLOR>")
+        obj.color = temp[endindex -index]
+        temp.splice(index, 3)
+        cont = temp.join(" ")
+      }
+
+      if (tag.includes("<IMG>")) {
+        let temp = cont.split(" ")
+        let index = temp.indexOf("<IMG>")
+        let endindex = temp.indexOf("</IMG>")
+        obj.img = temp[endindex -index]
+        temp.splice(index, 3)
+        cont = temp.join(" ")
+      }
+
+      if (tag.includes("<THUMB>")) {
+        let temp = cont.split(" ")
+        let index = temp.indexOf("<THUMB>")
+        let endindex = temp.indexOf("</THUMB>")
+        obj.thumb = temp[endindex -index]
+        temp.splice(index, 3)
+        cont = temp.join(" ")
+      }
+
+      let parsed = await handler(cont)
+      message.channel.send(client.embed(parsed, obj))
+    }
 
 
 
+    /**
+     * Real taghandling happens down here.
+     * Basically just seperate between the tags
+     * that include <EMBED> or some other function
+     * keywords that are no variables
+     */
+    tag.includes("<EMBED>") || tag.includes("</EMBED>") ? embedhandler(tag) 
+      : message.channel.send(await handler(tag))
 
 
-
-
-
-
-
-    // if (tag.includes("%%SENDDM%%") && message.mentions.users.first()) {
-    //   try {
-    //     message.mentions.users.first().send(client.embed(tag.replace("%%SENDDM%%", ""))).catch(e => { message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete({ timeout: 60000 }).catch(console.error) }) })
-    //   } catch (e) {
-    //     message.channel.send(client.error(`I couldnt send ${message.mentions.users.first()} a direct message.`)).then(msg => { msg.delete(60000).catch(console.error) })
-    //   }
-    // } else if (tag.includes("%%REPLY%%")) {
-    //   if (message.mentions.users.first()) {
-    //     message.channel.send(message.mentions.users.first(), client.embed(tag.replace("%%REPLY%%", "")))
-    //   } else {
-    //     message.channel.send(message.author, client.embed(tag.replace("%%REPLY%%", "")))
-    //   }
-    // } else if (tag.includes("<MEMCOUNT>")) {
-
-    //   message.channel.send(tag.replace("<MEMCOUNT>", message.guild.memberCount))
-
-    // } else if (tag.includes("<JOIN_POS>")) {
-    //   message.channel.send(tag.replace("<JOIN_POS>", getJoinRank(message.author.id, message.guild)))
-    // } else {
-    //   message.channel.send(client.embed(tag))
-    // }
   };
 };

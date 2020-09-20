@@ -65,12 +65,22 @@ module.exports = async (client, messageReaction, user) => {
                 arse.push(todoobj.assigned[key])
             })
             if (arse.includes(userinio) == true) {
+                if (todoobj.loop === true) {
+                    todoobj.state = "open";
+                    await todomodel.updateOne({ _id: todoobj._id }, { state: "open" })
+                    messageReaction.message.edit(client.todo(todoobj)).then(async (msg) => {
+                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
+                        await msg.react("✏️")
+                        await msg.react("📌")
+                    })
+                } else {
                 todoobj.state = "closed";
                 await todomodel.updateOne({ _id: todoobj._id }, { state: "closed" })
                 messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                     await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
                     await messageReaction.message.react("⬇️")
-                })
+                    })
+                }
             } else await client.clearReactions(messageReaction.message, userinio)
             break;
         case "➕":
@@ -217,7 +227,6 @@ module.exports = async (client, messageReaction, user) => {
         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
         await messageReaction.message.react("⬇️")
     }
-
 
 
 };

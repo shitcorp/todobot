@@ -15,10 +15,13 @@ module.exports = (client) => {
 
 
 
-    client.embed = (desc) => {
+    client.embed = (desc, {color, img, thumb}) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
             .setColor("#2C2F33")
+        if (color) embed.setColor(color)
+        if (img && img.startsWith("https://cdn.discordapp.com/attachments/") || img && img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
+        if (thumb && thumb.startsWith("https://cdn.discordapp.com/attachments/") || thumb && thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)
         return embed;
 
     }

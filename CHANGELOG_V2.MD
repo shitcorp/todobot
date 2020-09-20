@@ -80,9 +80,9 @@ The following placeholders are available:
 ```diff
 + <MEMCOUNT> => Will be rpelaced with the membercount of the current guild
 + <JOIN_POS> => Will be replaced by the join position of the message author
-+ <REPLY> => Will reply to the mentioned user
-+ <EMBED> => Will generate an embed with your tag message. Optional Parameters are <COLOR> BLUE </COLOR> (make sure to include a space after the color tags)
-+ <PROCESSED> => Will be replaced by the amount of processed tasks of the message author
++ <EMBED> => Will generate an embed with your tag message. Optional Parameters are <COLOR> BLUE </COLOR>, (make sure to include a space after the color tags) <IMG> img.todo-bot.xyz/bliDnJn </IMG>, <THUMB> img.todo-bot.xyz/bZLhbHl </THUMB>
++ <PROCESSED> => Will be replaced with the amount of processed tasks by the message author
++ <SUBMITTED> => Will be replaced with the amount of submitted tasks by the message author
 ```
 
 # Manual
