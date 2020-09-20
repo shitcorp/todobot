@@ -92,8 +92,9 @@ module.exports = (client) => {
 
 
   /**
-   * Client.MapBuilder
+   * Client.mapBuilder
    * @param {Object} obj 
+   * @returns {Map} map
    * 
    * Takes in an object and returns a map.
    */
@@ -108,17 +109,47 @@ module.exports = (client) => {
 
 
 
-  client.remindercore = async () => {
+
+
+  /**
+   * Client.reminderjob
+   * 
+   * Checks all reminders from the database
+   * periodically and reminds the user(s)
+   * when expired. If the reminder is a 
+   * repeating reminder, the reminder is 
+   * not deleted from the database, it will
+   * be updated with the new expires timestamp
+   */
+
+  client.reminderjob = async () => {
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
-        client.guilds.cache.get(doc.guild.id).channels.cache.get(doc.guild.channel).send(`
-        ${client.users.cache.get(doc.user)},`, client.reminder(doc))
-        remindermodel.deleteOne({ _id: doc._id }, (err) => {
-          if (err) client.logger.debug(err)
-        })
-      }
-    }
+        // mention the user that submitted the reminder
+        let output = `${client.users.cache.get(doc.user)}`
+        // if theres users to mention, iterate over the users mentions array and mention them as well
+        if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.cache.get(user)}`)
+        // if theres roles to mention, iterate ove the roles mentions array and mention them
+        if (doc.mentions.roles.length > 0) doc.mentions.roles.forEach(role => output += `, <@&${role}>`)
+        // tryto get the guild where the reminder was created, then the channel, then send the reminder message in that channel
+        try {
+          client.guilds.cache.get(doc.guild.id).channels.cache.get(doc.guild.channel).send(output, client.reminder(doc))
+        // if the message cant be sent, or the guild cant be fetched or theres some other 
+        // error, we have to catch the error and delete the reminder(doc) from the database
+        } catch(e) {
+          client.logger.debug(e.toString())
+          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+        }
+        // if the reminderproperty "loop" is set to false delete the reminder
+        doc.loop === false ? remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+          // else update the reminder in the database with the new expires timestamp
+          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
+      };
+    };
   };
 
 
-}
+
+
+
+};

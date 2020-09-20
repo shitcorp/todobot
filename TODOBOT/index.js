@@ -102,13 +102,13 @@ const init = async () => {
 
 
 
-    
+
 
     client.login(client.config.token);
 
     // start the reminder cron job
     job.start()
-    job.addCallback(client.remindercore())
+    job.addCallback(() => { client.reminderjob() })
   
   
   

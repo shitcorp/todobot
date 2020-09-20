@@ -24,14 +24,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
                 if (command.help.flags) {
                     detailembed.addField(`**Flags:**`, `> ${command.help.flags.join('\n> ')}`)
                 };
-                message.channel.send(detailembed).then(msg => {
-                    msg.delete({ timeout: 60000 }).catch(console.error());
-                });
+                message.channel.send(detailembed)
         } else {
             message.channel.send(client.warning(`I'm sorry but it seems as if there is no such command named "${args[0]}"`)).then(msg => {
-                setTimeout(function () {
-                    msg.delete().catch(error => {})
-                }, 3000)
+                if (msg.deletable) msg.delete({ timeout: 10000 })
             })
         }
     } else if (!args[0]) return getAll(client, message, args, level)

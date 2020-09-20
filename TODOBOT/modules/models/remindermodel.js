@@ -5,11 +5,16 @@ const reminderschema = new mongoose.Schema({
     user: String,
     systime: String,
     expires: String,
+    content: String,
+    loop: Boolean,
     guild: {
         id: String,
         channel: String
     },
-    content: String
+    mentions: {
+        users: Array,
+        roles: Array
+    }
 })
 
 exports.remindermodel = new mongoose.model("reminders", reminderschema)

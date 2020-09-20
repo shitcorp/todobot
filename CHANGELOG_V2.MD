@@ -97,9 +97,64 @@ will show you how the manual command is used
 
 ## Remindersystem
 
+### Overview:
+
+In V2 I introduced reminders. The reminder command offers 2 flags 
+
+> `-v` to view your open reminders 
+
+and 
+
+> `-c` to create a new reminder. 
+
+To create a new reminder you have to pass in your arguments as follows:
+
+~~~
+//reminder -c -1h Food! 
+~~~
+
+To edit and or delete reminders, use the `-v` flag and the reaction emojis like so
+
+~~~
+//reminder -v
+~~~
+
+![reminder_command_todobot.gif](https://cdn.discordapp.com/attachments/710020973746716694/757139558516391966/reminder_command_todobot.gif)
+
+Remember: 
+
+- **Your time has to always be passed in as the second flag!**
+
+- **The lowest possible time is 1m (1 Minute)!**
+
+- **The loop flag or -l has to be passed in as the last flag before the reminders content**
+
+
+
+#### Mentions:
+
+If you want to mention certain users or roles when the reminder finished, just mention them in the reminders content when creating a new reminder.
+
+Example:
+
+~~~
+//reminder -c -1h @SomeUser @SomeOtherUser @SomeRole Get to work!
+~~~
+
+#### Repeating reminders:
+
+For repeating reminders, simply pass in the `-loop` flag when creating the reminder. **Keep in mind that the lowest possible time for repeating reminders is 1 hour!**
+
+Example:
+
+~~~
+//reminder -c -6h -loop Walk the dog!
+~~~
+
+
 ## Queries
 
-**Overview:**
+#### Overview:
 
 Queries are a way to query the database to show all tasks, or a limited number of tasks or certain tasks that only the category important.
 
@@ -125,7 +180,7 @@ Allowed Keywords after `WHERE` are:
 > - assigned= { userid } 
 > - category= { somestring }
 
-**Examples:**
+#### Examples:
 
 ```
 //query TODOS WHERE category=important
@@ -157,7 +212,7 @@ Allowed Keywords after `WHERE` are:
 
 > Shows all tasks submitted by @MeerBiene, that are assigned to the user with the id `1234567891011`
 
-**Query Rules:**
+#### Query Rules:
 
 - The command is extremely case sensitive. Make sure to write the keywords like `WHERE` or `BY_USER` in all uppercase.
 
