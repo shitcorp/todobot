@@ -13,7 +13,9 @@ exports.run = async (client, message, args) => {
     });
 
 
-    var todoobj = {}
+    var todoobj = {
+        state: "open"
+    }
 
     console.log(message.persists);
 
@@ -34,10 +36,10 @@ exports.run = async (client, message, args) => {
         todoobj.title = message.persists[0]
 
         if (message.persists.includes("loop")) {
-            todoobj.repeating = true;
+            todoobj.loop = true;
             message.persists.splice(message.persists.indexOf("loop"))
         } else {
-            todoobj.repeating = false;
+            todoobj.loop = false;
         }
 
         const index = message.persists.findIndex(value => /^category=/i.test(value));
@@ -70,15 +72,16 @@ exports.run = async (client, message, args) => {
             attachlink: todoobj.attachlink,
             submittedby: message.author.id,
             timestamp: Date.now(),
-            state: "open",
             severity: 5,
-            repeating: todoobj.repeating,
+            state: "open",
+            loop: todoobj.loop,
             todomsg: msg.id,
-            assigned: "",
+            assigned: [],
             category: todoobj.category
         };
-        console.log(sanitizedobjet)
+        
         await client.settodo(sanitizedobjet);
+        await msg.react("✏️")
         await msg.react("📌")
         await message.channel.send(`
         Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO
@@ -102,10 +105,10 @@ exports.run = async (client, message, args) => {
         parsed[0] ? todoobj.title = parsed[0] : message.channel.send(client.error("You need to at least give a title for your task."))
         
         if (parsed.includes("loop")) {
-            todoobj.repeating = true;
+            todoobj.loop = true;
             parsed.splice(parsed.indexOf("loop"), 1);
         } else {
-            todoobj.repeating = false;
+            todoobj.loop = false;
         }
         
         

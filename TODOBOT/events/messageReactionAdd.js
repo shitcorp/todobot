@@ -1,247 +1,222 @@
-const { MessageEmbed } = require('discord.js');
-const SQLite = require("better-sqlite3");
-const sql = new SQLite('./data/data.sqlite');
+const { todomodel } = require("../modules/models/todomodel")
 
 module.exports = async (client, messageReaction, user) => {
 
     if (messageReaction.partial) {
-		// If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
-		try {
-			await messageReaction.fetch();
-		} catch (error) {
-			console.log('Something went wrong when fetching the message: ', error);
-			// Return as `reaction.message.author` may be undefined/null
-			return;
-		}
-	}
-
-    
-    
-    
-    
-    
-    if (messageReaction.message.channel.type === "dm") return
-
-    
-
-    let reac = messageReaction.emoji.name
-    let userinio = user.id
-
-    console.log(reac, userinio)
-
-    // if (userinio === client.user.id) return
+        // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
+        try {
+            await messageReaction.fetch();
+        } catch (error) {
+            client.logger.debug('Something went wrong when fetching the message: ', error.toString());
+            // Return as `reaction.message.author` may be undefined/null
+            return;
+        }
+    }
 
 
-    // let settingschannel = client.dbgetconfig(messageReaction.message)
+    if (messageReaction.message.channel.type === "dm") return;
 
-    // if (!settingschannel[0]) return
+    const react = messageReaction.emoji.name
+    const userinio = user.id
 
-    // if (messageReaction.message.channel.id !== settingschannel[0].todochannel) return
+    // if the reacting user is us we should return
+    if (userinio === client.user.id) return;
 
-    // let checkmsg = sql.prepare(`SELECT * FROM '${messageReaction.message.guild.id}-todo' WHERE bugmsg=?;`).all(messageReaction.message.id)
+    const settings = await client.getconfig(messageReaction.message.guild.id)
 
-    // if (!checkmsg[0]) return
+    if (settings === null) return;
+    if (messageReaction.message.channel.id !== settings.todochannel) return;
 
-    // let msgId = messageReaction.message.id
+    let todoobj;
 
+    // TODO remove reactions when permission level is too low
+    switch (react) {
+        case "📌":
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todoobj !== "object") return;
+            // add the reacting user to the assigned array,
+            // mark the todo as assigned and edit the todo
+            // message, then react with the white checkmark
 
+            let assigned = [userinio]
 
-    // if (reac === "📌") {
-    //     // TODO: check user perms
-    //     console.log(settingschannel[0]);
-    //     const modRole = messageReaction.message.guild.roles.cache.get(settingschannel[0].staffrole);
-        
+            todoobj.state = "assigned";
+            todoobj.assigned = assigned;
 
-    //     let Guild = messageReaction.message.guild;
-    //     let ownerID = user.id;
-    //     let mainGuild = client.guilds.cache.find(c => c.id === client.config.motherguildid)
-    //     let PremiumCheck = Guild.roles.cache.get(settingschannel[0].staffrole).members.map(m => m.user.id);
-    
-        
-    //     if (PremiumCheck.includes(ownerID) !== true) {
-            
-    //         return messageReaction.message.reactions.removeAll().then(msg => {
-    //             msg.react("📌");
-    //             let roletomention = Guild.roles.cache.get(settingschannel[0].staffrole)
-    //             if (typeof roletomention === "undefined") {
-    //                 roletomention = "**Not Set.**"
-    //             }
-    //             msg.channel.send(client.error(`You dont have the role ${roletomention}, so you cant assign yourself to TODOs.`)).then(ms => {
-    //                 ms.delete({ timeout: 60000 }).catch(console.error);
-    //             })
-    //         })
+            await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned }, state: "assigned" })
 
-    //     } 
+            messageReaction.message.edit(client.todo(todoobj)).then(async () => {
+                await messageReaction.message.reactions.removeAll().catch(error => { client.logger.debug(error) })
+                await messageReaction.message.react("✏️")
+                await messageReaction.message.react("✅")
+                await messageReaction.message.react("➕")
+            })
 
-        
+            break;
+        case "✅":
+            // mark the todo as finished (closed), or
+            // restart/repost the todo when its repeating
 
-    //     messageReaction.message.channel.messages.fetch({
-    //             around: msgId,
-    //             limit: 1
-    //     })
-    //         .then(async msg => {
-    //             const fetchedMsg = msg.first();
-    //             fetchedMsg.reactions.removeAll();
-    //             let embed = new MessageEmbed()
-    //                 .setColor("#FFFF00")
-    //                 .setTitle(checkmsg[0].bugtitle)
-    //                 //.setDescription(`> <@${user.id}>`)
-    //                 .setThumbnail(user.avatarURL)
-    //                 //.addField("⠀", "```" + checkmsg[0].bugtitle + "```")
-    //                 .addField("Content", `> ${checkmsg[0].bugrecreation}`)
-    //                 .addField("Submitted", `<@${checkmsg[0].submittedby}>`, true)
-    //                 .addField(`Assigned`, `<@${user.id}>`, true)
-    //                 //.setFooter("ID: " + checkmsg[0].bugid)
+            // (!) Make sure only assigned users can close the task
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todoobj !== "object") return;
+            let arse = []
+            Object.keys(todoobj.assigned).forEach(key => {
+                arse.push(todoobj.assigned[key])
+            })
+            if (arse.includes(userinio) == true) {
+                todoobj.state = "closed";
+                await todomodel.updateOne({ _id: todoobj._id }, { state: "closed" })
+                messageReaction.message.edit(client.todo(todoobj)).then(async () => {
+                    await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
+                    await messageReaction.message.react("⬇️")
+                })
+            } else await client.clearReactions(messageReaction.message, userinio)
+            break;
+        case "➕":
+            //add the reacting user to the assigned array
+            // and edit the todo msg/embed 
 
-    //             if (checkmsg[0].screenshoturl !== "None") {
-    //                 embed.setImage(checkmsg[0].screenshoturl)
-    //             }
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todoobj !== "object") return;
 
-    //             client.dbupdatetodo(messageReaction.message, "assigned", `${user.id}`, checkmsg[0].bugid)
-    //             client.dbupdatetodo(messageReaction.message, "state", "active", checkmsg[0].bugid)
+            let ass = []
+            Object.keys(todoobj.assigned).forEach(key => {
+                ass.push(todoobj.assigned[key])
+            })
+            if (ass.includes(userinio)) {
+                return await client.clearReactions(messageReaction.message, userinio);
+            } else {
+                todoobj.assigned[ass.length + 1] = userinio;
+                await messageReaction.message.edit(client.todo(todoobj))
+                await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned: userinio } })
+                await client.clearReactions(messageReaction.message, userinio);
+            }
+            break;
+        case "✏️":
+            // edit the task and edit the todo msg when finished
 
-    //             fetchedMsg.edit(embed).then(msg => {
-    //                 msg.react("✅")
-    //             })
-    //         })
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todoobj !== "object") return;
 
-       
+            let as = []
+            if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await client.clearReactions(messageReaction.message, userinio)
+            if (todoobj.assigend !== []) {
+                Object.keys(todoobj.assigned).forEach(key => as.push(todoobj.assigned[key]))
+            }
+            if (as.length > 0 && as.includes(userinio) === false && todoobj.submittedby !== userinio) return await client.clearReactions(messageReaction.message, userinio)
 
-
-    // } else if (reac === "✅") {
-
-    //     if (userinio !== checkmsg[0].assigned) {
-            
-    //         messageReaction.message.reactions.removeAll().then(msg => {
-    //             msg.react("✅")
-    //         })
-            
-    //         return
-
-    //     }
-
-    //     if (checkmsg[0].state === "closed") {
-
-    //         messageReaction.message.reactions.removeAll().then(msg => {
-                
-    //             let embed = new MessageEmbed()
-    //                 .setColor("GREEN")
-    //                 .setTitle(checkmsg[0].bugtitle)
-    //                 .setDescription(`This TODO has been closed. Expand: ⬇️`)
-    //                 .setFooter("ID: " + checkmsg[0].bugid)
-                
-    //             msg.edit(embed).then(m => {
-    //                 m.react("⬇️")
-    //             })
-            
-    //         })
-            
-    //         return
-
-    //     }
-
-
-    //     messageReaction.message.channel.messages.fetch({
-    //             around: msgId,
-    //             limit: 1
-    //         })
-    //         .then(async msg => {
-    //             const preview1 = checkmsg[0].bugrecreation.slice(0, 18);
-    //             let preview2 = checkmsg[0].bugrecreation.slice(18, 41);
-    //             if (typeof preview2 === undefined) {
-    //                 preview2 = ""
-    //             }
-    //             const fetchedMsg = msg.first();
-    //             fetchedMsg.reactions.removeAll();
-    //             let embed = new MessageEmbed()
-    //                 .setColor("GREEN")
-    //                 .setTitle(checkmsg[0].bugtitle)
-    //                 .setFooter("Processed:" + ` ${client.users.cache.get(checkmsg[0].assigned).username}`)
-
-    //                 if (checkmsg[0].bugrecreation !== '' && checkmsg[0].bugrecreation.length > 18) {
-    //                     embed.setDescription(`This TODO is closed. Expand: ⬇️ \nPreview: \`${preview1}\n${preview2}...\``)
-    //                 } else if (checkmsg[0].bugrecreation !== '') {
-    //                     embed.setDescription(`This TODO is closed. Expand: ⬇️ \nPreview: \`${preview1}\``)
-    //                 } 
-                    
-    //             client.dbupdatetodo(messageReaction.message, "state", "closed", checkmsg[0].bugid)
-
-    //             fetchedMsg.edit(embed).then(msg => {
-    //                 msg.react("⬇️")
-    //             })
-    //         })
+            await client.clearReactions(messageReaction.message, userinio)
+            edit(messageReaction.message, userinio)
+            break;
+        case "⬇️":
+            // Show more details
+            showmore()
+            break;
+        case "⬆️":
+            showless()
+            break;
+    }
 
 
 
 
-    // } else if (reac === "⬇️") {
-        
-    //     if (checkmsg[0].state !== "closed") return
+    async function edit(message, user) {
 
-    //     let userus = client.users.cache.get(checkmsg[0].assigned)
+        const timeout = 10000
+        const filter = m => m.author.id === user;
+        message.channel.send(client.embed(`
+        __**Usage:**__
 
-    //     messageReaction.message.channel.messages.fetch({
-    //             around: msgId,
-    //             limit: 1
-    //         })
-    //         .then(async msg => {
-    //             const fetchedMsg = msg.first();
-    //             fetchedMsg.reactions.removeAll();
+        Enter the key you want to edit followed by the new value seperated by a comma and a space. **The space after the comma is important and not optional!**
+
+        __**Examples:**__
+
+        > title, this is the new title
+
+        > content, this is my new content
+
+        > loop, true
+
+        > state, open
+
+        > category, important
+        `)).then((msg) => {
+            message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
+                .then(collected => {
+
+                    if (msg.deletable) msg.delete()
+                    if (collected.first().deletable) collected.first().delete()
+
+                    let args = []
+                    let editargs = collected.first().content.split(", ")
+                    editargs.forEach(arg => {
+                        args.push(arg)
+                    })
+
+                    // argument handler
+                    switch (args[0]) {
+                        case "title":
+                            update(args)
+                            break;
+                        case "loop":
+                            update(args)
+                            break;
+                        case "state":
+                            update(args)
+                            break;
+                        case "content":
+                            update(args)
+                            break;
+                        case "category":
+                            update(args)
+                            break;
+                        default:
+                            message.channel.send(client.error(`
+                            This is not a valid key to edit. Valid keys are: title, loop, state, content and category
+                            `)).then(async (msg) => {
+                                if (msg.deletable) msg.delete({ timeout })
+                            })
+                    }
+
+                    function update(args) {
+                        let obj = {}
+                        obj[args[0]] = args[1]
+                        todoobj[args[0]] = args[1]
+                        todomodel.updateOne({ _id: todoobj._id }, obj, (err) => {
+                            if (err) client.logger.debug(err)
+                            messageReaction.message.edit(client.todo(todoobj))
+                        })
+                    }
+
+                })
+                .catch(collected => {
+                    // Delete message here
+                    client.logger.debug(collected)
+                });
+        })
+    };
 
 
-    //             let embed = new MessageEmbed()
-    //                 .setColor("GREEN")
-    //                 .setTitle(checkmsg[0].bugtitle)
-    //                 //.setDescription(`> <@${checkmsg[0].assigned}>`)
-    //                 .setThumbnail(userus.avatarURL)
-    //                 //.addField("⠀", "```" + checkmsg[0].bugtitle + "```")
-    //                 .addField("Content", `> ${checkmsg[0].bugrecreation}`)
-    //                 .addField("Submitted", `<@${checkmsg[0].submittedby}>`, true)
-    //                 .addField(`Processed`, `<@${checkmsg[0].assigned}>`, true)
-    //                 //.setFooter("ID: " + checkmsg[0].bugid)
-
-    //             if (checkmsg[0].screenshoturl !== "None") {
-    //                 embed.setImage(checkmsg[0].screenshoturl)
-    //             }
-
-    //             fetchedMsg.edit(embed).then(msg => { msg.react("⬆️") })
-
-    //         })
 
 
+    async function showmore() {
+        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+        if (typeof todoobj !== "object") return;
+        todoobj.state = "detail";
+        messageReaction.message.edit(client.todo(todoobj, "yes"))
+        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
+        await messageReaction.message.react("⬆️")
+    }
 
-    // } else if (reac === "⬆️") {
-        
-    //     if (checkmsg[0].state !== "closed") return
-
-    //     messageReaction.message.channel.messages.fetch({
-    //             around: msgId,
-    //             limit: 1
-    //         })
-    //         .then(async msg => {
-    //             const preview1 = checkmsg[0].bugrecreation.slice(0, 18);
-    //             let preview2 = checkmsg[0].bugrecreation.slice(18, 41);
-    //             if (typeof preview2 === undefined) {
-    //                 preview2 = ""
-    //             }
-    //             const fetchedMsg = msg.first();
-    //             fetchedMsg.reactions.removeAll();
-    //             let embed = new MessageEmbed()
-    //                 .setColor("GREEN")
-    //                 .setTitle(checkmsg[0].bugtitle)
-    //                 .setFooter("Processed:" + ` ${client.users.cache.get(checkmsg[0].assigned).username}`)
-
-    //             if (checkmsg[0].bugrecreation.length > 18) {
-    //                 embed.setDescription(`This TODO is closed. Expand: ⬇️ \nPreview: \`${preview1}\n${preview2}...\``)
-    //             } else {
-    //                 embed.setDescription(`This TODO is closed Expand: ⬇️ \nPreview: \`${preview1}\``)
-    //             }
-    //             fetchedMsg.edit(embed).then(msg => { msg.react("⬇️") })
-    //         })
-
-    // } else return
-
-
+    async function showless() {
+        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+        if (typeof todoobj !== "object") return;
+        todoobj.state = "closed";
+        messageReaction.message.edit(client.todo(todoobj))
+        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
+        await messageReaction.message.react("⬇️")
+    }
 
 
 

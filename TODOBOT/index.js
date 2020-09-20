@@ -8,7 +8,9 @@ const { job } = require("./modules/cron/every_2_minutes")
 
 
 const client = new Discord.Client({
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  disableMentions: "everyone",
+  disableMentions: "here"
 });
 
 const rclient = redis.createClient({

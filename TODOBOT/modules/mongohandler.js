@@ -17,12 +17,11 @@ module.exports = (client) => {
         
         db.on("error", console.error.bind(console, "(!) Mongo DB Connection error:"))
     
-        db.once("open", function() {
+        db.once("open", async () => {
             client.logger.mongo("Database connection was established.")
-            client.guilds.cache.forEach(async guild => {
+            await client.guilds.cache.forEach(async guild => {
                 const _id = guild.id
-                const inCache = await getAsync(_id)
-                
+                const inCache = await getAsync(_id)    
                 if (inCache === null) {
                     // pull config from db and set to cache
                     configmodel.findOne({ _id }, (err, doc) => {
@@ -50,9 +49,8 @@ module.exports = (client) => {
 
 
                 //console.log("inCache:", inCache)
-
-
-              })
+                
+            })
         });
     };
 
@@ -143,7 +141,7 @@ module.exports = (client) => {
             if (err) return client.logger.debug(err)
             return docs;
         })
-    }
+    };
 
     client.getusertodos = (user) => {
         return todomodel.find({ submittedby: user }, (err, docs) => {
@@ -158,6 +156,25 @@ module.exports = (client) => {
             return doc;
         })
     };
+
+    /**
+     * 
+     * @param {String} todomsg todomsg(id)
+     * @param {String} guildid guildid(id)
+     * 
+     * returns the todo by message id and channel
+     */
+    client.gettodobymsg = (todomsg, guildid) => {
+        return todomodel.findOne({ todomsg, guildid })
+    };
+
+
+    client.updatetodo = (_id, todoobj) => {
+        return configmodel.updateOne({ _id }, todoobj, (err) => {
+            if (err) client.logger.debug(err)
+        })
+    }
+
 
     client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);

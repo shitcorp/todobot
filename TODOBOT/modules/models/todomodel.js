@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const todoschema = new mongoose.Schema({
     _id: String,
     guildid: String,
@@ -9,9 +10,9 @@ const todoschema = new mongoose.Schema({
     timestamp: String,
     state: String,
     severity: Number,
-    repeating: Boolean,
+    loop: Boolean,
     todomsg: String,
-    assigned: String,
+    assigned: Array,
     category: String
 });
 

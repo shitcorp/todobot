@@ -151,5 +151,25 @@ module.exports = (client) => {
 
 
 
+  client.clearReactions = async (message, userID) => {
+    const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
+    try {
+      for (const reaction of userReactions.values()) {
+        await reaction.users.remove(userID);
+      };
+    } catch (error) {
+      client.logger.debug('Failed to remove reactions.', error.toString());
+    };
+  };
+
+
+
+  process.on("unhandledRejection", err => {
+    client.logger.debug(err.toString())
+  });
+
+
+
+
 
 };
