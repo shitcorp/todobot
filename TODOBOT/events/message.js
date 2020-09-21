@@ -64,6 +64,13 @@ module.exports = async (client, message) => {
        if (blacklist.includes(message.author.id)) return 
       }
 
+      // Check if the message is in a blacklisted channel
+      if (settings.blacklist_channels) {
+        blacklist = []
+        Object.keys(settings.blacklist_channels).forEach(key => { blacklist.push(settings.blacklist_channels[key]) })
+        if (blacklist.includes(message.channel.id)) return
+      }      
+
 
   }
 

@@ -53,7 +53,6 @@ exports.run = async (client, message, args, level) => {
                 let cache = Array.from(message.mentions.users.keys())
                 cache.length > 0 ? cache.forEach(el => { if (!blacklist.includes(el)) { blacklist.push(el) } else { message.channel.send(client.error(`This user is already blacklisted.`)) } }) : null;
             } else message.channel.send(client.error(`You have to mention one or multiple user(s) to blacklist them.`))
-            console.log(blacklist)
             // update the guildconfig with the new in the database
             configmodel.updateOne({ _id }, { blacklist_users: blacklist }, (err, affected, resp) => {
                 if (err) client.logger.debug(err.toString())
@@ -65,7 +64,26 @@ exports.run = async (client, message, args, level) => {
 
 
     async function blacklistChannel() {
-
+        if (settings.blacklist_users) {
+            blacklist = []
+            // turn the object from cache into an array for easier handling
+            Object.keys(settings.blacklist_channels).forEach(key => {
+                blacklist.push(settings.blacklist_channels[key])
+            })
+            // if there are mentioned channels in the message,
+            // create an array from said mentions and push
+            // the elements to our temporary blacklist array
+            if (message.mentions.channels.size > 0) {
+                let cache = Array.from(message.mentions.channels.keys())
+                cache.length > 0 ? cache.forEach(el => { if (!blacklist.includes(el)) { blacklist.push(el) } else { message.channel.send(client.error(`This channel is already blacklisted.`)) } }) : null;
+            } else message.channel.send(client.error(`You have to mention one or multiple user(s) to blacklist them.`))
+            // update the guildconfig with the new in the database
+            configmodel.updateOne({ _id }, { blacklist_channels: blacklist }, (err, affected, resp) => {
+                if (err) client.logger.debug(err.toString())
+                client.invalidateCache(message.guild.id)
+                message.channel.send(client.success(`**Updated your blacklist.**`))
+            })
+        } 
     };
 
     async function errormsg() {
