@@ -32,6 +32,12 @@ exports.run = async (client, message, args, level) => {
             // blacklist channel here
             blacklistChannel()
             break;
+        case "v":
+        case "view":
+        case "s":
+        case "show":
+            viewBlacklists()
+        break;
         default:
             errormsg()
     }
@@ -64,7 +70,7 @@ exports.run = async (client, message, args, level) => {
 
 
     async function blacklistChannel() {
-        if (settings.blacklist_users) {
+        if (settings.blacklist_channels) {
             blacklist = []
             // turn the object from cache into an array for easier handling
             Object.keys(settings.blacklist_channels).forEach(key => {
@@ -85,6 +91,10 @@ exports.run = async (client, message, args, level) => {
             })
         } 
     };
+
+    async function viewBlacklists() {
+        // TODO; make this into a pagination embed
+    }
 
     async function errormsg() {
         return message.channel.send(client.error(`**This flag does not seem to be supported.**
