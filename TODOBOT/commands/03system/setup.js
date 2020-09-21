@@ -72,13 +72,13 @@ exports.run = async (client, message, args, level) => {
                     bugs_enabled: false,
                     staffroles: Array.from(rolemsg.mentions.roles.keys()),
                     categories: [
-                        "Important",
-                        "Intermediate",
-                        "Low"
+                        "Example Category",
                     ],
                     tags: {
-                        "example": "This is an example tag, to learn more about this feature run the command 'man tags' or 'manual tags'"
-                    }
+                        "example": "This is an example tag, to learn more about this feature run the command \`help tags\`"
+                    },
+                    blacklist_channels: [],
+                    blacklist_users: []
                 }
 
                 try {

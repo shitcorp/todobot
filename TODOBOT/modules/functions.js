@@ -165,7 +165,7 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", err => {
-    client.logger.debug(err.toString())
+    console.log(err)
   });
 
 

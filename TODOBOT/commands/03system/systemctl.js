@@ -14,7 +14,11 @@ exports.run = async (client, message, args, level) => {
         console.log(Object.isSealed(settings))
         settings["tags"] = "To view tags run the command //tags";
         delete settings.__v
-        message.channel.send(JSON.stringify(settings), {
+        let output = "";
+        Object.keys(settings).forEach(key => {
+            output += `> ${key}        ${settings[key]} \n`
+        })
+        message.channel.send(output, {
             code: "json"
         })    
 
@@ -69,7 +73,7 @@ exports.run = async (client, message, args, level) => {
                     showsettings();
                 break;
                 default:
-                    message.channel.send(client.warning("This flag takes in 'settings' or 'tags' as arguments."))
+                    showsettings();
                 break;
             }
         break;

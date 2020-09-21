@@ -18,7 +18,9 @@ const configschema = new mongoose.Schema({
     categories: Array,
     tags: Map,
     urldomain: Number,
-    urlengine: String
+    urlengine: String,
+    blacklist_channels: Array,
+    blacklist_users: Array
 })
 
 exports.configmodel = new mongoose.model("todoconfig", configschema)

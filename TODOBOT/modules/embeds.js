@@ -15,13 +15,13 @@ module.exports = (client) => {
 
 
 
-    client.embed = (desc, {color, img, thumb}) => {
+    client.embed = (desc, obj) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
             .setColor("#2C2F33")
-        if (color) embed.setColor(color)
-        if (img && img.startsWith("https://cdn.discordapp.com/attachments/") || img && img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
-        if (thumb && thumb.startsWith("https://cdn.discordapp.com/attachments/") || thumb && thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)
+        if (obj && obj.color) embed.setColor(color)
+        if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
+        if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)
         return embed;
 
     }
@@ -87,12 +87,14 @@ module.exports = (client) => {
         todoobj.category ? embed.addField("Category", todoobj.category, true) : null;
 
         let output = "";
+        if (todoobj.assigned) {
             if (todoobj.assigned !== []) {
                 Object.keys(todoobj.assigned).forEach(key => {
                     output += `<@${todoobj.assigned[key]}> \n`
                 })
                 output !== "" && todoobj.state === "assigned" ? embed.addField("Assigned", output, true) : null;
             }
+        }
 
 
 

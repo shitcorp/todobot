@@ -40,19 +40,33 @@ module.exports = async (client, message) => {
    */
   
   // convert settings.tag object into map
-  const tags = new Map();
-  Object.keys(settings.tags).forEach(key => {
-    tags.set(key, settings.tags[key]);
-  });
+
+  if (settings !== null) {
+
+    const tags = new Map();
+    Object.keys(settings.tags).forEach(key => {
+      tags.set(key, settings.tags[key]);
+    });
 
   
-  const check = tags.get(command); 
-  check ? client.taghandler(message, check) : null;
+    const check = tags.get(command); 
+    check ? client.taghandler(message, check) : null;
+
+    /**
+     *  End Taghandler
+     */
 
 
-  /**
-   *  End Taghandler
-   */
+     // Check for blacklisted users here
+     if (settings.blacklist_users) {
+       let blacklist = []
+       Object.keys(settings.blacklist_users).forEach(key => { blacklist.push(settings.blacklist_users[key]) })
+       if (blacklist.includes(message.author.id)) return 
+      }
+
+
+  }
+
 
 
 
