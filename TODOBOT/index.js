@@ -3,7 +3,13 @@ const Discord = require('discord.js'),
   Enmap = require('enmap'),
   chalk = require('chalk'),
   redis = require('redis'),
-  { job } = require('./modules/cron/every_2_minutes');
+  job = require('./modules/cron/every_2_minutes'),
+  config = require('dotenv').config();
+
+if (config.error) {
+  client.logger.log(`${chalk.bgRed('[ERROR]')} Could not load environment variabels from '.env' file. Exiting...`);
+  process.exit(-1)
+}
 
 const rdir = (path, options) => new Promise((resolve, reject) => readdir(path, options, (err, files) => err && reject(err) || resolve(files)));
 
@@ -15,19 +21,16 @@ const client = {
   }),
   commands: new Enmap(),
   aliases: new Enmap(),
-  config: require('./config'),
   logger: require('./modules/logger'),
-  levelCache: Object.fromEntries(client.config.permLevels.map(pl => [pl.name, pl.level])),
+  permLevels: Object.fromEntries(require('./modules/permLevels').map(pl => [pl.level, { name: pl.name, check: pl.check }])),
   cache: redis.createClient({
     host: 'localhost',
     port: 6379
   })
 };
 
-require('./modules/mongohandler.js')(client);
-require('./modules/taghandler.js')(client);
-require('./modules/functions.js')(client);
-require('./modules/embeds.js')(client);
+[require('./modules/mongoHandler.js'), require('./modules/tagHandler.js'), 
+  require('./modules/functions.js'), require('./modules/embeds.js')].forEach(f => f(client))
 
 client.cache.on('error', (err) => client.logger.debug(err));
 client.cache.on('ready', () => client.logger.ready(`Redis client is ready.`));
@@ -49,7 +52,7 @@ client.cache.on('ready', () => client.logger.ready(`Redis client is ready.`));
     client.on(event, require(`./events/${file}`).bind(null, client));
   }
 
-  client.login(client.config.token);
+  client.login(process.env.TOKEN);
 
   job.start();
   job.addCallback(client.reminderJob);
