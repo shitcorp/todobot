@@ -1,8 +1,3 @@
 const { CronJob } = require('cron');
 
-exports.job = new CronJob('0 */2 * * * *', () => {
-
-    // do nothing, callback will be added
-    // when this job is instantiated
-    
-}, null, true, 'America/Los_Angeles');
+module.exports = new CronJob('0 */2 * * * *', null, null, true, 'America/Los_Angeles');

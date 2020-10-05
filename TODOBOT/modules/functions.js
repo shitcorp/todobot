@@ -1,129 +1,43 @@
-const { createMessageCollector } = require('discord.js'),
-  { configmodel } = require("./models/configmodel"),
-  { remindermodel } = require("./models/remindermodel");
+const Config = require('./models/config'),
+  Reminder = require('./models/reminder');
 
-module.exports = (client) => {
-
-
-
-  client.loadCommand = (category, commandName) => {
+module.exports = (client) => ({
+  ...client,
+  loadCommand: (category, commandName) => {
     try {
-      let name = category.toUpperCase()
-      client.logger.log(`[${name}] Loading Command: ${commandName}`);
+      client.logger.log(`[${category.toUpperCase()}] Loading Command: ${commandName}`);
       const props = require(`../commands/${category}/${commandName}`);
-      if (props.init) {
-        props.init(client);
-      }
+      props.init?.call(client);
       props.help.category = category;
       client.commands.set(props.help.name, props);
-      props.conf.aliases.forEach(alias => {
-        client.aliases.set(alias, props.help.name);
-      });
-      return false;
+      props.conf.aliases.forEach(alias => client.aliases.set(alias, props.help.name));
     } catch (e) {
       return `Unable to load command ${commandName}: ${e}`;
     }
-  };
-
-  client.discordlog = () => {
-
-
-    client.discordlog = (content, message, event) => {
-      if (client.config.debug !== "true") return
-      if (event) {
-        return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-      }
-
+  },
+  discordLog: (content, message, event) => {
+    if (client.config.debug !== 'true') return
+    if (event) 
+      return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
+    else
       return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-
-    }
-
-
-
-  };
-
-
-
-
-  client.permlevel = message => {
-    let permlvl = 0;
-
-    const permOrder = client.config.permLevels.slice(0).sort((p, c) => p.level < c.level ? 1 : -1);
-
-    while (permOrder.length) {
-      const currentLevel = permOrder.shift();
-      if (message.guild && currentLevel.guildOnly) continue;
-      if (currentLevel.check(message)) {
-        permlvl = currentLevel.level;
-        break;
-      }
-    }
-    return permlvl;
-  };
-
-
-  client.awaitreply = async (message, question, time = 60000) => {
-    message.channel.send(question)
-    const filter = m => m.author.id === message.author.id;
-    return collector = message.channel.createMessageCollector(filter, { limit: 1, time: 15000 });
-  }
-
-
-  /**
-   * 
-   * @param {String} _id Guildid
-   * 
-   * Invalideates the cached object
-   * by id and pulls it back from the database
-   * 
-   */
-
-  client.invalidateCache = async (_id) => {
-    client.cache.del(_id, (err) => {
-      err ? client.logger.debug(err) :
-        configmodel.findOne({ _id }, (err, doc) => {
-          err ? client.logger.debug(err) :
-            client.cache.set(_id, JSON.stringify(doc))
-        })
-
+  },
+  permLevel: (message) => message.client.permLevels.entries().find(([, { check }]) => check(message))[0],
+  awaitReply: async (message, question, time = 15000) => {
+    await message.channel.send(question)
+    return message.channel.createMessageCollector((msg) => msg.author.id === message.author.id, { limit: 1, time });
+  },
+  invalidateCache: async (id) => {
+    client.cache.del(id, (err) => {
+      if(err) return client.logger.debug(err);
+      Config.findOne({ _id: id }, (err, doc) => {
+        if(err) return client.logger.debug(err);
+        client.cache.set(id, JSON.stringify(doc))
+      })
     })
-  };
-
-
-
-  /**
-   * Client.mapBuilder
-   * @param {Object} obj 
-   * @returns {Map} map
-   * 
-   * Takes in an object and returns a map.
-   */
-  client.mapBuilder = async (obj) => {
-    let map = new Map();
-    Object.keys(obj).forEach(key => {
-      map.set(key, obj[key]);
-    });
-    return map;
-  };
-
-
-
-
-
-
-  /**
-   * Client.reminderJob
-   * 
-   * Checks all reminders from the database
-   * periodically and reminds the user(s)
-   * when expired. If the reminder is a 
-   * repeating reminder, the reminder is 
-   * not deleted from the database, it will
-   * be updated with the new expires timestamp
-   */
-
-  client.reminderJob = async () => {
-    for await (const doc of remindermodel.find()) {
+  },
+  reminderJob: async () => {
+    for await (const doc of Reminder.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
         let output = `${client.users.cache.get(doc.user)}`
@@ -138,38 +52,21 @@ module.exports = (client) => {
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
           client.logger.debug(e.toString())
-          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+          Reminder.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }
-        // if the reminderproperty "loop" is set to false delete the reminder
-        doc.loop === false ? remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+        // if the reminderproperty 'loop' is set to false delete the reminder
+        doc.loop === false ? Reminder.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
           // else update the reminder in the database with the new expires timestamp
-          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
+          : Reminder.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
       };
     };
-  };
-
-
-
-
-  client.clearReactions = async (message, userID) => {
-    const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
+  },
+  clearReactions: async (message, userId) => {
+    const userReactions = message.reactions.cache.filter((reaction) => reaction.users.cache.has(userId));
     try {
-      for (const reaction of userReactions.values()) {
-        await reaction.users.remove(userID);
-      };
+      userReactions.values().forEach(react => await react.users.remove(userId))
     } catch (error) {
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
-  };
-
-
-
-  process.on("unhandledRejection", err => {
-    console.log(err)
-  });
-
-
-
-
-
-};
+  }
+});
