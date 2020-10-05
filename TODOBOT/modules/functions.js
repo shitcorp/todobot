@@ -112,7 +112,7 @@ module.exports = (client) => {
 
 
   /**
-   * Client.reminderjob
+   * Client.reminderJob
    * 
    * Checks all reminders from the database
    * periodically and reminds the user(s)
@@ -122,7 +122,7 @@ module.exports = (client) => {
    * be updated with the new expires timestamp
    */
 
-  client.reminderjob = async () => {
+  client.reminderJob = async () => {
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
