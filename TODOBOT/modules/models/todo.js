@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const todoschema = new mongoose.Schema({
     _id: String,
-    guildid: String,
+    guildId: String,
     title: String,
     content: String,
     attachlink: String,
@@ -15,5 +15,4 @@ const todoschema = new mongoose.Schema({
     assigned: Array,
     category: String
 });
-
-exports.todomodel = new mongoose.model("todos_dev", todoschema)
+module.exports = new mongoose.model('todos_dev', todoschema)

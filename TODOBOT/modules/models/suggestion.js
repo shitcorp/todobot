@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const suggestionschema = new mongoose.Schema({
     _id: String,
-    guildid: String,
+    guildId: String,
     suggestion: String,
     author: String,
     time: { type: Date, default: Date.now },
@@ -16,4 +16,4 @@ const suggestionschema = new mongoose.Schema({
     deletedcomments: Array
 })
 
-exports.suggestionmodel = new mongoose.model("suggestions", suggestionschema)
+module.exports = new mongoose.model('suggestions', suggestionschema)

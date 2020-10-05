@@ -1,12 +1,3 @@
-/**
- * IDEA: use thisfor server owners to let ppl submit bugs,
- * then implement issuetracker dashboard thingy
- * 
- *  Important: make it so only users with staff role
- *  can be assigned
- */
-
-
 const mongoose = require('mongoose');
 
 const bugschema = new mongoose.Schema({
@@ -21,4 +12,4 @@ const bugschema = new mongoose.Schema({
     bugmsg: String
 })
 
-exports.bugmodel = new mongoose.model("bugs", bugschema)
+module.exports = new mongoose.model('bugs', bugschema)
