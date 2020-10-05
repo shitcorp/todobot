@@ -1,7 +1,7 @@
 const cmdRecently = {};
 
 module.exports = async (client, message) => {
-  const timeout = process.env.MSG_DELETE_THRESHOLD;
+  const timeout = process.env.MSG_DELETE_THRESHHOLD;
   if (message.author.bot || message.channel.type === 'dm') return;  
   let settings, prefix;
 
