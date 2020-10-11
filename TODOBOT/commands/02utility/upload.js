@@ -25,7 +25,7 @@ module.exports = {
                 body
             }).json();
             await message.channel.send(client.success(`Heres your link: ${URL}${response.filename}`))
-                .then(_msg => message.deletable && message.delete());
+                .then(async (_msg) => message.deletable && await message.delete());
         });
     },
     conf: {

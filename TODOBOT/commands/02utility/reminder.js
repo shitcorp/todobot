@@ -14,7 +14,7 @@ module.exports = {
                 break;
             default: 
                 message.channel.send(client.error(`You forgot to give a flag. Use one of the following: \n> \`-v\` => View all your reminders. \n> \`-c\` \`-3h\` => Create a new reminder.`))
-                    .then(msg => msg.deletable && msg.delete({ timeout }));
+                    .then(async (msg) => msg.deletable && await msg.delete({ timeout }));
                 break;
         }
 
@@ -62,7 +62,7 @@ module.exports = {
                                         if (err) 
                                             client.logger.debug(err);
                                         await message.channel.send(client.success(`Updated your reminder.`))
-                                            .then(m => m.deletable && m.delete({ timeout }));
+                                            .then(async (m) => m.deletable && await m.delete({ timeout }));
                                     })
                                 })
                                 .catch(collected => client.logger.debug(collected));
@@ -74,7 +74,7 @@ module.exports = {
                             if (err) 
                                 client.logger.debug(err);
                             await message.channel.send(client.success(`Deleted your reminder.`))
-                                .then(m => m.deletable && m.delete({ timeout }));
+                                .then(async (m) => m.deletable && await m.delete({ timeout }));
                         });
                     }
                 })
