@@ -1,7 +1,6 @@
-const { todomodel } = require("../modules/models/todomodel")
+const Todo = require('../modules/models/todo')
 
 module.exports = async (client, messageReaction, user) => {
-
     if (messageReaction.partial) {
         // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
         try {
@@ -12,128 +11,93 @@ module.exports = async (client, messageReaction, user) => {
             return;
         }
     }
+    if (messageReaction.message.channel.type === 'dm' || user.id === client.user.id) 
+        return;
 
-
-    if (messageReaction.message.channel.type === "dm") return;
-
-    const react = messageReaction.emoji.name
-    const userinio = user.id
-
-    // if the reacting user is us we should return
-    if (userinio === client.user.id) return;
-
-    const settings = await client.getconfig(messageReaction.message.guild.id)
+    const react = messageReaction.emoji.name;
+    const settings = await client.getConfig(messageReaction.message.guild.id);
 
     if (settings === null) return;
     if (messageReaction.message.channel.id !== settings.todochannel) return;
 
-    let todoobj;
+    let todo;
 
     // TODO remove reactions when permission level is too low
     switch (react) {
-        case "📌":
-            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
-            // add the reacting user to the assigned array,
-            // mark the todo as assigned and edit the todo
-            // message, then react with the white checkmark
+        case '📌':
+            todo = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todo !== 'object') return;
 
-            let assigned = [userinio]
+            let assigned = [user.id];
 
-            todoobj.state = "assigned";
-            todoobj.assigned = assigned;
+            todo.state = 'assigned';
+            todo.assigned = assigned;
 
-            await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned }, state: "assigned" })
-
-            messageReaction.message.edit(client.todo(todoobj)).then(async () => {
-                await messageReaction.message.reactions.removeAll().catch(error => { client.logger.debug(error) })
-                await messageReaction.message.react("✏️")
-                await messageReaction.message.react("✅")
-                await messageReaction.message.react("➕")
+            await todomodel.updateOne({ _id: todo._id }, { $push: { assigned }, state: 'assigned' });
+            messageReaction.message.edit(client.todo(todo)).then(async () => {
+                await messageReaction.message.reactions.removeAll().catch(error => { client.logger.debug(error) });
+                await Promise.all(messageReaction.message.react('✏️'), messageReaction.message.react('✅'), messageReaction.message.react('➕'));
             })
-
             break;
-        case "✅":
-            // mark the todo as finished (closed), or
-            // restart/repost the todo when its repeating
-
-            // (!) Make sure only assigned users can close the task
-            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
-            let arse = []
-            Object.keys(todoobj.assigned).forEach(key => {
-                arse.push(todoobj.assigned[key])
-            })
-            if (arse.includes(userinio) == true) {
-                if (todoobj.loop === true) {
-                    todoobj.state = "open";
-                    await todomodel.updateOne({ _id: todoobj._id }, { state: "open" })
-                    messageReaction.message.edit(client.todo(todoobj)).then(async (msg) => {
-                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                        await msg.react("✏️")
-                        await msg.react("📌")
-                    })
+        case '✅':
+            todo = await client.getTodoByMsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todo !== 'object') return;
+            let arse = todo.assigned.values();
+            if (arse.includes(user.id) == true) {
+                if (todo.loop === true) {
+                    todo.state = 'open';
+                    await todomodel.updateOne({ _id: todo._id }, { state: 'open' });
+                    messageReaction.message.edit(client.todo(todo)).then(async (msg) => {
+                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error));
+                        await Promise.all(msg.react('✏️'), msg.react('📌'));
+                    });
                 } else {
-                todoobj.state = "closed";
-                await todomodel.updateOne({ _id: todoobj._id }, { state: "closed" })
-                messageReaction.message.edit(client.todo(todoobj)).then(async () => {
-                    await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                    await messageReaction.message.react("⬇️")
-                    })
+                    todo.state = 'closed';
+                    await todomodel.updateOne({ _id: todo._id }, { state: 'closed' })
+                    messageReaction.message.edit(client.todo(todo)).then(async () => {
+                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error));
+                        await messageReaction.message.react('⬇️');
+                    });
                 }
-            } else await client.clearReactions(messageReaction.message, userinio)
+            } else await client.clearReactions(messageReaction.message, user.id);
             break;
-        case "➕":
-            //add the reacting user to the assigned array
-            // and edit the todo msg/embed 
-
-            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
-
-            let ass = []
-            Object.keys(todoobj.assigned).forEach(key => {
-                ass.push(todoobj.assigned[key])
-            })
-            if (ass.includes(userinio)) {
-                return await client.clearReactions(messageReaction.message, userinio);
+        case '➕':
+            todo = await client.getTodoByMsg(messageReaction.message.id, messageReaction.message.guild.id);
+            if (typeof todo !== 'object') return;
+            let ass = todo.assigned.values();
+            if (ass.includes(user.id)) {
+                return await client.clearReactions(messageReaction.message, user.id);
             } else {
-                todoobj.assigned[ass.length + 1] = userinio;
-                await messageReaction.message.edit(client.todo(todoobj))
-                await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned: userinio } })
-                await client.clearReactions(messageReaction.message, userinio);
+                todo.assigned[ass.length + 1] = user.id;
+                await messageReaction.message.edit(client.todo(todo))
+                await todomodel.updateOne({ _id: todo._id }, { $push: { assigned: user.id } })
+                await client.clearReactions(messageReaction.message, user.id);
             }
             break;
-        case "✏️":
-            // edit the task and edit the todo msg when finished
-
-            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
-
+        case '✏️':
+            todo = await client.getTodoByMsg(messageReaction.message.id, messageReaction.message.guild.id);
+            if (typeof todo !== 'object') return;
             let as = []
-            if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await client.clearReactions(messageReaction.message, userinio)
-            if (todoobj.assigend !== []) {
-                Object.keys(todoobj.assigned).forEach(key => as.push(todoobj.assigned[key]))
-            }
-            if (as.length > 0 && as.includes(userinio) === false && todoobj.submittedby !== userinio) return await client.clearReactions(messageReaction.message, userinio)
-
-            await client.clearReactions(messageReaction.message, userinio)
-            edit(messageReaction.message, userinio)
+            if (todo.assigned === [] && user.id !== todo.submittedby) 
+                return await client.clearReactions(messageReaction.message, user.id)
+            if (todo.assigend !== []) 
+                Object.keys(todo.assigned).forEach(key => as.push(todo.assigned[key]));
+            if (as.length > 0 && as.includes(user.id) === false && todo.submittedby !== user.id) 
+                return await client.clearReactions(messageReaction.message, user.id);
+            await client.clearReactions(messageReaction.message, user.id);
+            edit(messageReaction.message, user.id);
             break;
-        case "⬇️":
+        case '⬇️':
             // Show more details
-            showmore()
+            showMore();
             break;
-        case "⬆️":
-            showless()
+        case '⬆️':
+            showLess();
             break;
     }
 
-
-
-
     async function edit(message, user) {
-
-        const timeout = 10000
+        const timeout = 10000;
         const filter = m => m.author.id === user;
         message.channel.send(client.embed(`
         __**Usage:**__
@@ -155,47 +119,33 @@ module.exports = async (client, messageReaction, user) => {
             message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
                 .then(collected => {
 
-                    if (msg.deletable) msg.delete()
-                    if (collected.first().deletable) collected.first().delete()
+                    if (msg.deletable) msg.delete();
+                    if (collected.first().deletable) collected.first().delete();
 
-                    let args = []
-                    let editargs = collected.first().content.split(", ")
-                    editargs.forEach(arg => {
-                        args.push(arg)
-                    })
+                    let args = collected.first().content.split(', ');
 
                     // argument handler
                     switch (args[0]) {
-                        case "title":
-                            update(args)
-                            break;
-                        case "loop":
-                            update(args)
-                            break;
-                        case "state":
-                            update(args)
-                            break;
-                        case "content":
-                            update(args)
-                            break;
-                        case "category":
+                        case 'title':
+                        case 'loop':
+                        case 'state':
+                        case 'content':
+                        case 'category':
                             update(args)
                             break;
                         default:
                             message.channel.send(client.error(`
                             This is not a valid key to edit. Valid keys are: title, loop, state, content and category
-                            `)).then(async (msg) => {
-                                if (msg.deletable) msg.delete({ timeout })
-                            })
+                            `)).then(async (msg) => msg.deletable && await msg.delete({ timeout }))
                     }
 
                     function update(args) {
                         let obj = {}
                         obj[args[0]] = args[1]
-                        todoobj[args[0]] = args[1]
-                        todomodel.updateOne({ _id: todoobj._id }, obj, (err) => {
+                        todo[args[0]] = args[1]
+                        todomodel.updateOne({ _id: todo._id }, obj, (err) => {
                             if (err) client.logger.debug(err)
-                            messageReaction.message.edit(client.todo(todoobj))
+                            messageReaction.message.edit(client.todo(todo))
                         })
                     }
 
@@ -207,26 +157,21 @@ module.exports = async (client, messageReaction, user) => {
         })
     };
 
-
-
-
-    async function showmore() {
-        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-        if (typeof todoobj !== "object") return;
-        todoobj.state = "detail";
-        messageReaction.message.edit(client.todo(todoobj, "yes"))
+    async function showMore() {
+        todo = await client.getTodoByMsg(messageReaction.message.id, messageReaction.message.guild.id)
+        if (typeof todo !== 'object') return;
+        todo.state = 'detail';
+        messageReaction.message.edit(client.todo(todo, 'yes'))
         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
-        await messageReaction.message.react("⬆️")
+        await messageReaction.message.react('⬆️')
     }
 
-    async function showless() {
-        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-        if (typeof todoobj !== "object") return;
-        todoobj.state = "closed";
-        messageReaction.message.edit(client.todo(todoobj))
+    async function showLess() {
+        todo = await client.getTodoByMsg(messageReaction.message.id, messageReaction.message.guild.id)
+        if (typeof todo !== 'object') return;
+        todo.state = 'closed';
+        messageReaction.message.edit(client.todo(todo))
         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
-        await messageReaction.message.react("⬇️")
+        await messageReaction.message.react('⬇️')
     }
-
-
 };

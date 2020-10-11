@@ -23,4 +23,4 @@ const configschema = new mongoose.Schema({
     blacklist_users: Array
 })
 
-exports.configmodel = new mongoose.model("todoconfig", configschema)
+module.exports = new mongoose.model('todoconfig', configschema)

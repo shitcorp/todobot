@@ -4,6 +4,4 @@ const userschema = new mongoose.Schema({
     color: String
 });
 
-const usermodel = new mongoose.model("users", userschema)
-
-module.exports = { usermodel };
+module.exports = new mongoose.model('users', userschema)

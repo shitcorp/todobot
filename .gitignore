@@ -1,5 +1,5 @@
+.env
 node_modules
-config.js
 data.sqlite
 data.sqlite-shm
 data.sqlite-wal
