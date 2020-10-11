@@ -22,7 +22,7 @@ const client = {
   commands: new Enmap(),
   aliases: new Enmap(),
   logger: require('./modules/logger'),
-  permLevels: Object.fromEntries(require('./modules/permLevels').map(pl => [pl.level, { name: pl.name, check: pl.check }])),
+  permLevels: Object.fromEntries(require('./modules/permLevels').map(pl => [pl.name, { level: pl.level, check: pl.check }])),
   cache: redis.createClient({
     host: 'localhost',
     port: 6379

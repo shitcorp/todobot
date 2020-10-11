@@ -136,7 +136,7 @@ module.exports = async (client, messageReaction, user) => {
                         default:
                             message.channel.send(client.error(`
                             This is not a valid key to edit. Valid keys are: title, loop, state, content and category
-                            `)).then((msg) => msg.deletable && msg.delete({ timeout }))
+                            `)).then(async (msg) => msg.deletable && await msg.delete({ timeout }))
                     }
 
                     function update(args) {

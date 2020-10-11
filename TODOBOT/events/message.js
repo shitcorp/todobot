@@ -71,7 +71,7 @@ module.exports = async (client, message) => {
 
   if (cmdRecently[message.author.id]) {
     return message.reply(client.warning(`Please wait  \`${client.config.cooldown / 1000}\`  seconds before doing this command again!`))
-      .then(msg => msg.deletable && msg.delete({ timeout }));
+      .then(async (msg) => msg.deletable && await msg.delete({ timeout }));
   } else {
     cmdRecently[message.author.id] = true;
     setTimeout(() => delete cmdRecently[message.author.id], client.config.cooldown)
