@@ -150,8 +150,8 @@ module.exports = (client) => {
         })
     };
 
-    client.getprocessedtodos = (user) => {
-        return todomodel.find({ assigned: user }, (err, docs) => {
+    client.getprocessedtodos = async (user) => {
+        return await todomodel.find({ assigned: user }, (err, docs) => {
             if (err) return client.logger.debug(err)
             return docs;
         })

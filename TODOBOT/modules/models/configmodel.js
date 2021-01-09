@@ -15,12 +15,12 @@ const configschema = new mongoose.Schema({
     suggestions_enabled: Boolean,
     bugs_enabled: Boolean,
     staffroles: Array,
-    categories: Array,
     tags: Map,
     urldomain: Number,
     urlengine: String,
     blacklist_channels: Array,
-    blacklist_users: Array
+    blacklist_users: Array,
+    vars: Map
 })
 
 exports.configmodel = new mongoose.model("todoconfig", configschema)

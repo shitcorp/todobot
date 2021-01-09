@@ -86,21 +86,22 @@ exports.run = async (client, message, args, level) => {
         const patt = /([1-9])\w+/g
         const result = patt.test(lastarg)
     
-        if (result) {
-            if (parseInt(lastarg) > docs.length) limit = docs.length
-                else limit = parseInt(lastarg)
-        } else {
-            limit = docs.length
-        }
         
-
+        
         let obj = {
             guildid: message.guild.id
         }
-
+        
         obj[key] = val
-        console.log(limit)
+        
         todomodel.find(obj, (err, docs) => {
+            
+            if (result) {
+                if (parseInt(lastarg) > docs.length) limit = docs.length
+                    else limit = parseInt(lastarg)
+            } else {
+                limit = docs.length
+            }
             
             if (err) {
                 errormessage(`Something went wrong when trying to query the database.`)
@@ -202,7 +203,10 @@ exports.run = async (client, message, args, level) => {
             .setFooter(`Manual:
 ✏️          Edit the TODO
 ❌          Delete the TODO
+🔄          Repost the TODO
 🗑️          Destroy this embed`);
+       
+    
         await FieldsEmbed.build();
 
         // Will not log until the instance finished awaiting user responses

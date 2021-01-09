@@ -91,7 +91,15 @@ The following placeholders are available:
 + <EMBED> => Will generate an embed with your tag message. Optional Parameters are <COLOR> BLUE </COLOR>, (make sure to include a space after the color tags) <IMG> img.todo-bot.xyz/bliDnJn </IMG>, <THUMB> img.todo-bot.xyz/bZLhbHl </THUMB>
 + <PROCESSED> => Will be replaced with the amount of processed tasks by the message author
 + <SUBMITTED> => Will be replaced with the amount of submitted tasks by the message author
++ <MSG_AUTHOR> => Will tag the message author
++ <MSG_AUTHOR_ID> => Will be replaced with the message author id
++ <MSG_AUTHOR_NAME> => Will be replaced with the message authors username, so in my case "MeerBiene"
++ <MSG_AUTHOR_TAG> => Will be replaced with the message authors tag, so in my case "MeerBiene#7060"
++ <GUILD_NAME> => Will be replaced with the guilds name where the message was sent
 ```
+**Notes:** 
++ All the tags are ignorecase, so you can use the like "<join_pos>" or "<guild_name>"
++ you can combine all the tags, so you can use the "<guild_name>" tag within an embed
 
 # Manual
 

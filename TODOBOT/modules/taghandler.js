@@ -1,10 +1,15 @@
 module.exports = (client) => {
   client.taghandler = async (message, tag) => {
+    
+    const conf = await client.getconfig(message.guild.id)
+    console.log(conf.vars)
 
     const getJoinRank = (ID, guild) => { // Call it with the ID of the user and the guild
       if (!guild.member(ID)) return; // It will return undefined if the ID is not valid
 
       let arr = guild.members.cache.array(); // Create an array with every member
+      let test = guild.members.cache.get(message.author.id)
+      //console.log(test)
       arr.sort((a, b) => a.joinedAt - b.joinedAt); // Sort them by join date
 
       for (let i = 0; i < arr.length; i++) { // Loop though every element
@@ -26,8 +31,28 @@ module.exports = (client) => {
     }
 
     const SUBMITTED = async () => {
-      const submitted = await client.getusertodos(message.author.id)
+      const submitted = client.getusertodos(message.author.id)
       return submitted.length
+    }
+
+    const MSG_AUTHOR = async () => {
+      return message.author;
+    }
+
+    const MSG_AUTHOR_ID = async () => {
+      return message.author.id;
+    }
+
+    const MSG_AUTHOR_TAG = async () => {
+      return message.author.tag;
+    }
+
+    const MSG_AUTHOR_NAME = async () => {
+      return message.author.username;
+    }
+
+    const GUILD_NAME = async () => {
+      return message.guild.name;
     }
 
 
@@ -36,20 +61,34 @@ module.exports = (client) => {
       "<JOIN_POS>": JOIN_POS,
       "<MEMCOUNT>": MEMCOUNT,
       "<PROCESSED>": PROCESSED,
-      "<SUBMITTED>": SUBMITTED
+      "<SUBMITTED>": SUBMITTED,
+      "<MSG_AUTHOR>": MSG_AUTHOR,
+      "<MSG_AUTHOR_ID>": MSG_AUTHOR_ID,
+      "<MSG_AUTHOR_TAG>": MSG_AUTHOR_TAG,
+      "<MSG_AUTHOR_NAME>": MSG_AUTHOR_NAME,
+      "<GUILD_NAME>": GUILD_NAME
+      
     }
 
 
-    const handler = async (tag) => {
+    /**
+     * 
+     * @param {*} tag 
+     * turns the key of the placeholder into
+     * a RegExp and replaces it with the value
+     * 
+     */
+
+    const regexHandler = async (tag) => {
       for (let key in PLACEHOLDERS) {
-        let cache = await PLACEHOLDERS[key]()
-        tag = await tag.replace(new RegExp(key, "g"), cache)
+        let value = await PLACEHOLDERS[key]()
+        tag = tag.replace(new RegExp(key, "gi"), value)
       }
       return tag;
     }
 
     const embedhandler = async (tag) => {
-      let cont = tag.replace("<EMBED>", "")
+      let cont = tag.replace("<EMBED>", "").replace("</EMBED>", "")
       let obj = {}
 
       if (tag.includes("<COLOR>")) {
@@ -79,7 +118,7 @@ module.exports = (client) => {
         cont = temp.join(" ")
       }
 
-      let parsed = await handler(cont)
+      let parsed = await regexHandler(cont)
       message.channel.send(client.embed(parsed, obj))
     }
 
@@ -92,8 +131,9 @@ module.exports = (client) => {
      * keywords that are no variables
      */
     tag.includes("<EMBED>") || tag.includes("</EMBED>") ? embedhandler(tag) 
-      : message.channel.send(await handler(tag))
+      : message.channel.send(await regexHandler(tag))
 
 
-  };
+      
+    };
 };

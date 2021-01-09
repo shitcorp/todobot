@@ -12,6 +12,7 @@ exports.run = async (client, message, args, level) => {
     async function showsettings() {
         let settings = await client.getconfig(message.guild.id)
         console.log(Object.isSealed(settings))
+        settings["vars"] = "To view config variables run //configvars";
         settings["tags"] = "To view tags run the command //tags";
         delete settings.__v
         let output = "";

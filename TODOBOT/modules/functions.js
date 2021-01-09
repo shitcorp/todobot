@@ -126,7 +126,7 @@ module.exports = (client) => {
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
-        let output = `${client.users.cache.get(doc.user)}`
+        let output = `${await client.users.cache.get(doc.user)}`
         // if theres users to mention, iterate over the users mentions array and mention them as well
         if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.cache.get(user)}`)
         // if theres roles to mention, iterate ove the roles mentions array and mention them
@@ -165,7 +165,7 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", err => {
-    console.log(err)
+    if (client.config.dev) console.log(err)
   });
 
 
