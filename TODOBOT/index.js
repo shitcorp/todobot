@@ -4,7 +4,8 @@ const readdir = promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const chalk = require("chalk");
 const redis = require("redis");
-const { job } = require("./modules/cron/every_2_minutes")
+const { job } = require("./modules/cron/every_2_minutes");
+const config = require("./config");
 
 
 const client = new Discord.Client({
@@ -105,8 +106,7 @@ const init = async () => {
 
 
 
-
-    client.login(client.config.token);
+    client.config.dev ? client.login(client.config.devtoken) : client.login(client.config.token);
 
     // start the reminder cron job
     job.start()

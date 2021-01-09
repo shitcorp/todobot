@@ -18,6 +18,14 @@ OR
 OR
 
 //todo title // category=someothercategory // [loop*]
+
+OR
+
+//todo this is a title; this is the content; category; [loop*]
+
+OR
+
+//todo title; category=someverycreativecategory; [loop*]
 ```
 
 \*_optional_

@@ -85,7 +85,13 @@ exports.run = async (client, message, args, level) => {
         //console.log(lastarg)
         const patt = /([1-9])\w+/g
         const result = patt.test(lastarg)
-        //console.log(result)
+    
+        if (result) {
+            if (parseInt(lastarg) > docs.length) limit = docs.length
+                else limit = parseInt(lastarg)
+        } else {
+            limit = docs.length
+        }
         
 
         let obj = {
@@ -100,21 +106,12 @@ exports.run = async (client, message, args, level) => {
                 errormessage(`Something went wrong when trying to query the database.`)
             }
 
-            if (!docs) return returnerrormessage(`There was nothing found matching your search criteria.`);
-
-
-            if (result) {
-                limit = lastarg
-            } else {
-                limit = docs.length
-            }
+            if (!docs) return errormessage(`There was nothing found matching your search criteria.`);
 
             if (docs.length <= 0) {
                 return errormessage(`There was nothing found matching your search criteria.`)
             }
-
-            
-            
+           
             display(docs, limit)
         }, { limit: limit })
         
@@ -124,18 +121,20 @@ exports.run = async (client, message, args, level) => {
     
 
     const display = async (TODOS, limit) => {
+
+        console.log(limit)
         
         let arr = []
         
         for (let i = 0; i < limit; i++) {
 
             let todo = TODOS[i]
-
-            if (!todo.title) return;
+            //if (!todo) return;
+            //if (!todo.title) return;
 
             let obj = {}
 
-            todo.title ? obj.title = todo.title : "empty";
+            todo.title ? obj.title = todo.title : obj.title = "empty";
             todo.content ? obj.content = todo.content : obj.content = "empty";
             todo.attachlink ? obj.attachment = todo.attachlink : obj.attachment = "empty";
             todo.category ? obj.category = todo.category : obj.category = "empty";

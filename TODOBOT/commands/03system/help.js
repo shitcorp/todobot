@@ -6,6 +6,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     const settings = [
         settings1
     ]
+    console.log(settings)
 
     if (args[0]) {
         message.delete().catch(console.error());

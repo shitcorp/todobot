@@ -98,11 +98,14 @@ exports.run = async (client, message, args) => {
 
     async function longsave (todoobj) {
         
-        const parsed = args.join(" ").split(" // ")
+        const argStringtoParse = args.join(" ")
+        if (argStringtoParse.includes(" // ")) parsed = argStringtoParse.split(" // ")
+            else if (argStringtoParse.includes(";")) parsed = argStringtoParse.split("; ");
 
         //console.log(parsed)
 
-        parsed[0] ? todoobj.title = parsed[0] : message.channel.send(client.error("You need to at least give a title for your task."))
+        if (parsed[0]) todoobj.title = parsed[0] 
+            else return message.channel.send(client.error("You need to at least give a title for your task."))
         
         if (parsed.includes("loop")) {
             todoobj.loop = true;
@@ -411,5 +414,12 @@ exports.help = {
     name: "todo",
     category: "TODO",
     description: "Submit a new TODO.",
-    usage: "Run todo \n> Then simply answer the questions the bot asks you."
+    usage: `
+    //**todo** title // content // attachment // [loop]
+    
+    OR
+    
+    //**todo** title; content; attachment; [loop]` 
+
+
 };

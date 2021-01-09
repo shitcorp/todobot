@@ -41,7 +41,7 @@ exports.run = async (client, message, args, level) => {
             .then(msg => { if (msg.deletable) msg.delete({ timeout: msgdel })})
     let obj = {}
     obj["prefix"] = `${args[1]}`;
-    client.updateconfig(message.guild.id, obj);
+    client.dbupdateconfig(message.guild.id, obj);
     message.channel.send(client.success(`Saved ⠀\`${args[1]}\`⠀ as your new prefix!`)).then(msg => { msg.delete({ timeout: msgdel }).catch(error => { }) });
     }
     function settodochannel() {
