@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "update": "ncu -u && npm install"
+    "update": "ncu -u",
+    "upgrade": "ncu -u && npm install"
   },
   "author": "MeerBiene",
   "license": "MIT",
