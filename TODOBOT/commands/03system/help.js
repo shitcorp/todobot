@@ -2,18 +2,15 @@ const { MessageEmbed } = require('discord.js');
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     
+    // !TODO Refactor this
     const settings1 = await client.getconfig(message.guild.id)
-    const settings = [
-        settings1
-    ]
-    console.log(settings)
-
+    const settings = [ settings1 ]
+    // !till here
     if (args[0]) {
-        message.delete().catch(console.error());
-        if (client.commands.has(args[0])) {
-            let command = client.commands.get(args[0]);
+        if (client.commands.has(args[0]) || client.aliases.get(args[0])) {
+            let command = client.commands.get(args[0]) || client.commands.get(client.aliases.get(args[0]));
             let detailembed = new MessageEmbed()
-                .addField(`**Command:**`, `> ${args[0]}`)
+                .addField(`**Command:**`, `> ${command.help.name}`)
                 //.setTitle("TODO - Bot Wiki")
                 if (command.conf.aliases && command.conf.aliases.length > 0) {
                 detailembed.addField(`**Aliases:**`, `> ${command.conf.aliases}`)
@@ -34,7 +31,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     } else if (!args[0]) return getAll(client, message, args, level)
 
 
-    function getAll(client, message, args, level) {
+    async function getAll(client, message, args, level) {
 
 
 
@@ -42,21 +39,21 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         const myCommands = message.guild ? client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level) : client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && cmd.conf.guildOnly !== true);
         const commandNames = myCommands.keyArray();
         const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
-        
+        const tagMap = await client.mapBuilder(settings[0].tags)
         const toProperCase = function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         };
         
 
-        let currentCategory = "";
-        let arr = [];
+        let currentCategory = "";;
         let output = "";
         let embed = new MessageEmbed()
             .setThumbnail(client.user.avatarURL)
             .setTitle(`${message.guild.me.displayName}  -  Command List \n`)
-            .addField(`Read More`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ")
             .setColor("#2C2F33")
-        const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 : p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1);
+            if (tagMap.size > 0) embed.addField("Tags:", `To show your tags, run the \`//tags\` command.`, true)
+            embed.addField(`Read More`, "\n> Use" + "`" + settings[0].prefix + "help <commandname>" + "`" + "for details ", true)
+            const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 : p.help.name > c.help.name && p.help.category === c.help.category ? 1 : -1);
         sorted.forEach( c => {
             const cat = c.help.category
             if (currentCategory !== cat) {
@@ -65,14 +62,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
             }
             output +=  " `" + `${c.help.name}` + "`" + `${" ".repeat(longest - c.help.name.length)} |`;
         });
-        //${table.table(possibleInvites)}
         embed.setDescription(`${output}`)
-        message.delete({ timeout: 20 }).catch(error => {});
-        message.channel.send(embed).then(msg => {
-            setTimeout(function () {
-                msg.delete().catch(error => {})
-            }, 60000)
-        });
+        message.channel.send(embed);
 
     }
 

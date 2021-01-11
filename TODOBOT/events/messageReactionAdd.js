@@ -105,7 +105,7 @@ module.exports = async (client, messageReaction, user) => {
             break;
         case "✏️":
             // edit the task and edit the todo msg when finished
-
+            //!TODO remove reaction when finished and send success msg
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
             if (typeof todoobj !== "object") return;
 

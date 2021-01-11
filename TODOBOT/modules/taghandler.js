@@ -26,6 +26,7 @@ module.exports = (client) => {
     }
 
     const PROCESSED = async () => {
+  // nullcheck!!!
       const howMany = await client.getprocessedtodos(message.author.id)
       return howMany.length
     }
@@ -80,9 +81,13 @@ module.exports = (client) => {
      */
 
     const regexHandler = async (tag) => {
-      for (let key in PLACEHOLDERS) {
-        let value = await PLACEHOLDERS[key]()
-        tag = tag.replace(new RegExp(key, "gi"), value)
+      if (tag.includes("<%")) {
+        for (const variable in conf.vars) {
+          tag = tag.replace(new RegExp("<%" + variable + "%>", "gi"), conf.vars[variable]);
+        }
+      }
+      for (const key in PLACEHOLDERS) {
+        tag = tag.replace(new RegExp(key, "gi"), await PLACEHOLDERS[key]())
       }
       return tag;
     }
