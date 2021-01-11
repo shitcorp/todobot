@@ -1,6 +1,6 @@
 {
   "name": "todo-bot",
-  "version": "1.4.4",
+  "version": "2.0.0.alpha02",
   "description": "Todo bot for mick, maybe going to make this somewhat advanced",
   "main": "index.js",
   "scripts": {

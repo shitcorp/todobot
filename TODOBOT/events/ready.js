@@ -2,8 +2,6 @@ const { stati } = require('../data/stati.json');
 const { job } = require('../modules/cron/every_10_minutes');
 
 module.exports = async (client) => {
-
-  await client.dbinit();
   
   // Log that the bot is online.
     client.logger.log(`${client.user.tag}, ready to serve ${await client.users.cache.size} users in ${client.guilds.cache.size} servers.`, "ready");  

@@ -40,7 +40,7 @@ require("./modules/embeds.js")(client);
   })
 
   client.cache.on("ready", () => {
-    client.logger.ready(`Redis client is ready.`)
+    client.logger.redis(`Redis client is ready.`)
   })
 
 
@@ -56,7 +56,7 @@ const init = async () => {
 
 
   
-
+  await client.dbinit();
 
   
     async function load(category) {

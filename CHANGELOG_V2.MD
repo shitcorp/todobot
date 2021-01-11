@@ -83,6 +83,8 @@ To edit a tag use the `edit` command like so:
 
 The `edit` command takes in the tag, followed by the new description (yes it will be overwritten.)
 
+### Placeholders:
+
 The following placeholders are available:
 
 ```diff
@@ -100,6 +102,26 @@ The following placeholders are available:
 **Notes:** 
 + All the tags are ignorecase, so you can use the like "<join_pos>" or "<guild_name>"
 + you can combine all the tags, so you can use the "<guild_name>" tag within an embed
+
+### Configvariables:
+
+Configvariables are a way to store key-value pairs for your guild/server, so you can use them in your tags. This is usefull if you have a discord for a game server where the ip could change. To follow our example, we would create a variable called "ip" and store the ip adress:
+
+```
+//var set ip 127.0.0.1
+```
+
+Then we create a tag called "ip" and use the ip variable in there:
+
+```
+//learn ip The ip of our server is: <%ip%>
+```
+
+If a user then uses the command "//ip" they will get the following output:
+
+```
+The ip of our server is: 127.0.0.1
+```
 
 # Manual
 

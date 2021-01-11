@@ -30,13 +30,16 @@ ${timestamp}    ${content} `);
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);
     }
     case "ready": {
-      return console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} `);
+      return console.log(`${timestamp} ${chalk.greenBright(type.toUpperCase())} ${content} `);
     }
     case "dba": {
       return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `)
     }
     case "mongo": {
-      return console.log(`${timestamp} ${chalk.black.bgGreenBright(type.toUpperCase())} ${content}`)
+      return console.log(`${timestamp} ${chalk.greenBright("[ " + type.toUpperCase() + " ]")} ${content}`)
+    }
+    case "redis": {
+      return console.log(`${timestamp} ${chalk.red("[ " + type.toUpperCase() + " ]")} ${content}`)
     }
 
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd, dba or error.");
@@ -51,3 +54,4 @@ exports.debug = (...args) => this.log(...args, "debug");
 exports.cmd = (...args) => this.log(...args, "cmd");
 exports.dba = (...args) => this.log(...args, "dba");
 exports.mongo = (...args) => this.log(...args, "mongo");
+exports.redis = (...args) => this.log(...args, "redis");

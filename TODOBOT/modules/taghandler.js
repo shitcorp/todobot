@@ -8,11 +8,12 @@ module.exports = (client) => {
       if (!guild.member(ID)) return; // It will return undefined if the ID is not valid
 
       let arr = guild.members.cache.array(); // Create an array with every member
-      let test = guild.members.cache.get(message.author.id)
-      //console.log(test)
-      arr.sort((a, b) => a.joinedAt - b.joinedAt); // Sort them by join date
 
-      for (let i = 0; i < arr.length; i++) { // Loop though every element
+      arr.sort((a, b) => a.joinedAt - b.joinedAt); // Sort them by join date
+      
+      let len = arr.length;
+      
+      for (let i = 0; i < len; i++) { // Loop though every element
         if (arr[i].id == ID) return i; // When you find the user, return it's position
       }
     }
