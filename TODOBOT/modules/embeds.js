@@ -111,7 +111,7 @@ module.exports = (client) => {
                 embed.setFooter(`____________________________
 ✏️          Edit the TODO at hand.
 ✅          Mark the task as finished.
-                ➕          Add yourself to assigned users. `)
+➕          Add yourself to assigned users. `)
                 break;
             case "closed":
                 embed.setColor("GREEN")
@@ -145,8 +145,10 @@ module.exports = (client) => {
             embed.addField("ID", `> ${todoobj._id}`, true)
 
         }
+
         return embed;
-    }
+    
+    };
 
 
 

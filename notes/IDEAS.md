@@ -22,7 +22,6 @@ Im thinking of making something like a manual that pull its information from git
 
 
 
-
 ### new Placeholders:
 - <MSG_AUTHOR> => @MeerBiene (mention)
 - <MSG_AUTHOR_ID> => 5724756289438
@@ -44,3 +43,5 @@ soom TM
 # Github Intagration
 
 I was thinking of making something like a small express API that accepts post requests, so you can give github that webhook url and we can have an issue integration. idk this was just a quick idea i had. If we wanted to take this to a new level we should look into a notion/trello integration as well 
+
+# date-crono integration!!

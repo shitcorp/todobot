@@ -24,6 +24,7 @@ client.config = require("./config.js");
 client.logger = require("./modules/Logger");
 client.cache = rclient;
 
+require("./modules/interactionhandler.js")(client);
 require("./modules/mongohandler.js")(client);
 require("./modules/taghandler.js")(client);
 require("./modules/functions.js")(client);
@@ -52,9 +53,7 @@ client.commands = new Enmap();
 client.aliases = new Enmap();
 
 
-const init = async () => {
-
-
+(async function init() {
   
   await client.dbinit();
 
@@ -77,9 +76,7 @@ const init = async () => {
      */
     
     let categories = await readdir('./commands');
-    categories.forEach(cat => {
-      load(cat)
-    })
+    categories.forEach(cat => load(cat))
  
   
   
@@ -113,8 +110,19 @@ const init = async () => {
     job.addCallback(() => { client.reminderjob() })
   
   
+
+    // ID : name
+    const interactions = {
+      "798541310922588160": "avatar",
+      "798543892005650452": "todo"
+    }
+
+    const interactionMap = await client.mapBuilder(interactions)
+
+    // interactionhandler
+    client.ws.on("INTERACTION_CREATE", async interaction => {
+      if (interactionMap.has(interaction.data.id) && interactionMap.get(interaction.data.id) === interaction.data.name) interactionhandler(interaction);
+    });
   
     
-  };
-  
-  init();
+  })();

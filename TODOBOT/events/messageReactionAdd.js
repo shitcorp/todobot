@@ -33,7 +33,8 @@ module.exports = async (client, messageReaction, user) => {
     switch (react) {
         case "📌":
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
+            if (todoobj === null || typeof todoobj !== "object") return;
+
             // add the reacting user to the assigned array,
             // mark the todo as assigned and edit the todo
             // message, then react with the white checkmark
