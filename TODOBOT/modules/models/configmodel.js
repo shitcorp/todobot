@@ -20,7 +20,8 @@ const configschema = new mongoose.Schema({
     urlengine: String,
     blacklist_channels: Array,
     blacklist_users: Array,
-    vars: Map
+    vars: Map,
+    lang: String
 })
 
 exports.configmodel = new mongoose.model("todoconfig", configschema)

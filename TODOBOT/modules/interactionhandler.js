@@ -1,7 +1,7 @@
-module.exports = (client) => {
+const messages = require('../localization/messages.js');
 
 
-    
+module.exports = (client) => {    
     
     
     global.interactionhandler = async (interaction) => {
@@ -10,6 +10,7 @@ module.exports = (client) => {
         //console.log(interaction)
 
         const conf = await client.getconfig(interaction.guild_id)
+        const lang = conf.lang || "en";
 
         const todoHandler = async () => {
             
@@ -27,7 +28,7 @@ module.exports = (client) => {
             
             for (const index in interaction.data.options) {
                 if (interaction.data.options[index].name === "title") {
-                    if (interaction.data.options[index].value === "") return errorMsg(`Empty titles are not allowed.`)
+                    if (interaction.data.options[index].value === "") return errorMsg(messages.emptytitle[lang])
                     todoobject.title = interaction.data.options[index].value;
                 }
                 if (interaction.data.options[index].name === "content") {
@@ -45,9 +46,7 @@ module.exports = (client) => {
             await todomsg.react("✏️")
             await todomsg.react("📌")
             await client.settodo(todoobject)
-            reply(`
-            Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO
-            `);
+            reply(messages.todoposted[lang]);
             console.log(todoobject, todomsg.id);
         };
     

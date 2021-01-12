@@ -1,16 +1,17 @@
 //const { MessageEmbed } = require('discord.js');
 const Pagination = require('discord-paginationembed');
 const { todomodel } = require('../../modules/models/todomodel')
+const messages = require('../../localization/messages.js');
 
 exports.run = async (client, message, args, level) => {
 
     const conf = await client.getconfig(message.guild.id)
   
+    const lang = conf.lang || "en";
+    
     const parser = async (argarr) => {
 
         
-
-
         /**
          *  Supported keywords after "WHERE":
          *  => state= {open|assigned|closed}
@@ -65,9 +66,7 @@ exports.run = async (client, message, args, level) => {
                     wherequery(argarr, parsedarguments[0], parsedarguments[1])
                 break;
                 default:
-                    errormessage(`
-                    This is not a valid query selector. Run \`//help query\` for more information on how to use the query command.
-                    `)
+                    errormessage(messages.wrongqueryselector[lang])
                 break;
             }
 
@@ -104,13 +103,13 @@ exports.run = async (client, message, args, level) => {
             }
             
             if (err) {
-                errormessage(`Something went wrong when trying to query the database.`)
+                errormessage(messages.databaseerror[lang])
             }
 
-            if (!docs) return errormessage(`There was nothing found matching your search criteria.`);
+            if (!docs) return errormessage(messages.nothingfound[lang]);
 
             if (docs.length <= 0) {
-                return errormessage(`There was nothing found matching your search criteria.`)
+                return errormessage(messages.nothingfound[lang]);
             }
            
             display(docs, limit)
@@ -309,7 +308,3 @@ exports.help = {
     description: "Query the database for your processed tasks.",
     usage: "query <YOUR QUERY>"
 };
-
-exports.manual = (message) => {
-
-}

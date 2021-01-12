@@ -1,3 +1,5 @@
+const messages = require('../../localization/messages')
+
 exports.run = async (client, message, args) => {
 
     const uniqid = require('uniqid'); 
@@ -5,6 +7,7 @@ exports.run = async (client, message, args) => {
     const msgdel = client.config.msgdelete
     const guildconf = await client.getconfig(message.guild.id);
     
+    const lang = guildconf.lang || "en";
 
     if (!guildconf) return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
         msg.delete({ timeout: msgdel }).catch(error => { console.error(error) })
