@@ -42,6 +42,7 @@ module.exports = (client) => {
                 // option for loop    
             }
             let todomsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(conf.todochannel).send(await client.todo(todoobject))
+            if (!todomsg) return errorMsg(messages.unabletoposttodo[lang]);
             todoobject.todomsg = todomsg.id;
             await todomsg.react("✏️")
             await todomsg.react("📌")

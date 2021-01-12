@@ -108,13 +108,13 @@ module.exports = async (client, message) => {
   message.author.permLevel = level;
 
   message.flags = [];
-  while (args[0] && args[0][0] === "-") {
-    message.flags.push(args.shift().slice(1));
+  for (const index in args) {
+    if (args[index].startsWith("-")) message.flags.push(args.shift().slice(1));
   }
 
   message.persists = [];
-  while (args[0] && args[0][0] === "~") {
-    message.persists.push(args.shift().slice(1));
+  for (const index in args) {
+    if (args[index].startsWith("~")) message.persists.push(args.shift().slice(1));
   }
 
   // global cooldown here

@@ -1,18 +1,24 @@
-const { configmodel } = require('../../modules/models/configmodel')
+const 
+    { configmodel } = require('../../modules/models/configmodel'),
+    messages = require('../../localization/messages.js');
 
 exports.run = async (client, message, args, level) => {
 
- if (!args[0]) return message.channel.send(client.error(`You forgot to give a tag.`))
+    const conf = await client.getconfig(message.guild.id);
+    if (!conf) return message.channel.send(client.error(messages.noguildconfig["en"]));
+    const lang = conf.lang || "en";
+ 
+    if (!args[0]) return message.channel.send(client.error(messages.forgottagtounlearn[lang]))
 
 configmodel.find({ _id: message.guild.id }).then(res => {
-    if (!res[0]) return message.channel.send(client.error(`There was no config found for your guild.`))
+    if (!res[0]) return message.channel.send(client.error(messages.noguildconfig[lang]))
     let tag = args[0];
     let check = res[0].tags.get(tag)
-    if (!check) return message.channel.send(client.error(`This tag does not seem to exist.`))  
+    if (!check) return message.channel.send(client.error(messages.tagdoesnotexist[lang]))  
     res[0].tags.delete(tag)
     configmodel.updateOne({ _id: message.guild.id }, res[0], function(err, affected, resp) {
         if (err) console.log(err)
-        message.channel.send(client.success(`Successfully unlearned the tag \`${tag}\`.`))
+        message.channel.send(client.success(messages.tagunlearned[lang] + `\`${tag}\`.`))
     })
 })
 }

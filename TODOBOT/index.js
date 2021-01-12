@@ -117,7 +117,7 @@ client.aliases = new Enmap();
       "798543892005650452": "todo"
     }
 
-    const interactionMap = await client.mapBuilder(interactions)
+    const interactionMap = await mapBuilder(interactions)
 
     // interactionhandler
     client.ws.on("INTERACTION_CREATE", async interaction => {

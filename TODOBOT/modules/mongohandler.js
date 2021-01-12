@@ -65,13 +65,14 @@ module.exports = (client) => {
      */
 
     client.setconfig = (configobj) => {
+        
         const newconf = new configmodel(configobj)
-        const cache = getAsync(configobj.guildid)
+        const cache = getAsync(configobj._id)
 
         if (cache !== null) {
-            client.cache.del(configobj.guildid, (err) => {
+            client.cache.del(configobj._id, (err) => {
                 if (!err) {
-                    client.cache.set(configobj.guildid, JSON.stringify(configobj), (err) => {
+                    client.cache.set(configobj._id, JSON.stringify(configobj), (err) => {
                         if (err) client.logger.debug(err)
                     })
                 }

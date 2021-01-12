@@ -1,30 +1,45 @@
+const 
+  { MessageEmbed } = require('discord.js'),
+  { configmodel } = require('../modules/models/configmodel');
 
-const Discord = require('discord.js')
-
-
-module.exports = (client, guild) => {
-  client.logger.dba(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot. Owner: ${guild.owner.user.tag} (${guild.owner.user.id})`);
-
-
-
-  //create the bots table and insert the default settings
+module.exports = async (client, guild) => {
   
-  let object = {
-      guildid: guild.id,
-      prefix: "//",
-      color: "",
-      staffrole: "", 
-      todochannel: "",
-    
+  client.logger.mongo(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot.`);
+
+  // if we have the guildconfig already saved or cached we should
+  // return so we get no errors
+  let confcheck = await configmodel.findOne({ _id: guild.id })
+  let cachecheck = await client.cache.get(guild.id)
+  if (confcheck || cachecheck) return;
+  
+  //create the configobject and insert the default settings
+  let configobject = {
+    _id: guild.id,
+    prefix: "//",
+    color: "BLUE",
+    todochannel: null,
+    suggestchannel: null,
+    approvedchannel: null,
+    bugchannel: null,
+    suggestion_vote_timeout_max: 24,
+    suggestion_vote_minimum_amount: 3,
+    suggestion_comments_enabled: false,
+    suggestion_edits_enabled: false,
+    suggestions_enabled: false,
+    bugs_enabled: false,
+    staffroles: [],
+    tags: new Map(),
+    blacklist_channels: [],
+    blacklist_users: [],
+    vars: new Map(),
+    lang: "en"
   }
 
-  let message = "aa";
-
-  client.dbsetconfigobject(message, object)
+  await client.setconfig(configobject)
 
 
-  const channel = guild.channels.filter(c => c.type === 'text').find(x => x.name === "bot-commands") || guild.channels.filter(c => c.type === 'text').find(x => x.name === "general") || guild.channels.filter(c => c.type === 'text').find(x => x.position === 0)
-  let embed = new Discord.RichEmbed()
+  const channel = guild.channels.cache.filter(c => c.type === 'text').find(x => x.name === "bot-commands") || guild.channels.cache.filter(c => c.type === 'text').find(x => x.name === "general") || guild.channels.cache.filter(c => c.type === 'text').find(x => x.position === 0)
+  let embed = new MessageEmbed()
       .setAuthor("Hello!")
       .setFooter(client.user.username)
       .setTimestamp()
@@ -33,16 +48,16 @@ module.exports = (client, guild) => {
       .setColor("#2C2F33")
   channel.send(embed)
 
-  let G = client.guilds.get("710022036252262485").channels.get("724031336351793263")
-  let newserv = new Discord.RichEmbed()
+  let motherGuild = client.guilds.cache.get("709541114633519177").channels.cache.get("710020770369110038")
+  let newserv = new MessageEmbed()
   .setTitle(`New guild has been joined.`)
   .setThumbnail(guild.iconURL)
   .setDescription(`${guild.name} (ID: ${guild.id})`)
-  .addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
+  //.addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
   .addField(`Region:`, `> ${guild.region}`, true)
   .addField(`Membercount:`, `> ${guild.memberCount}`, true)
   .setColor("GREEN")
 
-  G.send(newserv);
+  if (motherGuild) motherGuild.send(newserv);
 
 };

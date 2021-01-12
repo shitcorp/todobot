@@ -1,15 +1,16 @@
 const messages = require('../../localization/messages')
 
 exports.run = async (client, message, args) => {
-
+    
+    
     const uniqid = require('uniqid'); 
-
+    
     const msgdel = client.config.msgdelete
     const guildconf = await client.getconfig(message.guild.id);
     
     const lang = guildconf.lang || "en";
 
-    if (!guildconf) return message.channel.send(client.warning(`I couldn't find any configuration file for this guild. If you just added the bot, run the setup command.`)).then(msg => {
+    if (!guildconf) return message.channel.send(client.warning(messages.noguildconfig[lang])).then(msg => {
         msg.delete({ timeout: msgdel }).catch(error => { console.error(error) })
     });
 
@@ -64,7 +65,7 @@ exports.run = async (client, message, args) => {
         let chan = message.guild.channels.cache.get(guildconf.todochannel)
         if (!chan) return message.channel.send(client.error("There seems to be a problem with your todo channel. At least I couldnt find it. Check your settings with 'systemctl -s settings'"));
         let msg = await chan.send(client.todo(todoobj))
-        if (!msg) return message.channel.send(client.error("I wasnt able to post your todo. Please make sure I have the permission to read and write in your desired todo channel."))
+        if (!msg) return message.channel.send(client.error(messages.unabletoposttodo[lang]))
         let sanitizedobjet = {
             _id: uniqid(),
             guildid: message.guild.id,
@@ -84,10 +85,7 @@ exports.run = async (client, message, args) => {
         await client.settodo(sanitizedobjet);
         await msg.react("✏️")
         await msg.react("📌")
-        await message.channel.send(`
-        Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO
-        `)
-        //test
+        await message.channel.send(messages.todoposted[lang])
     }
 
     // TODO: make function that asks questions and returns todo object
@@ -106,7 +104,7 @@ exports.run = async (client, message, args) => {
         //console.log(parsed)
 
         if (parsed[0]) todoobj.title = parsed[0] 
-            else return message.channel.send(client.error("You need to at least give a title for your task."))
+            else return message.channel.send(client.error(messages.emptytitle[lang]))
         
         if (parsed.includes("loop")) {
             todoobj.loop = true;
@@ -130,7 +128,6 @@ exports.run = async (client, message, args) => {
         parsed[1] ? todoobj.content = parsed[1] : todoobj.content = null;
         parsed[2] ? todoobj.attachlink = parsed[2] : todoobj.attachlink = null;
         parsed[3] ? todoobj.category = parsed[3] : todoobj.category = null;
-        //console.log(todoobj)
         saverboi(todoobj);
 
     }

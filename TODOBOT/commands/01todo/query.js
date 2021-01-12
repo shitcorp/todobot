@@ -32,7 +32,7 @@ exports.run = async (client, message, args, level) => {
             argind = newind + 1;
             
             if (!argarr[argind]) {
-                return errormessage(`You didnt give any search criteria afer the \`WHERE\` keyword.`)
+                return errormessage(messages.nosearchcriteria[lang])
             }
             
             let raw = argarr[newind]
