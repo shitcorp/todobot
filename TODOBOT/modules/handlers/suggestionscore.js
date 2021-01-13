@@ -1,9 +1,9 @@
-const message = require('../events/message');
+const message = require('../../events/message');
 
 async function suggestionscheck() {
 
 
-    const { configmodel } = require('./models/configmodel')
+    const { configmodel } = require('../models/configmodel')
 
     configmodel.find({ _id: message.guild.id }).then(res => {
         if (!res[0]) return;

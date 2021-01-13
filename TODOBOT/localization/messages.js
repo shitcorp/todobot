@@ -1,8 +1,43 @@
+/**
+ * @file message.js
+ * @fileoverview Messages in different languages for the bot to use
+ * @description 
+ * Usage:
+ * Add your language with the valid language abbreviation and translate
+ * the sentence. I ususally edit this file in a Code Editor like VS-Code,
+ * so I can see when theres a formatting error. What also helps, is when
+ * you add a new language, like lets say french, do it as follows:
+ * 
+ * "something": {
+ *      "en": "...",
+ *      "de": "...",
+ *      "fr": ""
+ * }
+ * 
+ * Add the comma after the last language, then put your language abbreviation,
+ * in quotation marks,  a colon right after, then empty quotation marks. This
+ * ensures that you do everything correctly and dont have to worry about any
+ * formatting mistakes.
+ */
+
 module.exports = {
+    
+    // interactionhandler.js
+    "todonoargs": {
+        "en": "You must at least submit a title for your task.",
+        "de": "Du musst zumindest einen Titel für deine Aufgabe angeben."
+    },
+    
     // interactionhandler.js; todo.js
     "todoposted": {
         "en": "Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO.",
         "de": "Super! Deine neue Aufgabe wurde gepostet, Reagiere mit 📌 um die Aufgabe anzunehmen und mit ✅ wenn du fertig mit der Aufgabe bist."
+    },
+    
+    // interactionhandler.js
+    "addbottoguild": {
+        "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shoten\`",
+        "de": "Der Bot muss Mitglied deines Servers sein um diesen Command benutzen zu können. Verfügbare Slash Commands sind: \`/shorten\`"
     },
     
     // interactionhandler.js
@@ -43,8 +78,8 @@ module.exports = {
 
     // interactionhandler.js; todo.js
     "unabletoposttodo": {
-        "en": "I was unable to post your todo. Please make sure I have the permission to read and write in your desired todo channel.",
-        "de": "Ich konnte deine Aufgabe leider nicht posten. Stelle bitte sicher, dass ich die benötigten Berechtigungen habe, um in deinem TODO-Channel Nachrichten zu lesen und zu schreiben."
+        "en": "I was unable to post your todo. Please make sure I have the permission to read and write in your desired todo channel. Also make sure you have set a channel where I should post the tasks. If not run the //setup command",
+        "de": "Ich konnte deine Aufgabe leider nicht posten. Stelle bitte sicher, dass ich die benötigten Berechtigungen habe, um in deinem TODO-Channel Nachrichten zu lesen und zu schreiben. Hast du vielleicht vergessen, einen Channel festzulegen, in dem ich deine Aufgaben posten soll? Falls ja, lege ihn jetzt mit dem //setup command fest."
     },
 
     // learn.js

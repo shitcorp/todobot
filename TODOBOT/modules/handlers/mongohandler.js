@@ -1,8 +1,8 @@
 const mongoose = require('mongoose'),
-{ MONGO_CONNECTION } = require('../config'),
-{ configmodel } = require('./models/configmodel'),
-{ todomodel } = require('./models/todomodel'),
-{ remindermodel } = require('./models/remindermodel'),
+{ MONGO_CONNECTION } = require('../../config'),
+{ configmodel } = require('../models/configmodel'),
+{ todomodel } = require('../models/todomodel'),
+{ remindermodel } = require('../models/remindermodel'),
 { promisify } = require("util");
 
 

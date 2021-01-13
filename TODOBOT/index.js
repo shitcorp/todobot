@@ -21,14 +21,14 @@ const rclient = redis.createClient({
 
 
 client.config = require("./config.js");
-client.logger = require("./modules/Logger");
+client.logger = require("./modules/util/Logger");
 client.cache = rclient;
 
-require("./modules/interactionhandler.js")(client);
-require("./modules/mongohandler.js")(client);
-require("./modules/taghandler.js")(client);
-require("./modules/functions.js")(client);
-require("./modules/embeds.js")(client);
+require("./modules/handlers/interactionhandler.js")(client);
+require("./modules/handlers/mongohandler.js")(client);
+require("./modules/handlers/taghandler.js")(client);
+require("./modules/util/functions.js")(client);
+require("./modules/util/embeds.js")(client);
 
 
 
@@ -75,7 +75,7 @@ client.aliases = new Enmap();
      *  be the categories they are shown in
      */
     
-    let categories = await readdir('./commands');
+    let categories = await readdir('./commands/');
     categories.forEach(cat => load(cat))
  
   

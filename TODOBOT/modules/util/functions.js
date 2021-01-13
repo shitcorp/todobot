@@ -1,6 +1,6 @@
 const { createMessageCollector } = require('discord.js'),
-  { configmodel } = require("./models/configmodel"),
-  { remindermodel } = require("./models/remindermodel");
+  { configmodel } = require("../models/configmodel"),
+  { remindermodel } = require("../models/remindermodel");
 
 module.exports = (client) => {
 
@@ -10,7 +10,7 @@ module.exports = (client) => {
     try {
       let name = category.toUpperCase()
       client.logger.log(`[${name}] Loading Command: ${commandName}`);
-      const props = require(`../commands/${category}/${commandName}`);
+      const props = require(`../../commands/${category}/${commandName}`);
       if (props.init) {
         props.init(client);
       }
