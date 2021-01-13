@@ -8,10 +8,10 @@ module.exports = {
        
         const conf = await client.getconfig(interaction.guild_id)
         let lang = conf ?  conf.lang : "en";
-        if (!conf) return interactionhandler.errorMsg(interaction, messages.addbottoguild[lang]);
+        if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
        
             
-            if (!interaction.data.options || interaction.data.options.length < 1) return interactionhandler.errorMsg(interaction, messages.todonoargs[lang])
+            if (!interaction.data.options || interaction.data.options.length < 1) return interactionhandler.embed.error(interaction, messages.todonoargs[lang])
             
             const todoobject = { 
                 _id: uniqid(), 
@@ -25,7 +25,7 @@ module.exports = {
             
             for (const index in interaction.data.options) {
                 if (interaction.data.options[index].name === "title") {
-                    if (interaction.data.options[index].value === "") return interactionhandler.errorMsg(interaction, messages.emptytitle[lang])
+                    if (interaction.data.options[index].value === "") return interactionhandler.embed.error(interaction, messages.emptytitle[lang])
                     todoobject.title = interaction.data.options[index].value;
                 }
                 if (interaction.data.options[index].name === "content") {
@@ -43,14 +43,14 @@ module.exports = {
                 todomsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(conf.todochannel).send(await client.todo(todoobject))
             } catch(e) {
                 client.logger.debug(e);
-                return interactionhandler.errorMsg(interaction, messages.unabletoposttodo[lang])
+                return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang])
             } 
-            if (!todomsg) return interactionhandler.errorMsg(interaction, messages.unabletoposttodo[lang]);
+            if (!todomsg) return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang]);
             todoobject.todomsg = todomsg.id;
             await todomsg.react("✏️")
             await todomsg.react("📌")
             await client.settodo(todoobject)
-            reply(messages.todoposted[lang]);
+            interactionhandler.reply(messages.todoposted[lang]);
             console.log(todoobject, todomsg.id);
         
     }

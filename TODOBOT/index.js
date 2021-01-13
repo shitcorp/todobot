@@ -114,7 +114,8 @@ client.aliases = new Enmap();
     // ID : name
     const interactions = {
       "798541310922588160": "avatar",
-      "798543892005650452": "todo"
+      "798543892005650452": "todo",
+      "798890659426992141": "shorten"
     }
 
     const interactionMap = await mapBuilder(interactions)
