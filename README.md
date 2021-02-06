@@ -185,12 +185,13 @@ Example:
 
 ## Support
 
+<a href="https://discord.gg/RuEdX5T">
 
-<table>
-<tr>
-<td>
+<img src="https://img.shields.io/discord/710022036252262485?style=for-the-badge"/>
 
-Whether you need help with the bot, want to try the bot and see it in action, want to suggest new features, or just want to flame me for my bad code, join the support server to the right.
+</a>
+
+Whether you need help with the bot, want to try the bot and see it in action, want to suggest new features, or just want to flame me for my bad code, join the support server with the button above.
 
 You can also use Github Issues if you dont want to join the discord.
 
@@ -198,13 +199,3 @@ You can also use Github Issues if you dont want to join the discord.
 Theres also a `//suggest` command. It takes in an image as first flag (if you want to attach one), or the -hide flag if you want to hide in which server the suggestion was sent. Either way, the suggestion will end up in the #suggestions channel in the support cord.
 
 I also do regular votes on new features in there, so if you want to have a say in the features that will be implemented, you know what to do.
-
-
-</td>
-<td>
-
-
-</td>
-</tr>
-</table>
-<iframe src="https://discord.com/widget?id=710022036252262485&theme=dark" width="350" height="420" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
