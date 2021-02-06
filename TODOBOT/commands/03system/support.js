@@ -7,7 +7,7 @@ exports.run = async (client, message, args, level) => {
     let embed = new MessageEmbed()
         
         .setAuthor(`${client.user.username}`, client.user.avatarURL())
-        .setDescription(`To join the bots support server [click here](https://discord.gg/yJUbads "https://discord.gg/yJUbads").`)
+        .setDescription(`To join the bots support server [click here](https://discord.gg/RuEdX5T "https://discord.gg/RuEdX5T").`)
         .setColor("YELLOW")
 
     message.channel.send(embed);
