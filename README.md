@@ -203,8 +203,8 @@ I also do regular votes on new features in there, so if you want to have a say i
 </td>
 <td>
 
-<iframe src="https://discord.com/widget?id=710022036252262485&theme=dark" width="350" height="420" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
 
 </td>
 </tr>
 </table>
+<iframe src="https://discord.com/widget?id=710022036252262485&theme=dark" width="350" height="420" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
