@@ -99,7 +99,8 @@ exports.run = async (client, message, args) => {
         
         const argStringtoParse = args.join(" ")
         if (argStringtoParse.includes(" // ")) parsed = argStringtoParse.split(" // ")
-            else if (argStringtoParse.includes(";")) parsed = argStringtoParse.split("; ");
+            else if (argStringtoParse.includes(";")) parsed = argStringtoParse.split("; ")
+                else parsed = args;
 
         //console.log(parsed)
 
@@ -148,12 +149,11 @@ exports.help = {
     name: "todo",
     category: "TODO",
     description: "Submit a new TODO.",
-    usage: `
-    //**todo** title // content // attachment // [loop]
-    
-    OR
-    
-    //**todo** title; content; attachment; [loop]` 
+    usage: `//**todo** title // content // attachment // [loop]
+    > 
+    >  OR
+    > 
+    > //**todo** title; content; attachment; [loop]` 
 
 
 };

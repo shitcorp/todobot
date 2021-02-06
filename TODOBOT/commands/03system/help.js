@@ -3,7 +3,8 @@ const { MessageEmbed } = require('discord.js');
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     
     // !TODO Refactor this
-    const settings1 = await client.getconfig(message.guild.id)
+    let settings1 = await client.getconfig(message.guild.id)
+    if (!settings1) settings1 = { prefix: "//", tags: { "example": "tag" } }
     const settings = [ settings1 ]
     // !till here
     if (args[0]) {
@@ -45,7 +46,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
         };
         
 
-        let currentCategory = "";;
+        let currentCategory = "";
         let output = "";
         let embed = new MessageEmbed()
             .setThumbnail(client.user.avatarURL)

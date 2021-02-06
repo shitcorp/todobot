@@ -106,10 +106,11 @@ module.exports = (client) => {
         if (cache !== null) {
             return JSON.parse(cache) 
         } else {
-            configmodel.findOne({ _id }, (err, doc) => {
-                if (err) return client.logger.debug(err)
-                return doc;
-            })
+            let docs = await configmodel.findOne({ _id });
+            if (docs) {
+                client.cache.set(_id, JSON.stringify(docs))
+                return docs;
+            }
         }
 
     };

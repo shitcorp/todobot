@@ -42,26 +42,12 @@ exports.run = async (client, message, args, level) => {
 
             switch(parsedarguments[0]) {
                 case "state":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "severity":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "repeating":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "title":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "content":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "subittedby":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "assigned":
-                    wherequery(argarr, parsedarguments[0], parsedarguments[1])
-                break;
                 case "category":
                     wherequery(argarr, parsedarguments[0], parsedarguments[1])
                 break;
@@ -81,7 +67,6 @@ exports.run = async (client, message, args, level) => {
         let limit;
 
         const lastarg = argarr[argarr.length - 1]
-        //console.log(lastarg)
         const patt = /([1-9])\w+/g
         const result = patt.test(lastarg)
     

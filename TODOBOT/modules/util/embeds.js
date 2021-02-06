@@ -123,6 +123,9 @@ module.exports = (client) => {
                 embed.setFooter(`__________________________
 ⬆️               Show less details.`)
                 break;
+            case "readonly":
+                embed.setColor("BLUE")
+                break;
             default:
                 embed.setColor("YELLOW")
         }

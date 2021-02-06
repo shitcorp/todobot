@@ -1,15 +1,11 @@
-const { version } = require("discord.js");
 const moment = require("moment");
 require("moment-duration-format");
-const Discord = require('discord.js');
 const { MessageEmbed } = require('discord.js')
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
 
-  message.delete().catch(console.error());
-
   const duration = moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
-
+  
   const msg = await message.channel.send(".");
 
   const pkg = require('../../package.json')
@@ -24,7 +20,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     .addField("• Node", `> ${process.version}`, true)
     .addField("• Ping", `> ${msg.createdTimestamp - message.createdTimestamp}ms.`, true)
     .addField("• API Latency", `> ${Math.round(client.ws.ping)}ms`, true)
-    .addField("• Author", `> MeerBiene#7060 (<@686669011601326281>)`, true)
+    .addField("• Author", `> MeerBiene#7060 \n> [Fork Me On Github](https://github.com/MeerBiene)`, true)
     .setColor("#2C2F33")
 
   if (message.flags.includes("l") || message.flags.includes("lib")) {
@@ -38,10 +34,10 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   }
 
 
+  if (msg.deletable) msg.delete();
 
-  msg.edit(statembed).then(ms => {
-    if (ms.deleteable) ms.delete()
-  })
+  message.channel.send(statembed);
+ 
 };
 
 
@@ -56,6 +52,9 @@ exports.conf = {
 exports.help = {
   name: "stats",
   category: "System",
+  flags: [
+    '-l => Show the libraries used to make this bot'
+  ],
   description: "Gives some useful bot statistics. \n> To learn about the used libraries, use the -l or -lib flag.",
   usage: "stats | stats -l | stats -lib"
 };

@@ -1,5 +1,7 @@
 module.exports = (client) => {
   client.taghandler = async (message, tag) => {
+
+    if (!tag) return;
     
     const conf = await client.getconfig(message.guild.id)
     console.log(conf.vars)

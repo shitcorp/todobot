@@ -41,7 +41,7 @@ module.exports = async (client, message) => {
   
   // convert settings.tag object into map
 
-  if (settings !== null) {
+  if (settings) {
 
     const tags = new Map();
     Object.keys(settings.tags).forEach(key => {
@@ -49,8 +49,7 @@ module.exports = async (client, message) => {
     });
 
   
-    const check = tags.get(command); 
-    check ? client.taghandler(message, check) : null;
+    tags.get(command) ?? client.taghandler(message, tags.get(command));
 
     /**
      *  End Taghandler
@@ -73,8 +72,6 @@ module.exports = async (client, message) => {
 
 
   }
-
-
 
 
   if (message.guild && !message.member) await message.guild.fetchMember(message.author);
@@ -115,6 +112,12 @@ module.exports = async (client, message) => {
   message.persists = [];
   for (const index in args) {
     if (args[index].startsWith("~")) message.persists.push(args.shift().slice(1));
+  }
+
+  if (message.flags.includes("h") || message.flags.includes("help")) {
+    let helpcmd = client.commands.get("help")
+    let arg = [command]
+    return helpcmd.run(client, message, arg, level)
   }
 
   // global cooldown here

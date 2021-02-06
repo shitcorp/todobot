@@ -1,4 +1,5 @@
 const { MessageEmbed } =require('discord.js');
+const messages = require('../../localization/messages');
 
 
 exports.run = async (client, message, args, level) => {
@@ -6,11 +7,12 @@ exports.run = async (client, message, args, level) => {
     const { configmodel } = require('../../modules/models/configmodel')
     const userMention = message.mentions.members.first() || message.guild.members.cache.get(args[1]);
     const msgdel = client.config.msgdelete
-
+    let settings = await client.getconfig(message.guild.id)
+    const lang = settings ? settings.lang : "en"; 
+    
     // Functions
 
     async function showsettings() {
-        let settings = await client.getconfig(message.guild.id)
         console.log(Object.isSealed(settings))
         settings["vars"] = "To view config variables run //configvars";
         settings["tags"] = "To view tags run the command //tags";
@@ -105,6 +107,31 @@ exports.run = async (client, message, args, level) => {
             let arg = ['systemctl']
             hcmd.run(client, message, arg, level) 
     }
+
+    function tagshower(configmodel, message, client) {
+        configmodel.find({ _id: message.guild.id }).then(res => {
+            if (!res[0])
+                return message.channel.send(client.error(messages.tagnoconfigfound[lang]));
+            let it = res[0].tags.values();
+            let ky = res[0].tags.keys();
+            let output = "";
+            let embed = new MessageEmbed()
+                .setTitle(`Available Tags in ${message.guild.name}`)
+                .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL)
+                .setColor("#2C2F33")
+                .setTimestamp();
+            for (var i = 0; i < res[0].tags.size; i++) {
+                //embed.addField(ky.next().value, `> ${it.next().value}`, true)
+                let sanitized = it.next().value.slice(0, 69);
+                output += `• \`${ky.next().value}\` =>  ${sanitized} \n`;
+            }
+            embed.setDescription(output);
+            if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
+                embed.addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `);
+            }
+            message.channel.send(embed);
+        });
+    }
     
     // TODO: make sysctl inspect command that returns if everything is set up properly and reminds users
 };
@@ -123,27 +150,4 @@ exports.help = {
     flags: ['-v => View your guilds settings.', '-s => Change your guilds settings.']
 };
 
-function tagshower(configmodel, message, client) {
-    configmodel.find({ _id: message.guild.id }).then(res => {
-        if (!res[0])
-            return message.channel.send(client.error(`I couldnt find any config for your guild.`));
-        let it = res[0].tags.values();
-        let ky = res[0].tags.keys();
-        let output = "";
-        let embed = new MessageEmbed()
-            .setTitle(`Available Tags in ${message.guild.name}`)
-            .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL)
-            .setColor("#2C2F33")
-            .setTimestamp();
-        for (var i = 0; i < res[0].tags.size; i++) {
-            //embed.addField(ky.next().value, `> ${it.next().value}`, true)
-            let sanitized = it.next().value.slice(0, 69);
-            output += `• \`${ky.next().value}\` =>  ${sanitized} \n`;
-        }
-        embed.setDescription(output);
-        if (message.flags.includes("m") || message.flags.includes("man") || message.flags.includes("manual")) {
-            embed.addField(`__Manual:__`, `Add new tags by using the learn command like so: \n \`\`\`//learn example This is an example tag\`\`\` \nTo unlearn a tag, use the unlearn command like so: \n \`\`\`//unlearn example\`\`\`\nTo add a tag that sends a dm to the mentioned user, use the %%SENDDM%% keyword somewhere in your tags description. \`\`\`//learn dmtest %%SENDDM%% This is a dm tag. It will be sent to the dms of a mentioned user.\`\`\` \nFor reply tags (where the bot replies to the mentioned user) use the %%REPLY%% keyword somewhere in your tags description \`\`\` //learn replytest %%REPLY%% This tag will reply to the mentioned user. \`\`\` `);
-        }
-        message.channel.send(embed);
-    });
-}
+

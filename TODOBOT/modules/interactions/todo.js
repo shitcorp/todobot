@@ -7,7 +7,7 @@ module.exports = {
         const uniqid = require("uniqid");
        
         const conf = await client.getconfig(interaction.guild_id)
-        let lang = conf ?  conf.lang : "en";
+        let lang = conf.lang ?  conf.lang : "en";
         if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
        
             
@@ -50,8 +50,7 @@ module.exports = {
             await todomsg.react("✏️")
             await todomsg.react("📌")
             await client.settodo(todoobject)
-            interactionhandler.reply(messages.todoposted[lang]);
-            console.log(todoobject, todomsg.id);
+            interactionhandler.reply(interaction, messages.todoposted[lang]);
         
     }
 };

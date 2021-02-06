@@ -39,11 +39,14 @@ Flags look like this `-someflag`. To find out what flags a command supports, run
 
 **Its important that the flags are passed in before any arguments are passed in!**
 
+#### Help flag
+
+You can now specify the `-h` or `-help` flag, to get help about the command that you want to run, so `//todo -h` returns the usage of the todo command.
+
 ## New Commands
 
-- `//learn`, `//unlearn` and `//edit` as part of the new [Tagsystem.](## Tagsystem)
-- `//manual`[`man`*] => Learn more [here](#Manual)
-- `//reminder` as part of the new [Remindersystem](##Remindersystem)
+- `//learn`, `//unlearn` and `//edit` as part of the new Tagsystem.
+- `//reminder` as part of the new Remindersystem
 
 \*_The words behind the command in brackets are the aliases of the command._
 

@@ -139,6 +139,12 @@ module.exports = {
         "de": "Folgender Tag wurde gelöscht: "
     },
 
+    // commands/02utility/tags | commands/02utility/systemctl
+    "tagnoconfigfound": {
+        "en": "I didn't find any configuration for your guild. Try to run the //setup command",
+        "de": ""
+    },
+
     // modules/interactions/shorten.js
     "nolinkgiven": {
         "en": "You forgot to enter a link to shorten.",
@@ -147,7 +153,7 @@ module.exports = {
 
     // modules/interactions/shorten.js
     "backendoffline": {
-        "en": "The backend seems to be offline. Maybe try again later?... \n\nIf the problem persists please contact the developers on github or discord.",
+        "en": "The backend seems to be offline. Maybe try again later?... \n\nIf the problem persists please contact the developers on discord or open an issue on [Github](https://github.com/MeerBiene/TODOBOT)",
         "de": ""
     },
 
@@ -173,6 +179,28 @@ module.exports = {
     "shortenedurl": {
         "en": "Heres your shortened URL. Keep in mind that it expires in 24 hours. \n",
         "de": "Hier ist dein Kurzlink. Denk dran dass der Link in 24 Stunden gelöscht wird. \n"
+    },
+
+    // events/messageReactionAdd.js
+    "editReactionUsage": {
+        "en": `
+        __**Usage:**__
+
+        Enter the key you want to edit followed by the new value seperated by a comma and a space. **The space after the comma is important and not optional!**
+
+        __**Examples:**__
+
+        > title, this is the new title
+
+        > content, this is my new content
+
+        > loop, true
+
+        > state, open
+
+        > category, important
+        `,
+        "de": ``
     }
 
 }

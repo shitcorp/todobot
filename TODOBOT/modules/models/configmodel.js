@@ -5,6 +5,7 @@ const configschema = new mongoose.Schema({
     prefix: String,
     color: String,
     todochannel: String,
+    readonlychannel: String,
     suggestchannel: String,
     approvedchannel: String,
     bugchannel: String,

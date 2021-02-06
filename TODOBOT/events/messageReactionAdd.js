@@ -1,4 +1,5 @@
 const { todomodel } = require("../modules/models/todomodel")
+const messages = require('../localization/messages');
 
 module.exports = async (client, messageReaction, user) => {
 
@@ -23,9 +24,12 @@ module.exports = async (client, messageReaction, user) => {
     if (userinio === client.user.id) return;
 
     const settings = await client.getconfig(messageReaction.message.guild.id)
-
+    //console.log(settings)
     if (settings === null) return;
+
     if (messageReaction.message.channel.id !== settings.todochannel) return;
+
+    let lang = settings.lang ? settings.lang : "en";
 
     let todoobj;
 
@@ -80,9 +84,29 @@ module.exports = async (client, messageReaction, user) => {
                 messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                     await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
                     await messageReaction.message.react("⬇️")
+                    await messageReaction.message.react("➡️")
                     })
                 }
             } else await client.clearReactions(messageReaction.message, userinio)
+            break;
+        case "➡️":
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            if (typeof todoobj !== "object") return;
+            // send todo to read only channel
+            if (settings.readonlychannel) {
+                try {
+                    let rochan = messageReaction.message.guild.channels.cache.get(settings.readonlychannel)
+                    todoobj.state = "readonly";
+                    await rochan.send(client.todo(todoobj, true))
+                    await messageReaction.message.reactions.removeAll()
+                    await messageReaction.message.react("⬇️")
+                } catch(e) {
+                    console.error(e)
+                    // return and log error (sentry?)
+                }
+            } else {
+                // return error
+            }
             break;
         case "➕":
             //add the reacting user to the assigned array
@@ -136,23 +160,7 @@ module.exports = async (client, messageReaction, user) => {
 
         const timeout = 10000
         const filter = m => m.author.id === user;
-        message.channel.send(client.embed(`
-        __**Usage:**__
-
-        Enter the key you want to edit followed by the new value seperated by a comma and a space. **The space after the comma is important and not optional!**
-
-        __**Examples:**__
-
-        > title, this is the new title
-
-        > content, this is my new content
-
-        > loop, true
-
-        > state, open
-
-        > category, important
-        `)).then((msg) => {
+        message.channel.send(client.embed(messages.editReactionUsage[lang])).then((msg) => {
             message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
                 .then(collected => {
 
@@ -167,18 +175,10 @@ module.exports = async (client, messageReaction, user) => {
 
                     // argument handler
                     switch (args[0]) {
-                        case "title":
-                            update(args)
-                            break;
-                        case "loop":
-                            update(args)
-                            break;
+                        case "title":                          
+                        case "loop": 
                         case "state":
-                            update(args)
-                            break;
                         case "content":
-                            update(args)
-                            break;
                         case "category":
                             update(args)
                             break;
@@ -212,6 +212,7 @@ module.exports = async (client, messageReaction, user) => {
 
 
     async function showmore() {
+        console.log("test")
         todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
         if (typeof todoobj !== "object") return;
         todoobj.state = "detail";
