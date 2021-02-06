@@ -43,13 +43,10 @@ module.exports = async (client, message) => {
 
   if (settings) {
 
-    const tags = new Map();
-    Object.keys(settings.tags).forEach(key => {
-      tags.set(key, settings.tags[key]);
-    });
+    const tags = await client.mapBuilder(settings.tags);
 
   
-    tags.get(command) ?? client.taghandler(message, tags.get(command));
+    tags.has(command) ? client.taghandler(message, tags.get(command)) : null;
 
     /**
      *  End Taghandler

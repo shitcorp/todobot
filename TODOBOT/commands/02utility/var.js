@@ -1,6 +1,7 @@
 exports.run = async (client, message, args, level) => {
 
   const conf = await client.getconfig(message.guild.id)
+  if (!conf.vars) conf.vars = { "example": "This is an example variable" }
   const variableMap = await client.mapBuilder(conf.vars)
 
   const commandError = () => {
@@ -22,15 +23,17 @@ exports.run = async (client, message, args, level) => {
     args.splice(0, 0, message.flags[0])
   };
 
- 
+  
   const editFunction = async (args) => {
-    variableMap.set(args[1], args[2])
+    let newValue = encodeURI(args.shift(2).join(''));
+    variableMap.set(args[1], newValue)
     conf.vars = variableMap;
     await client.updateconfig(message.guild.id, conf);
     message.channel.send(client.success(`Updated the key \`${args[1]}\` and saved the new value \`${args[2]}\``))
   };
 
 
+  if (!args[0]) return commandError();
   //use args for command
   switch (args[0]) {
     // set a new key value pair
@@ -38,7 +41,7 @@ exports.run = async (client, message, args, level) => {
     case "set":
       if (args.length < 3) return commandError();
       if (variableMap.get(args[1]) !== undefined) return message.channel.send(client.error(`This key already exists.`))
-      variableMap.set(args[1], args[2])
+      variableMap.set(args[1], encodeURI(args.shift(2).join('')))
       conf.vars = variableMap;
       await client.updateconfig(message.guild.id, conf)
       message.channel.send(client.success(`Saved your new configvariable with the key \`${args[1]}\` and the value \`${args[2]}\` `))

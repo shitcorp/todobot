@@ -1,4 +1,5 @@
-const { createMessageCollector } = require('discord.js'),
+const
+  Sentry = require('@sentry/node'),
   { configmodel } = require("../models/configmodel"),
   { remindermodel } = require("../models/remindermodel");
 
@@ -21,6 +22,7 @@ module.exports = (client) => {
       });
       return false;
     } catch (e) {
+      Sentry.captureException(e)
       return `Unable to load command ${commandName}: ${e}`;
     }
   };
@@ -80,9 +82,9 @@ module.exports = (client) => {
 
   client.invalidateCache = async (_id) => {
     client.cache.del(_id, (err) => {
-      err ? client.logger.debug(err) :
+      err ? Sentry.captureException(err) :
         configmodel.findOne({ _id }, (err, doc) => {
-          err ? client.logger.debug(err) :
+          err ? Sentry.captureException(err) :
             client.cache.set(_id, JSON.stringify(doc))
         })
 
@@ -147,6 +149,7 @@ module.exports = (client) => {
         // if the message cant be sent, or the guild cant be fetched or theres some other 
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
+          Sentry.captureException(e)
           client.logger.debug(e.toString())
           remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }
@@ -168,6 +171,7 @@ module.exports = (client) => {
         await reaction.users.remove(userID);
       };
     } catch (error) {
+      Sentry.captureException(error)
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
   };
@@ -175,6 +179,7 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", err => {
+    Sentry.captureException(err)
     if (client.config.dev) console.log(err)
   });
 

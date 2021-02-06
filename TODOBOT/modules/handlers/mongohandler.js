@@ -3,6 +3,7 @@ const mongoose = require('mongoose'),
 { configmodel } = require('../models/configmodel'),
 { todomodel } = require('../models/todomodel'),
 { remindermodel } = require('../models/remindermodel'),
+Sentry = require('@sentry/node'),
 { promisify } = require("util");
 
 
@@ -15,7 +16,10 @@ module.exports = (client) => {
 
         const db = mongoose.connection;
         
-        db.on("error", console.error.bind(console, "(!) Mongo DB Connection error:"))
+        db.on("error", error => {
+            Sentry.captureException(error)
+            client.logger.debug(error)
+        })
     
         db.once("open", async () => {
             client.logger.mongo("Database connection was established.")
@@ -25,30 +29,27 @@ module.exports = (client) => {
                 if (inCache === null) {
                     // pull config from db and set to cache
                     configmodel.findOne({ _id }, (err, doc) => {
-                        if (err) return;
+                        if (err) return Sentry.captureException(err);
                         if (typeof doc === "object") {
                             client.cache.set(_id, JSON.stringify(doc), (err) => {
-                                if (err) client.logger.debug(err)
+                                if (err) Sentry.captureException(err)
                             })
                         }
                     })
                 } else {
                     // delete from cache and pull from db then set to cache
                     client.cache.del(_id, (err) => {
-                        err ? client.logger.debug(err) :
+                        err ? Sentry.captureException(err) :
                             configmodel.findOne({ _id }, (err, doc) => {    
-                                if (err) console.log(err)
+                                if (err) Sentry.captureException(err)
                                 if (typeof doc === "object") {
                                     client.cache.set(_id, JSON.stringify(doc), (err) => {
-                                        if (err) client.logger.debug(err)
+                                        if (err) Sentry.captureException(err)
                                     })
                                 }
                             })
                     })
                 }
-
-
-                //console.log("inCache:", inCache)
                 
             })
         });
@@ -73,7 +74,7 @@ module.exports = (client) => {
             client.cache.del(configobj._id, (err) => {
                 if (!err) {
                     client.cache.set(configobj._id, JSON.stringify(configobj), (err) => {
-                        if (err) client.logger.debug(err)
+                        if (err) Sentry.captureException(err)
                     })
                 }
             })
@@ -81,10 +82,7 @@ module.exports = (client) => {
 
 
         return newconf.save(function(err, doc) {
-            if (err) {
-                client.logger.debug(err)
-                return err;
-            }
+            if (err) Sentry.captureException(err)
 
         }) 
     };
@@ -124,46 +122,30 @@ module.exports = (client) => {
 
     client.updateconfig = async (_id, configobj) => {
         configmodel.updateOne({ _id }, configobj, (err, affected, resp) => {
-            if (err) client.logger.debug(err)
+            if (err) Sentry.captureException(err)
             client.invalidateCache(_id)
         })
     };
 
 
     client.getguildtodos = (guildid) => {
-        return todomodel.find({guildid}), (err, doc) => {
-            if (err) return client.logger.debug(err)
-            return doc;
-        }
+        return todomodel.find({guildid}), (err, doc) => { if (err) return Sentry.captureException(err)}
     };
 
-    client.querytodos = (queryobj) => {
-        
-        return todomodel.find({queryobj} , (err, docs) => {
-            if (err) return client.logger.debug(err)
-            return docs;
-        })
+    client.querytodos = (queryobj) => {    
+        return todomodel.find({queryobj} , (err, docs) => { if (err) return Sentry.captureException(err) })
     };
 
     client.getusertodos = (user) => {
-        return todomodel.find({ submittedby: user }, (err, docs) => {
-            if (err) return client.logger.debug(err)
-            return docs;
-        })
+        return todomodel.find({ submittedby: user }, (err, docs) => { if (err) return Sentry.captureException(err) })
     };
 
     client.getprocessedtodos = async (user) => {
-        return await todomodel.find({ assigned: user }, (err, docs) => {
-            if (err) return client.logger.debug(err)
-            return docs;
-        })
+        return await todomodel.find({ assigned: user }, (err, docs) => { if (err) return Sentry.captureException(err)});
     }
 
     client.getonetodo = (_id) => {
-        return todomodel.findOne({ _id }, (err, doc) => {
-            if (err) return client.logger.debug(err)
-            return doc;
-        })
+        return todomodel.findOne({ _id }, (err, doc) => { if (err) return Sentry.captureException(err) });
     };
 
     /**
@@ -173,37 +155,26 @@ module.exports = (client) => {
      * 
      * returns the todo by message id and channel
      */
-    client.gettodobymsg = (todomsg, guildid) => {
-        return todomodel.findOne({ todomsg, guildid })
-    };
+    client.gettodobymsg = (todomsg, guildid) => { return todomodel.findOne({ todomsg, guildid }) };
 
 
     client.updatetodo = (_id, todoobj) => {
-        return configmodel.updateOne({ _id }, todoobj, (err) => {
-            if (err) client.logger.debug(err)
-        })
+        return configmodel.updateOne({ _id }, todoobj, (err) => { if (err) Sentry.captureException(err) });
     }
 
 
     client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
-        return newtodo.save((err, doc) => {
-            if (err) client.logger.debug(err)
-        })
+        return newtodo.save((err, doc) => { if (err) Sentry.captureException(err) });
     };
 
     client.setreminder = (reminderobj) => {
         let newreminder = new remindermodel(reminderobj);
-        return newreminder.save((err, doc) => {
-            if (err) client.logger.debug(err)
-        })
+        return newreminder.save((err, doc) => { if (err) Sentry.captureException(err) });
     };
 
     client.getreminderbyuser = (user) => {
-        return remindermodel.find({ user }, (err, docs) => {
-            if (err) client.logger.debug(err)
-            return docs;
-        })
+        return remindermodel.find({ user }, (err, docs) => { if (err) Sentry.captureException(err) });
     };
 
 

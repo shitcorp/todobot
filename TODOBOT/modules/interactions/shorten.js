@@ -1,4 +1,5 @@
 const messages = require('../../localization/messages');
+const Sentry = require("@sentry/node");
 const http = require('../util/http');
 
 module.exports = {
@@ -6,20 +7,25 @@ module.exports = {
     name: "shorten",
     run: async (client, interaction) => {
         const conf = await client.getconfig(interaction.guild_id)
-        const lang = conf ? conf.lang : "en";
-        console.log(interaction, interaction.data)
+        const lang = conf.lang ? conf.lang : "en";
+        let domain = "https://m.stlf.me/"
         if (!interaction.data.options) return interactionhandler.embed.error(interaction, messages.nolinkgiven[lang]);
-        let { data } = interaction;
-        let urlToShort = data.options[0].value
+        const { data } = interaction;
+        const urlToShort = data.options[0].value
+        if (data.options[1] && data.options[1].name === "domain") domain = data.options[1].value 
+        if (!domain.startsWith("http")) domain = "https://" + domain
         let response;
         try {
-            response = await http.post("https://m.stlf.me/shorten/", JSON.stringify({ urlToShort }))
+            response = await http.post(domain, JSON.stringify({ urlToShort }))
         } catch(e) {
-            if (e.includes("Not Acceptable")) return interactionhandler.embed.error(interaction, messages.notacceptablelink[lang])
-            if (e.includes("Too Many Requests")) return interactionhandler.embed.error(interaction, messages.toomanyrequests[lang])
+            Sentry.captureException(e)
+            
+            if (e.toString().includes("Not Acceptable")) return interactionhandler.embed.error(interaction, messages.notacceptablelink[lang])
+            if (e.toString().includes("Too Many Requests")) return interactionhandler.embed.error(interaction, messages.toomanyrequests[lang])
+            
             client.logger.debug(e)
         }
-        console.log("res", response)
+        //console.log("res", response)
         if (!response) return interactionhandler.embed.error(interaction, messages.backendoffline[lang]);
         if (response && response.status && response.status >= 500) return interactionhandler.embed.error(interaction, messages.backendoffline[lang])
         let url = response.url ? response.url.replace("http", "https") : messages.somethingwentwrong[lang];

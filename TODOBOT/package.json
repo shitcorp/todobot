@@ -19,6 +19,8 @@
   "license": "MIT",
   "dependencies": {
     "@aero/centra": "^1.0.6",
+    "@sentry/node": "^6.1.0",
+    "@sentry/tracing": "^6.1.0",
     "chalk": "^4.1.0",
     "combined-stream": "^1.0.8",
     "cron": "^1.8.2",
@@ -33,9 +35,7 @@
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.11.15",
-    "node-fetch": "^2.6.1",
     "redis": "^3.0.2",
-    "showdown": "^1.9.1",
     "uniqid": "^5.2.0"
   },
   "devDependencies": {

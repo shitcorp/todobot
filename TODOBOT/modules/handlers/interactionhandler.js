@@ -1,8 +1,8 @@
 const  
-    messages = require('../../localization/messages.js'),
     shortencmd = require('../interactions/shorten'),
     todocmd = require('../interactions/todo'),
-    { Colors } = require('../util/colors');
+    { Colors } = require('../util/colors'),
+    Sentry = require('@sentry/node');
 
 
 module.exports = (client) => {    
@@ -15,10 +15,18 @@ module.exports = (client) => {
         // name on execution
         switch(interaction.data.name) {
             case "todo":
-            todocmd.run(client, interaction);
+                try {
+                    todocmd.run(client, interaction)
+                } catch(e) {
+                    Sentry.captureException(e)
+                }
             break;
             case "shorten":
-            shortencmd.run(client, interaction)
+                try {
+                    shortencmd.run(client, interaction)
+                } catch(e) {
+                    Sentry.captureException(e)
+                }
             break;
         };
         client.logger.cmd(`Received the interaction ${interaction.data.name}`)

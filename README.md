@@ -1,9 +1,18 @@
-<h1 align="center"> TODO Bot for  Discord  </h1>
-
-<h4 align="center">
+<h1 align="center"> TODO Bot for  Discord  
 <a href="https://discord.com/oauth2/authorize?client_id=710225677974241431&permissions=67497040&scope=applications.commands%20bot">
     <img src="https://img.shields.io/badge/Add%20Bot-7289DA.svg?style=for-the-badge"/>
 </a>
+</h1>
+
+<h4 align="center">
+
+<a href="https://discord.gg/RuEdX5T">
+<img src="https://img.shields.io/discord/710022036252262485?style=for-the-badge"/>
+</a>
+
+<img src="https://img.shields.io/github/license/MeerBiene/TODOBOT?style=for-the-badge"/>
+
+
 
 </h4>
 

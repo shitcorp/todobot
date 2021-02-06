@@ -5,7 +5,8 @@ const Enmap = require("enmap");
 const chalk = require("chalk");
 const redis = require("redis");
 const { job } = require("./modules/cron/every_2_minutes");
-const config = require("./config");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 
 
 const client = new Discord.Client({
@@ -19,10 +20,19 @@ const rclient = redis.createClient({
   port: 6379
 })
 
-
 client.config = require("./config.js");
 client.logger = require("./modules/util/Logger");
 client.cache = rclient;
+
+
+Sentry.init({
+  dsn: client.config.sentry_dsn,
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
 
 require("./modules/handlers/interactionhandler.js")(client);
 require("./modules/handlers/mongohandler.js")(client);
@@ -37,6 +47,7 @@ require("./modules/util/embeds.js")(client);
  */
 
   client.cache.on("error", (err) => {
+    Sentry.captureException(err)
     client.logger.debug(err)
   })
 
@@ -66,7 +77,7 @@ client.aliases = new Enmap();
       cmdFilesFun.forEach(f => {
         if (!f.endsWith(".js")) return;
         const response = client.loadCommand(category, f);
-        if (response) console.log(response);
+        if (response) console.log(response)
       });
     }
   

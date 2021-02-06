@@ -4,7 +4,6 @@ module.exports = (client) => {
     if (!tag) return;
     
     const conf = await client.getconfig(message.guild.id)
-    console.log(conf.vars)
 
     const getJoinRank = (ID, guild) => { // Call it with the ID of the user and the guild
       if (!guild.member(ID)) return; // It will return undefined if the ID is not valid
@@ -86,7 +85,7 @@ module.exports = (client) => {
     const regexHandler = async (tag) => {
       if (tag.includes("<%")) {
         for (const variable in conf.vars) {
-          tag = tag.replace(new RegExp("<%" + variable + "%>", "gi"), conf.vars[variable]);
+          tag = tag.replace(new RegExp("<%" + variable + "%>", "gi"), decodeURI(conf.vars[variable]));
         }
       }
       for (const key in PLACEHOLDERS) {
