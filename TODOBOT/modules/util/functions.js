@@ -178,9 +178,15 @@ module.exports = (client) => {
 
 
 
-  process.on("unhandledRejection", err => {
+  process.on("unhandledRejection", (err, promise) => {
     Sentry.captureException(err)
-    if (client.config.dev) console.log(err)
+    if (client.config.dev) console.log(err, promise)
+  });
+
+  process.on("uncaughtException", (err) => {
+    Sentry.captureException(err)
+    console.error(err)
+    process.exit(1);
   });
 
 

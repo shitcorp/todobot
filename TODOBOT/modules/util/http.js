@@ -1,4 +1,6 @@
-const request = require('@aero/centra');
+const 
+	request = require('@aero/centra'),
+	Sentry = require('@sentry/node');
 
 
 const headers = {
@@ -18,6 +20,7 @@ const req = async (route, method, body) => {
 		try {
 			return res.json;
 		} catch {
+			Sentry.captureException(res)
 			return { status: res.statusCode };
 		}
 	} else if (res.statusCode >= 400 && res.statusCode < 500) {
@@ -25,7 +28,6 @@ const req = async (route, method, body) => {
 	} else {
 		console.log(`reattempting, status code: ${res.statusCode}`);
         return { status: res.statusCode };
-        //return await req(route, method, body);
 	}
 };
 

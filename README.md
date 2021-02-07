@@ -20,7 +20,6 @@
 
 
 
-## Overwiew
 
 This Bot aims to provide a virtual TODO list inside your discord server. Instead of relying on commands for interacting with the bot, I tried my best to make the most important functions controlled by reactions. 
 
