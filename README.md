@@ -19,13 +19,30 @@
 
 
 
-
+## 📝 About the Bot
 
 This Bot aims to provide a virtual TODO list inside your discord server. Instead of relying on commands for interacting with the bot, I tried my best to make the most important functions controlled by reactions. 
 
 <br>
 
-### Getting Started
+## Support the developer(s)
+
+If you like the bot and want to give back to me, you can do so via github sponsors. Its greatly appreciated
+
+
+<br>
+
+## Contributing:
+
+All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. Contributors will be listed below:
+
+- Julian Puffler  [Github](https://github.com/puf17640)
+
+**If you are reading this, I still need help with localization(language support), if you want to help, hit me up on discord**
+
+<br>
+
+## Getting Started
 
 After inviting the Bot to your server, run the command `//setup` (// is the default prefix) and answer the questions the bot asks you. When youre done, run the command `//todo myfirsttodo` and submit your first todo. When the task is posted, you can either edit it by reacting with ✏️ or assign yourself by using the ➕ reaction. When youre done, react with ✅ to mark the task as finished. If you want to post the task in a read-only channel for your members to see, click the ➡️ reaction on the finished task embed.
 
