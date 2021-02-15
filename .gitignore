@@ -4,8 +4,9 @@ data.sqlite
 data.sqlite-shm
 data.sqlite-wal
 update.json
-
+data
 *.log
+.history
 
 *.urls.json
 *.url.json
