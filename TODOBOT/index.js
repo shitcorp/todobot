@@ -58,7 +58,10 @@ require("./modules/util/embeds.js")(client);
     7: '7️⃣',
     8: '8️⃣',
     9: '9️⃣',
-    10: '🔟'
+    10: '🔟',
+    '-': '🟥',
+    '+': '🟩',
+    'share': '<:sharesquareregular:820419979719344139>'
     }
 
     client.Mapemoji = {

@@ -84,10 +84,19 @@ module.exports = (client) => {
 
         if (todoobj.tasks) {
             let output = '';
+            let count = 0;
+            let prograssBar = [];
             for (let i = 0; i < todoobj.tasks.length; i++) {
                 output += `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]} \n`
+                if (todoobj.tasks[i].includes('finished_')) {
+                    count++
+                    prograssBar.push(client.emojiMap['+']);
+                } else {
+                    prograssBar.push(client.emojiMap['-']);
+                };
             }
-            embed.addField(`Tasks(${todoobj.tasks.length}):`, `${output}`)
+
+            embed.addField(`Tasks(${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
         }
         
         if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);

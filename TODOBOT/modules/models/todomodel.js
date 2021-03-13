@@ -12,8 +12,12 @@ const todoschema = new mongoose.Schema({
     state: String,
     severity: Number,
     loop: Boolean,
+    // if this is true we have to update the message in the read only channel as well
+    shared: Boolean,
     todomsg: String,
     todochannel: String,
+    readonlymessage: String,
+    readonlychannel:  String,
     assigned: Array,
     category: String
 });
