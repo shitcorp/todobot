@@ -20,7 +20,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     .addField("• Node", `> ${process.version}`, true)
     .addField("• Ping", `> ${msg.createdTimestamp - message.createdTimestamp}ms.`, true)
     .addField("• API Latency", `> ${Math.round(client.ws.ping)}ms`, true)
-    .addField("• Author", `> MeerBiene#7060 \n> [Fork Me On Github](https://github.com/MeerBiene)`, true)
+    .addField("• Author", `> ${pkg.author} \n> [Fork Me On Github](https://github.com/MeerBiene)`, true)
     .setColor("#2C2F33")
 
   if (message.flags.includes("l") || message.flags.includes("lib")) {

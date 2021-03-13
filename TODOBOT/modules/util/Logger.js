@@ -3,8 +3,8 @@
 const fs = require('fs');
 const chalk = require("chalk");
 const moment = require("moment");
+const apm = require('elastic-apm-node');
 const config = require("../../config")
-//const writer = fs.createWriteStream("./logs/debug.log")
 
 exports.log = (content, type = "log") => {
   const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
@@ -16,14 +16,15 @@ exports.log = (content, type = "log") => {
       return console.log(`${timestamp} ${chalk.black.bgYellow(type.toUpperCase())} ${content} `);
     }
     case "error": {
+      apm.captureError(content);
       return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
     }
     case "debug": {
+      apm.captureError(content);
       if (config.debug === "true") {  
         console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} \n`);
       }
-      return fs.appendFileSync("./logs/debug.log", `
-${timestamp}    ${content} `);
+      return fs.appendFileSync("./logs/debug.log", `\n${timestamp}    ${content} `);
     }
     case "cmd": {
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);

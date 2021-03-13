@@ -5,6 +5,7 @@ const todoschema = new mongoose.Schema({
     guildid: String,
     title: String,
     content: String,
+    tasks: Array,
     attachlink: String,
     submittedby: String,
     timestamp: String,
@@ -12,6 +13,7 @@ const todoschema = new mongoose.Schema({
     severity: Number,
     loop: Boolean,
     todomsg: String,
+    todochannel: String,
     assigned: Array,
     category: String
 });

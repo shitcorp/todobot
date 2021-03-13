@@ -55,6 +55,11 @@ module.exports = async (client, messageReaction, user) => {
                 await messageReaction.message.react("✏️")
                 await messageReaction.message.react("✅")
                 await messageReaction.message.react("➕")
+                if (todoobj.tasks) {
+                    for (let i = 0; i < todoobj.tasks.length; i++) {
+                        if (!todoobj.tasks[i].includes('finished_')) await messageReaction.message.react(client.emojiMap[i + 1])
+                    }
+                }
             })
 
             break;
@@ -79,12 +84,12 @@ module.exports = async (client, messageReaction, user) => {
                         await msg.react("📌")
                     })
                 } else {
-                todoobj.state = "closed";
-                await todomodel.updateOne({ _id: todoobj._id }, { state: "closed" })
-                messageReaction.message.edit(client.todo(todoobj)).then(async () => {
-                    await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                    await messageReaction.message.react("⬇️")
-                    await messageReaction.message.react("➡️")
+                    todoobj.state = "closed";
+                    await todomodel.updateOne({ _id: todoobj._id }, { state: "closed" })
+                    messageReaction.message.edit(client.todo(todoobj)).then(async () => {
+                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
+                        await messageReaction.message.react("⬇️")
+                        await messageReaction.message.react("➡️")
                     })
                 }
             } else await client.clearReactions(messageReaction.message, userinio)
@@ -100,7 +105,7 @@ module.exports = async (client, messageReaction, user) => {
                     await rochan.send(client.todo(todoobj, true))
                     await messageReaction.message.reactions.removeAll()
                     await messageReaction.message.react("⬇️")
-                } catch(e) {
+                } catch (e) {
                     console.error(e)
                     // return and log error (sentry?)
                 }
@@ -151,6 +156,34 @@ module.exports = async (client, messageReaction, user) => {
         case "⬆️":
             showless()
             break;
+        case '1️⃣':
+        case '2️⃣':
+        case '3️⃣':
+        case '4️⃣':
+        case '5️⃣':
+        case '6️⃣':
+        case '7️⃣':
+        case '8️⃣':
+        case '9️⃣':
+        case '🔟':
+            // function to mark task as finished
+            todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
+            console.log(todoobj);
+            if (todoobj.tasks[client.Mapemoji[react]-1].includes('finished_')) return client.clearReactions(messageReaction.message, userinio);
+            todoobj.tasks[client.Mapemoji[react]-1] = `finished_ ` + todoobj.tasks[client.Mapemoji[react]-1];
+            console.log(todoobj);
+            await todomodel.updateOne({ _id: todoobj._id }, todoobj);
+            await messageReaction.message.edit(client.todo(todoobj))
+            await client.clearReactions(messageReaction.message, userinio);
+            await messageReaction.message.react("✏️")
+            await messageReaction.message.react("✅")
+            await messageReaction.message.react("➕")
+            if (todoobj.tasks) {
+                for (let i = 0; i < todoobj.tasks.length; i++) {
+                    if (!todoobj.tasks[i].includes('finished_')) await messageReaction.message.react(client.emojiMap[i + 1])
+                }
+            }
+            break;
     }
 
 
@@ -175,8 +208,8 @@ module.exports = async (client, messageReaction, user) => {
 
                     // argument handler
                     switch (args[0]) {
-                        case "title":                          
-                        case "loop": 
+                        case "title":
+                        case "loop":
                         case "state":
                         case "content":
                         case "category":

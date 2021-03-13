@@ -1,5 +1,4 @@
 const
-  Sentry = require('@sentry/node'),
   { configmodel } = require("../models/configmodel"),
   { remindermodel } = require("../models/remindermodel");
 
@@ -22,7 +21,6 @@ module.exports = (client) => {
       });
       return false;
     } catch (e) {
-      Sentry.captureException(e)
       return `Unable to load command ${commandName}: ${e}`;
     }
   };
@@ -171,7 +169,6 @@ module.exports = (client) => {
         await reaction.users.remove(userID);
       };
     } catch (error) {
-      Sentry.captureException(error)
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
   };
@@ -179,13 +176,13 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", (err, promise) => {
-    Sentry.captureException(err)
-    if (client.config.dev) console.trace(err, promise)
+    //client.apm.captureError(err)
+    if (client.config.dev) console.error(err, promise)
   });
 
   process.on("uncaughtException", (err) => {
-    Sentry.captureException(err)
-    if (client.config.dev) console.trace(err)
+    //client.apm.captureError(err)
+    if (client.config.dev) console.error(err)
     process.exit(1);
   });
 

@@ -15,7 +15,7 @@ exports.run = async (client, message, args) => {
     });
 
 
-    var todoobj = {
+    let todoobj = {
         state: "open"
     }
 

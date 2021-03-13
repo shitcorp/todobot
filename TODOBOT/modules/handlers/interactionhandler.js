@@ -1,8 +1,7 @@
 const  
     shortencmd = require('../interactions/shorten'),
     todocmd = require('../interactions/todo'),
-    { Colors } = require('../util/colors'),
-    Sentry = require('@sentry/node');
+    { Colors } = require('../util/colors');
 
 
 module.exports = (client) => {    
@@ -18,14 +17,14 @@ module.exports = (client) => {
                 try {
                     todocmd.run(client, interaction)
                 } catch(e) {
-                    Sentry.captureException(e)
+                    client.logger.debug(e)
                 }
             break;
             case "shorten":
                 try {
                     shortencmd.run(client, interaction)
                 } catch(e) {
-                    Sentry.captureException(e)
+                    client.logger.debug(e)
                 }
             break;
         };

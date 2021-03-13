@@ -3,7 +3,6 @@ const mongoose = require('mongoose'),
 { configmodel } = require('../models/configmodel'),
 { todomodel } = require('../models/todomodel'),
 { remindermodel } = require('../models/remindermodel'),
-Sentry = require('@sentry/node'),
 { promisify } = require("util");
 
 
@@ -29,22 +28,22 @@ module.exports = (client) => {
                 if (inCache === null) {
                     // pull config from db and set to cache
                     configmodel.findOne({ _id }, (err, doc) => {
-                        if (err) return Sentry.captureException(err);
+                        if (err) throw new Error(err);
                         if (typeof doc === "object") {
                             client.cache.set(_id, JSON.stringify(doc), (err) => {
-                                if (err) Sentry.captureException(err)
+                                if (err) throw new Error(err)
                             })
                         }
                     })
                 } else {
                     // delete from cache and pull from db then set to cache
                     client.cache.del(_id, (err) => {
-                        err ? Sentry.captureException(err) :
+                        err ? new Error(err) :
                             configmodel.findOne({ _id }, (err, doc) => {    
-                                if (err) Sentry.captureException(err)
+                                if (err) throw new Error(err)
                                 if (typeof doc === "object") {
                                     client.cache.set(_id, JSON.stringify(doc), (err) => {
-                                        if (err) Sentry.captureException(err)
+                                        if (err) throw new Error(err)
                                     })
                                 }
                             })
@@ -74,7 +73,7 @@ module.exports = (client) => {
             client.cache.del(configobj._id, (err) => {
                 if (!err) {
                     client.cache.set(configobj._id, JSON.stringify(configobj), (err) => {
-                        if (err) Sentry.captureException(err)
+                        if (err) throw new Error(err)
                     })
                 }
             })
@@ -82,7 +81,7 @@ module.exports = (client) => {
 
 
         return newconf.save(function(err, doc) {
-            if (err) Sentry.captureException(err)
+            if (err) throw new Error(err)
 
         }) 
     };
@@ -122,7 +121,7 @@ module.exports = (client) => {
 
     client.updateconfig = async (_id, configobj) => {
         configmodel.updateOne({ _id }, configobj, (err, affected, resp) => {
-            if (err) Sentry.captureException(err)
+            if (err) throw new Error(err)
             client.invalidateCache(_id)
         })
     };

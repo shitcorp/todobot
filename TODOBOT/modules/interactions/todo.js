@@ -36,6 +36,20 @@ module.exports = {
                     if (interaction.data.options[index].value === "") return;
                     todoobject.attachlink = interaction.data.options[index].value;
                 }
+                if (interaction.data.options[index].name === "tasks") {
+                    if (interaction.data.options[index].value === "") return;
+                    if (interaction.data.options[index].value.includes(';')) {
+                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '');
+                        if (temp.length > 10) { 
+                            temp.length = 10;
+                            console.log(interaction);
+                            //interactionhandler.embed.error(interaction, messages.only10tasksallowed[lang]); 
+                        }
+                        todoobject.tasks = temp
+                    } else {
+                        todoobject.tasks = [ interaction.data.options[index].value ];
+                    } 
+                }
                 // option for loop    
             }
             let todomsg;
@@ -46,11 +60,16 @@ module.exports = {
                 return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang])
             } 
             if (!todomsg) return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang]);
+            interactionhandler.reply(interaction, messages.todoposted[lang]);
+            
+            // were saving the channel for future reference, if the todo channel gets changed
+            // and we repost a task/todo and put the link to the original message. Dont know
+            // how to handle deletion of the todo channel but it is what it is
             todoobject.todomsg = todomsg.id;
+            todoobject.todochannel = conf.todochannel;
             await todomsg.react("✏️")
             await todomsg.react("📌")
             await client.settodo(todoobject)
-            interactionhandler.reply(interaction, messages.todoposted[lang]);
         
     }
 };

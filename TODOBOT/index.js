@@ -1,42 +1,33 @@
+const apm = require('elastic-apm-node').start({
+  serverUrl: 'http://localhost:8200',
+  serviceName: 'TodoDiscordBot',
+  environment: 'production'
+})
+
 const Discord = require("discord.js");
-const { promisify } = require("util");
-const readdir = promisify(require("fs").readdir);
+const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const chalk = require("chalk");
 const redis = require("redis");
 const { job } = require("./modules/cron/every_2_minutes");
-const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
 
 
 const client = new Discord.Client({
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION'],
   disableMentions: "everyone",
   disableMentions: "here"
 });
 
-const rclient = redis.createClient({
+client.apm = apm;
+
+client.cache = redis.createClient({
   host: "127.0.0.1",
   port: 6379
-})
+});
 
 client.config = require("./config.js");
 client.logger = require("./modules/util/Logger");
-client.cache = rclient;
 
-
-Sentry.init({
-  dsn: client.config.sentry_dsn,
-
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
-
-
-require("./modules/handlers/interactionhandler.js")(client);
-require("./modules/handlers/mongohandler.js")(client);
-require("./modules/handlers/taghandler.js")(client);
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
 
@@ -47,7 +38,6 @@ require("./modules/util/embeds.js")(client);
  */
 
   client.cache.on("error", (err) => {
-    Sentry.captureException(err)
     client.logger.debug(err)
   })
 
@@ -57,18 +47,53 @@ require("./modules/util/embeds.js")(client);
 
 
 
+  // we need this for the task reactions
+  client.emojiMap = {
+    1: '1️⃣',
+    2: '2️⃣',
+    3: '3️⃣',
+    4: '4️⃣',
+    5: '5️⃣',
+    6: '6️⃣',
+    7: '7️⃣',
+    8: '8️⃣',
+    9: '9️⃣',
+    10: '🔟'
+    }
 
+    client.Mapemoji = {
+      '1️⃣': 1, 
+      '2️⃣': 2, 
+      '3️⃣': 3, 
+      '4️⃣': 4, 
+      '5️⃣': 5, 
+      '6️⃣': 6, 
+      '7️⃣': 7, 
+      '8️⃣': 8, 
+      '9️⃣': 9, 
+      '🔟': 10, 
+    }
+  
+  
+  
+  client.commands = new Enmap();
+  client.aliases = new Enmap();
+  
+  const loadAndInjectClient = async (path) => {
+    (await readdir(path)).forEach(handlerFile => {
+      if (handlerFile.endsWith('.js')) require(path + '/' + handlerFile)(client);
+    })
+  }
 
-
-client.commands = new Enmap();
-client.aliases = new Enmap();
 
 
 (async function init() {
   
+  
+  await loadAndInjectClient('./modules/handlers');
+
   await client.dbinit();
 
-  
     async function load(category) {
       let name = category.toUpperCase()
       const cmdFilesFun = await readdir(`./commands/${category}/`);
@@ -138,3 +163,5 @@ client.aliases = new Enmap();
   
     
   })();
+
+

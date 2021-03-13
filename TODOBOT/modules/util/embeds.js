@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { format } = require("date-fns");
+const todo = require("../interactions/todo");
 
 module.exports = (client) => {
 
@@ -36,11 +37,11 @@ module.exports = (client) => {
 
     client.error = (desc) => {
 
-        const erre = new MessageEmbed()
-            .setAuthor('❌ Error')
+        const errorEmbed = new MessageEmbed()
+            .setAuthor('❌ Error', client.user.avatarURL)
             .setDescription(`${desc}`)
             .setColor("RED")
-        return erre;
+        return errorEmbed;
 
     }
 
@@ -70,7 +71,7 @@ module.exports = (client) => {
     // TODO: put manual in footer (different manuals based on todos state!)
     client.todo = (todoobj, detailbool) => {
 
-        let embed = new MessageEmbed()
+        const embed = new MessageEmbed()
             .setDescription(`**${todoobj.title}**`)
 
         const attacher = () => {
@@ -81,18 +82,25 @@ module.exports = (client) => {
             }
         }
 
+        if (todoobj.tasks) {
+            let output = '';
+            for (let i = 0; i < todoobj.tasks.length; i++) {
+                output += `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]} \n`
+            }
+            embed.addField(`Tasks(${todoobj.tasks.length}):`, `${output}`)
+        }
+        
+        if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);
+        if (todoobj.category) embed.addField("Category", todoobj.category, true);
+        if (todoobj.attachlink) attacher();
 
-        todoobj.content ? embed.addField("Content", `> ${todoobj.content}`) : null;
-        todoobj.attachlink ? attacher() : null;
-        todoobj.category ? embed.addField("Category", todoobj.category, true) : null;
-
-        let output = "";
         if (todoobj.assigned) {
+            let output = '';
             if (todoobj.assigned !== []) {
                 Object.keys(todoobj.assigned).forEach(key => {
                     output += `<@${todoobj.assigned[key]}> \n`
                 })
-                output !== "" && todoobj.state === "assigned" ? embed.addField("Assigned", output, true) : null;
+                if (output !== '' && todoobj.state === 'assigned') embed.addField('Assigned', output, true);
             }
         }
 

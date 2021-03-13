@@ -1,6 +1,6 @@
 const 
 	request = require('@aero/centra'),
-	Sentry = require('@sentry/node');
+	apm = require('elastic-apm-node');
 
 
 const headers = {
@@ -13,21 +13,27 @@ const headers = {
 
 const req = async (route, method, body) => {
 	//route = baseUrl + route;
-	const fetch = request(route, method);
-	fetch.reqHeaders = headers;
-	const res = await fetch.body(body).send();
-	if (res.statusCode >= 200 && res.statusCode < 300) {
-		try {
-			return res.json;
-		} catch {
-			Sentry.captureException(res)
-			return { status: res.statusCode };
-		}
-	} else if (res.statusCode >= 400 && res.statusCode < 500) {
-		return { status: 500 }
-	} else {
-		console.log(`reattempting, status code: ${res.statusCode}`);
-        return { status: res.statusCode };
+	try {
+		const fetch = request(route, method);
+		fetch.reqHeaders = headers;
+		const res = await fetch.body(body).send();
+		if (res.statusCode >= 200 && res.statusCode < 300) {
+			try {
+				return res.json;
+			} catch (e) {
+				apm.captureError(e, { message: { file: 'modules/util/http', line: 24 }, response: res })
+				return { status: res.statusCode };
+			}
+		} else if (res.statusCode >= 400 && res.statusCode < 500) {
+			return { status: 500 }
+		} 
+		// FIXME
+		// else {
+		// 	console.log(`reattempting, status code: ${res.statusCode}`);
+		// 	return { status: res.statusCode };
+		// }
+	} catch (globalError) {
+		apm.captureError(e, { message: { file: 'modules/util/http', line: 36 } })
 	}
 };
 

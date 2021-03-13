@@ -1,5 +1,4 @@
 const messages = require('../../localization/messages');
-const Sentry = require("@sentry/node");
 const http = require('../util/http');
 
 module.exports = {
@@ -7,7 +6,8 @@ module.exports = {
     name: "shorten",
     run: async (client, interaction) => {
         const conf = await client.getconfig(interaction.guild_id)
-        const lang = conf.lang ? conf.lang : "en";
+        console.log(conf)
+        const lang = 'en';
         let domain = "https://m.stlf.me/"
         if (!interaction.data.options) return interactionhandler.embed.error(interaction, messages.nolinkgiven[lang]);
         const { data } = interaction;

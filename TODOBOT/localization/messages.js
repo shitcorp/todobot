@@ -85,6 +85,12 @@ module.exports = {
         "de": "Ich konnte deine Aufgabe leider nicht posten. Stelle bitte sicher, dass ich die benötigten Berechtigungen habe, um in deinem TODO-Channel Nachrichten zu lesen und zu schreiben. Hast du vielleicht vergessen, einen Channel festzulegen, in dem ich deine Aufgaben posten soll? Falls ja, lege ihn jetzt mit dem //setup command fest."
     },
 
+    // todo-interaction
+    "only10tasksallowed": {
+        "en": "Only 10 tasks are allowed, so i capped your task list at 10.",
+        "de": "Es sind maximal 10 Aufgaben erlaubt, deshalb wurde deine TODO-Liste bei 10 Elementen gecappt."
+    },
+
     // commands/02utility/learn.js
     "forgottag": {
         "en": "You forgot to give a tag to learn.",

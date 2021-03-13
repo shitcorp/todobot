@@ -49,6 +49,7 @@ exports.run = async (client, message, args, level) => {
                 case "subittedby":
                 case "assigned":
                 case "category":
+                    // we should use the value as regular expression for better results
                     wherequery(argarr, parsedarguments[0], parsedarguments[1])
                 break;
                 default:
@@ -76,7 +77,7 @@ exports.run = async (client, message, args, level) => {
             guildid: message.guild.id
         }
         
-        obj[key] = val
+        obj[key] = new RegExp(val);
         
         todomodel.find(obj, (err, docs) => {
             
@@ -210,6 +211,9 @@ exports.run = async (client, message, args, level) => {
 
         const todos = await client.getusertodos(message.author.id)
 
+        let index = args.indexOf("TODOS")
+        args.splice(index, 1);
+        parser(args)
         
 
         //console.log(arr)
