@@ -111,8 +111,8 @@ module.exports = {
 
     // commands/02utility/learn.js
     "tagalreadyexists": {
-        "en": "This tag already exists, unlearn it first before overwriting, or use this command with the \`-force\` flag.",
-        "de": "Dieser Tag existiert bereits, lösche ihn erst (//unlearn) oder benutze diesen Command erneut mit der \`-force\` flag."
+        "en": "This tag already exists, unlearn it first before overwriting..",
+        "de": "Dieser Tag existiert bereits, lösche ihn zuerst (//unlearn).."
     },
     
     // commands/02utility/learn.js
