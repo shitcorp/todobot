@@ -4,8 +4,10 @@
   "description": "Todo bot for mick, maybe going to make this somewhat advanced",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "dev": "nodemon TODOBOT/index.js",
+    "dev:worker": "nodemon WORKER/index.js",
+    "start": "node TODOBOT/index.js",
+    "start:worker": "node WORKER/index.js",
     "update": "ncu -u",
     "upgrade": "ncu -u && npm install",
     "commit": "cz",
@@ -13,13 +15,14 @@
   },
   "config": {
     "commitizen": {
-      "path": "./TODOBOT/node_modules/cz-conventional-changelog"
+      "path": "./node_modules/cz-conventional-changelog"
     }
   },
   "author": "MeerBiene",
   "license": "MIT",
   "dependencies": {
     "@aero/centra": "^1.0.6",
+    "@octokit/request": "^5.4.14",
     "chalk": "^4.1.0",
     "combined-stream": "^1.0.8",
     "cron": "^1.8.2",
@@ -30,6 +33,7 @@
     "discord.js": "^12.5.1",
     "elastic-apm-node": "^3.12.1",
     "enmap": "^5.8.4",
+    "express": "^4.17.1",
     "file-type": "^16.3.0",
     "fs": "0.0.1-security",
     "moment": "^2.29.1",

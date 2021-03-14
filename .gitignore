@@ -2,7 +2,8 @@ node_modules
 config.js
 data.sqlite
 data.sqlite-shm
-data.sqlite-wal
+data.sqlite-wal4
+playground.js
 update.json
 data
 *.log

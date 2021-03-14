@@ -61,7 +61,12 @@ require("./modules/util/embeds.js")(client);
     10: '🔟',
     '-': '🟥',
     '+': '🟩',
-    'share': '<:sharesquareregular:820419979719344139>'
+    'edit': '<:edit:820577055342985216>',
+    'finish': '<:finish:820576533059600394>',
+    'assign': '<:assign_yourself:820577858081521675>',
+    'share': '<:share:820419979719344139>',
+    'task_open': '<:task_open:820381667881517118>',
+    'task_finished': '<:task_finished:820384679562838046>'
     }
 
     client.Mapemoji = {
@@ -93,13 +98,13 @@ require("./modules/util/embeds.js")(client);
 (async function init() {
   
   
-  await loadAndInjectClient('./modules/handlers');
+  await loadAndInjectClient(__dirname + '/modules/handlers');
 
   await client.dbinit();
 
     async function load(category) {
       let name = category.toUpperCase()
-      const cmdFilesFun = await readdir(`./commands/${category}/`);
+      const cmdFilesFun = await readdir(__dirname + `/commands/${category}/`);
       let amount = cmdFilesFun.length
       client.logger.log(`${chalk.bgBlue("[CATGEORY]")} [${name}] [COMMANDS: ${chalk.green(amount)}]`);
       cmdFilesFun.forEach(f => {
@@ -114,14 +119,14 @@ require("./modules/util/embeds.js")(client);
      *  be the categories they are shown in
      */
     
-    let categories = await readdir('./commands/');
+    let categories = await readdir(__dirname + '/commands/');
     categories.forEach(cat => load(cat))
  
   
   
   
   
-    const evtFiles = await readdir("./events/");
+    const evtFiles = await readdir(__dirname + "/events/");
     let amount = evtFiles.length
     client.logger.log(`${chalk.bgBlue("[EVENTS]")} Loading ${chalk.green(amount)} events.`);
     evtFiles.forEach(file => {

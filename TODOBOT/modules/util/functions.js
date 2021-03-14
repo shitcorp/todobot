@@ -147,8 +147,7 @@ module.exports = (client) => {
         // if the message cant be sent, or the guild cant be fetched or theres some other 
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
-          Sentry.captureException(e)
-          client.logger.debug(e.toString())
+          client.logger.debug(e)
           remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) Sentry.captureException(err) })
         }
         // if the reminderproperty "loop" is set to false delete the reminder
