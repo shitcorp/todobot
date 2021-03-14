@@ -8,7 +8,7 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
   
   const msg = await message.channel.send(".");
 
-  const pkg = require('../../package.json')
+  const pkg = require('../../../package.json')
 
   const statembed = new MessageEmbed()
     .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL)
@@ -20,8 +20,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
     .addField("• Node", `> ${process.version}`, true)
     .addField("• Ping", `> ${msg.createdTimestamp - message.createdTimestamp}ms.`, true)
     .addField("• API Latency", `> ${Math.round(client.ws.ping)}ms`, true)
-    .addField("• Author", `> ${pkg.author} \n> [Fork Me On Github](https://github.com/MeerBiene)`, true)
-    .setColor("#2C2F33")
+    .addField("• Repo", `${client.emojiMap['github']} [Github](https://github.com/MeerBiene/TODOBOT)`, true)
+    .setColor("BLUE")
 
   if (message.flags.includes("l") || message.flags.includes("lib")) {
     let output = "";

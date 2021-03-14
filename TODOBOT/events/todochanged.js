@@ -6,5 +6,6 @@ module.exports = async (client, todoobj) => {
     if (!todoobj.shared) {
         // update the according read only message
         console.log("yay")
+        
     }
 };

@@ -1,13 +1,11 @@
 const { MessageEmbed } = require('discord.js')
 
 exports.run = async (client, message, args, level) => {
-    
-    message.delete().catch(console.error());
 
     let embed = new MessageEmbed()
-        .setAuthor(`${client.user.tag}`, client.user.avatarURL)
+        .setAuthor(`${client.user.tag}`, client.user.avatarURL())
         .setDescription(`[Invite me to your server.](http://invite.todo-bot.xyz "http://invite.todo-bot.xyz")`)
-        .setColor("#2C2F33")
+        .setColor("BLUE")
     
     message.channel.send(embed).then(msg => { msg.delete({ timeout: 90000}).catch(error => {}) })
 

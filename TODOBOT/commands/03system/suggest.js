@@ -11,8 +11,8 @@ exports.run = async (client, message, args, level) => {
 
     const embed = new MessageEmbed()
     .setTitle(`New Suggestion:`)
-    .setThumbnail(message.author.avatarURL)
-    .setColor("#2C2F33")
+    .setThumbnail(message.author.avatarURL())
+    .setColor('BLUE')
 
     if (message.guild.id !== "710022036252262485" && !message.flags.includes("hide")) {
         embed.addField(`Sent in server:`, `${message.guild.name}`)
@@ -25,12 +25,12 @@ exports.run = async (client, message, args, level) => {
     const sugtext = args.join(' ')
     embed.setDescription(`> ${sugtext} \n\nSubmitted by: ${message.author.tag} (${message.author}) `)
 
-    let G = client.guilds.cache.get("710022036252262485").channels.cache.get("724024609682489375")
+    let G = client.guilds.cache.get("709541114633519177").channels.cache.get("710020960136331374")
 
     try {
         G.send(embed).then(async msg => {
-            await msg.react("⬆️");
-            await msg.react("⬇️");
+            await msg.react(client.emojiMap['upvote']);
+            await msg.react(client.emojiMap['downvote']);
         })
         message.channel.send(client.success(`Your feature request has been submitted.`)).then(ms => {
             ms.delete({ timeout:60000}).catch(console.error())

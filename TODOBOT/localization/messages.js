@@ -207,6 +207,12 @@ module.exports = {
         > category, important
         `,
         "de": ``
+    },
+
+    // tag interaction
+    "availabletags": {
+        "en": "Available Tags: ",
+        "de": "Verfügbare Tags: "
     }
 
 }

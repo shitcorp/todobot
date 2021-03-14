@@ -41,7 +41,7 @@ module.exports = {
                     if (interaction.data.options[index].value.includes(';')) {
                         // split the string containing the tasks at the semicolon and filter out all empty
                         // tasks as well as task strings that are too long. If theres more than 10, were capping the array
-                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && !task.length > 110);
+                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && task.length.slice(0, 110));
                         if (temp.length > 10) { 
                             temp.length = 10;
                         }

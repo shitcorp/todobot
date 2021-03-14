@@ -1,8 +1,8 @@
-const apm = require('elastic-apm-node').start({
-  serverUrl: 'http://localhost:8200',
-  serviceName: 'TodoDiscordBot',
-  environment: 'production'
-})
+// const apm = require('elastic-apm-node').start({
+//   serverUrl: 'http://localhost:8200',
+//   serviceName: 'TodoDiscordBot',
+//   environment: 'production'
+// })
 
 const Discord = require("discord.js");
 const readdir = require('util').promisify(require("fs").readdir);
@@ -18,7 +18,7 @@ const client = new Discord.Client({
   disableMentions: "here"
 });
 
-client.apm = apm;
+// client.apm = apm;
 
 client.cache = redis.createClient({
   host: "127.0.0.1",
@@ -64,9 +64,12 @@ require("./modules/util/embeds.js")(client);
     'edit': '<:edit:820577055342985216>',
     'finish': '<:finish:820576533059600394>',
     'assign': '<:assign_yourself:820577858081521675>',
+    'github': '<:github:820639615990890496>',
     'share': '<:share:820419979719344139>',
     'task_open': '<:task_open:820381667881517118>',
-    'task_finished': '<:task_finished:820384679562838046>'
+    'task_finished': '<:task_finished:820384679562838046>',
+    'upvote': '<:upvote:820678243828105216>',
+    'downvote': '<:downvote:820677972645642290>'
     }
 
     client.Mapemoji = {
@@ -165,9 +168,7 @@ require("./modules/util/embeds.js")(client);
     const interactionMap = await mapBuilder(interactions)
 
     // interactionhandler
-    client.ws.on("INTERACTION_CREATE", async interaction => {
-      if (interactionMap.has(interaction.data.id) && interactionMap.get(interaction.data.id) === interaction.data.name) interactionhandler(interaction);
-    });
+    client.ws.on("INTERACTION_CREATE", async (interaction) => interactionhandler(interaction));
   
     
   })();

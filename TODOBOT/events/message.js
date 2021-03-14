@@ -13,7 +13,7 @@ module.exports = async (client, message) => {
 
   message.guild ? settings = await client.getconfig(message.guild.id) : null;
   
-  if (client.config.dev) console.log("MANAGE_GUILD permission: ", message.member.hasPermission("MANAGE_GUILD"))
+  if (client.config.dev && !message.author.bot) console.log("MANAGE_GUILD permission: ", message.member.hasPermission("MANAGE_GUILD"), message)
 
   settings ? Prefix = settings.prefix :
     Prefix = "//";
