@@ -82,7 +82,7 @@ module.exports = (client) => {
             }
         }
 
-        if (todoobj.tasks) {
+        if (todoobj.tasks && todoobj.tasks.length > 0) {
             let output = '';
             let count = 0;
             let prograssBar = [];

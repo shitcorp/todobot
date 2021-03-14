@@ -39,23 +39,25 @@ module.exports = async (client, messageReaction, user) => {
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
             if (todoobj === null || typeof todoobj !== "object") return;
 
+            
             // add the reacting user to the assigned array,
             // mark the todo as assigned and edit the todo
             // message, then react with the white checkmark
-
+            
             let assigned = [userinio]
-
+            
             todoobj.state = "assigned";
             todoobj.assigned = assigned;
-
+            
             await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned }, state: "assigned" })
-
+            
             messageReaction.message.edit(client.todo(todoobj)).then(async () => {
+                if (todoobj.shared) client.emit('todochanged', todoobj, client);
                 await messageReaction.message.reactions.removeAll().catch(error => { client.logger.debug(error) })
                 await messageReaction.message.react("✏️")
                 await messageReaction.message.react("✅")
                 await messageReaction.message.react("➕")
-                if (todoobj.shared && todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
+                if (todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
                 if (todoobj.tasks) {
                     for (let i = 0; i < todoobj.tasks.length; i++) {
                         if (!todoobj.tasks[i].includes('finished_')) await messageReaction.message.react(client.emojiMap[i + 1])

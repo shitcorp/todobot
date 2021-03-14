@@ -39,11 +39,11 @@ module.exports = {
                 if (interaction.data.options[index].name === "tasks") {
                     if (interaction.data.options[index].value === "") return;
                     if (interaction.data.options[index].value.includes(';')) {
-                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '');
+                        // split the string containing the tasks at the semicolon and filter out all empty
+                        // tasks as well as task strings that are too long. If theres more than 10, were capping the array
+                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && !task.length > 110);
                         if (temp.length > 10) { 
                             temp.length = 10;
-                            console.log(interaction);
-                            //interactionhandler.embed.error(interaction, messages.only10tasksallowed[lang]); 
                         }
                         todoobject.tasks = temp
                     } else {
@@ -67,6 +67,7 @@ module.exports = {
             // how to handle deletion of the todo channel but it is what it is
             todoobject.todomsg = todomsg.id;
             todoobject.todochannel = conf.todochannel;
+            todoobject.shared = false;
             await todomsg.react("✏️")
             await todomsg.react("📌")
             await client.settodo(todoobject)
