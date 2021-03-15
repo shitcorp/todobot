@@ -121,7 +121,8 @@ exports.run = async (client, message, args, level) => {
 
 
     async function remindercreator() {
-        if (!message.flags[1]) return message.channel.send(client.error(`You forgot to give a time for your reminder.`))
+        //if (!message.flags[1]) return message.channel.send(client.error(`You forgot to give a time for your reminder.`))
+        console.log(message.flags)
         const ID = uniqid('rmndrid-')
         const systime = Date.now();
         let expires;

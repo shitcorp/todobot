@@ -36,8 +36,8 @@ exports.run = async (client, message, args, level) => { // eslint-disable-line n
 
 
 
-
-        const myCommands = message.guild ? client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level) : client.commands.filter(cmd => client.levelCache[cmd.conf.permLevel] <= level && cmd.conf.guildOnly !== true);
+        // TODO: only show commands that can be used with current permission level
+        const myCommands = message.guild ? client.commands : client.commands.filter(cmd => cmd.conf.guildOnly !== true);
         const commandNames = myCommands.keyArray();
         const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
         const tagMap = await client.mapBuilder(settings[0].tags)

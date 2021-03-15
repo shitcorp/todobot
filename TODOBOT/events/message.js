@@ -87,23 +87,26 @@ module.exports = async (client, message) => {
 
 
 
-  if (level < client.levelCache[cmd.conf.permLevel]) {
+  // if (level < client.levelCache[cmd.conf.permLevel]) {
 
 
-    return message.channel.send(client.warning(`You do not have permission to use this command.
-    > Your permission level is **${client.config.permLevels.find(l => l.level === level).name}**
-    > This command requires **${cmd.conf.permLevel}**`)).then(msg => {
-      if (msg.deletable) msg.delete({ timeout })
-    })
+  //   return message.channel.send(client.warning(`You do not have permission to use this command.
+  //   > Your permission level is **${client.config.permLevels.find(l => l.level === level).name}**
+  //   > This command requires **${cmd.conf.permLevel}**`)).then(msg => {
+  //     if (msg.deletable) msg.delete({ timeout })
+  //   })
 
-  }
+  // }
 
 
   message.author.permLevel = level;
 
   message.flags = [];
   for (const index in args) {
-    if (args[index].startsWith("-")) message.flags.push(args.shift().slice(1));
+    console.log(args)
+    while (args[index].startsWith("-")) {
+      message.flags.push(args.shift().slice(1)); 
+    }
   }
 
   message.persists = [];

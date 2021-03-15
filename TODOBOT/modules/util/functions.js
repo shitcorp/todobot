@@ -148,12 +148,12 @@ module.exports = (client) => {
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
           client.logger.debug(e)
-          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) Sentry.captureException(err) })
+          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }
         // if the reminderproperty "loop" is set to false delete the reminder
         doc.loop === false ? remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
           // else update the reminder in the database with the new expires timestamp
-          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) Sentry.captureException(err) })
+          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
       };
     };
   };
