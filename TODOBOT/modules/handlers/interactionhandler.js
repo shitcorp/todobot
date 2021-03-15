@@ -1,44 +1,8 @@
-const  
-    shortencmd = require('../interactions/shorten'),
-    learncmd = require('../interactions/tag'),
-    todocmd = require('../interactions/todo'),
+const
     { Colors } = require('../util/colors');
 
 
-module.exports = (client) => {    
-
-
-    global.interactionhandler = async (interaction) => {
-
-        // refactor, load all interactions in map
-        // on init with id => run(), then check
-        // name on execution
-       
-        switch(interaction.data.name) {
-            case "todo":
-                try {
-                    todocmd.run(client, interaction)
-                } catch(e) {
-                    client.logger.debug(e)
-                }
-            break;
-            case "shorten":
-                try {
-                    shortencmd.run(client, interaction)
-                } catch(e) {
-                    client.logger.debug(e)
-                }
-            break;
-            case 'tag':
-                try {
-                    learncmd.run(client, interaction)
-                } catch(e) {
-                    client.logger.debug(e);
-                }
-            break;
-        };
-        client.logger.cmd(`Received the interaction ${interaction.data.name}`)
-    };
+module.exports = (client) => {
 
     
     

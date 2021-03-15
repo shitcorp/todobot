@@ -89,6 +89,7 @@ require("./modules/util/embeds.js")(client);
   
   client.commands = new Enmap();
   client.aliases = new Enmap();
+  client.interactions = new Enmap();
   
   const loadAndInjectClient = async (path) => {
     (await readdir(path)).forEach(handlerFile => {
@@ -123,15 +124,12 @@ require("./modules/util/embeds.js")(client);
      */
     
     let categories = await readdir(__dirname + '/commands/');
-    categories.forEach(cat => load(cat))
- 
-  
+    categories.forEach(cat => load(cat))  
   
   
   
     const evtFiles = await readdir(__dirname + "/events/");
-    let amount = evtFiles.length
-    client.logger.log(`${chalk.bgBlue("[EVENTS]")} Loading ${chalk.green(amount)} events.`);
+    client.logger.log(`${chalk.bgBlue("[EVENTS]")} Loading ${chalk.green(evtFiles.length)} events.`);
     evtFiles.forEach(file => {
       const eventName = file.split(".")[0];
       client.logger.log(`[EVENT] Loading Event: ${eventName}`);
@@ -139,6 +137,18 @@ require("./modules/util/embeds.js")(client);
   
       client.on(eventName, event.bind(null, client));
     });
+
+
+    const interactionFiles = await readdir(__dirname + '/modules/interactions/');
+    client.logger.log(`${chalk.bgBlue("[INTERACTIONS]")} Loading ${chalk.green(interactionFiles.length)} interactions.`);
+    interactionFiles.forEach(file => {
+      const interactionName = file.split(".")[0];
+      client.logger.log(`[INTERACTION] Loading: ${interactionName}`);
+      client.interactions.set(interactionName, (require(__dirname + '/modules/interactions/' + file)));
+    })
+
+
+
   
     
     client.levelCache = {};
@@ -155,20 +165,17 @@ require("./modules/util/embeds.js")(client);
     // start the reminder cron job
     job.start()
     job.addCallback(() => { client.reminderjob() })
-  
-  
 
-    // ID : name
-    const interactions = {
-      "798541310922588160": "avatar",
-      "798543892005650452": "todo",
-      "798890659426992141": "shorten"
-    }
-
-    const interactionMap = await mapBuilder(interactions)
-
-    // interactionhandler
-    client.ws.on("INTERACTION_CREATE", async (interaction) => interactionhandler(interaction));
+    
+    // interaction"handler"
+    client.ws.on("INTERACTION_CREATE", async (interaction) => {
+      client.logger.cmd(`Received the interaction ${interaction.data.name}`)
+      try {
+        (client.interactions.get(interaction.data.name)).run(client, interaction);
+      } catch (e) {
+        client.logger.debug(e);
+      }
+    });
   
     
   })();
