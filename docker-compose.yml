@@ -14,3 +14,7 @@ services:
       - "127.0.0.1:27017:27017"
     volumes:
       - ./data/mongo:/data/db
+  apm-server:
+    image:
+    ports: 
+    - "127.0.0.1:8200:8200"
