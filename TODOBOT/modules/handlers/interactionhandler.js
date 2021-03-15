@@ -5,7 +5,7 @@ const
 module.exports = (client) => {
 
     
-    
+    global.interactionhandler = {};
 
 
     global.interactionhandler.reply = async (interaction, msg, type = 4) => {

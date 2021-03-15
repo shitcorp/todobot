@@ -1,5 +1,5 @@
-const messages = require('../../localization/messages');
-const http = require('../util/http');
+const messages = require('../localization/messages');
+const http = require('../modules/util/http');
 
 module.exports = {
     id: "798890659426992141",

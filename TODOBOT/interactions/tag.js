@@ -1,5 +1,5 @@
-const messages = require('../../localization/messages.js');
-const { configmodel } = require('../models/configmodel');
+const messages = require('../localization/messages.js');
+const { configmodel } = require('../modules/models/configmodel');
 
 module.exports = {
     id: "",

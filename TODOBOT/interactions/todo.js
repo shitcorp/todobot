@@ -1,4 +1,4 @@
-const messages = require('../../localization/messages.js');
+const messages = require('../localization/messages.js');
 
 module.exports = {
     id: "",
