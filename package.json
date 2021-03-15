@@ -15,7 +15,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+      "path": "./node_modules/emoji-cz"
     }
   },
   "author": "MeerBiene",
@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "commitizen": "^4.2.3",
-    "cz-conventional-changelog": "^3.3.0"
+    "cz-conventional-changelog": "^3.3.0",
+    "emoji-cz": "^0.3.1"
   }
 }

@@ -5,6 +5,7 @@ data.sqlite-shm
 data.sqlite-wal4
 playground.js
 update.json
+package-lock.json
 data
 *.log
 .history

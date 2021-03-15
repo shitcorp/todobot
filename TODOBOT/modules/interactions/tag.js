@@ -38,7 +38,7 @@ module.exports = {
                 tagMap.set(tag, value);
                 conf.tags = tagMap;
                 configmodel.updateOne({ _id: interaction.guild_id }, conf, function (err, affected, resp) {
-                    if (!err) interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
+                    if (!err) return interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
                     client.invalidateCache(interaction.guild_id);
                 })
                 break;
