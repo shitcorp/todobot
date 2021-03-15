@@ -40,11 +40,10 @@ module.exports = {
                     if (interaction.data.options[index].value === "") return;
                     if (interaction.data.options[index].value.includes(';')) {
                         // split the string containing the tasks at the semicolon and filter out all empty
-                        // tasks as well as task strings that are too long. If theres more than 10, were capping the array
-                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && task.length.slice(0, 110));
-                        if (temp.length > 10) { 
-                            temp.length = 10;
-                        }
+                        // tasks as well as task strings that are too long. If theres more than 10, were just 
+                        // capping the array by setting the length to 10
+                        let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && task.length < 110);
+                        if (temp.length > 10) temp.length = 10;
                         todoobject.tasks = temp
                     } else {
                         todoobject.tasks = [ interaction.data.options[index].value ];
