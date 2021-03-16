@@ -6,7 +6,7 @@ const Pagination = require('discord-paginationembed');
 const { remindermodel } = require('../modules/models/remindermodel');
 
 module.exports = {
-    id: "798890659426992141",
+    id: "",
     name: "reminder",
     run: async (client, interaction) => {
         if (!interaction.data.options) return;
@@ -87,13 +87,13 @@ const newviewer = async (client, interaction, arr) => {
 
     // in order for discord to show the interaction we have to reply
     // with something. even a space will do :D its just to acknowledge
-    // the interaction/slash command, so the user gety instant feedback
+    // the interaction/slash command, so the user gets instant feedback
     interactionhandler.reply(interaction, ' ', 2);
 
     const FieldsEmbed = new Pagination.FieldsEmbed()
         .setArray(arr)
         .setAuthorizedUsers([interaction.member.user.id])
-        .setChannel(client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id))
+        .setChannel(client.guilds.cache.fetch(interaction.guild_id).channels.cache.fetch(interaction.channel_id))
         .setElementsPerPage(1)
         // Initial page on deploy
         .setPage(1)

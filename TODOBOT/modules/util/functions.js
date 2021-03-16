@@ -136,14 +136,14 @@ module.exports = (client) => {
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
-        let output = `${await client.users.cache.get(doc.user)}`
+        let output = `${await client.users.fetch(doc.user)}`
         // if theres users to mention, iterate over the users mentions array and mention them as well
         if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.cache.get(user)}`)
         // if theres roles to mention, iterate ove the roles mentions array and mention them
         if (doc.mentions.roles.length > 0) doc.mentions.roles.forEach(role => output += `, <@&${role}>`)
         // tryto get the guild where the reminder was created, then the channel, then send the reminder message in that channel
         try {
-          client.guilds.cache.get(doc.guild.id).channels.cache.get(doc.guild.channel).send(output, client.reminder(doc))
+          client.guilds.fetch(doc.guild.id).channels.fetch(doc.guild.channel).send(output, client.reminder(doc))
         // if the message cant be sent, or the guild cant be fetched or theres some other 
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {

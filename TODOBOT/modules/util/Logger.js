@@ -24,7 +24,7 @@ exports.log = (content, type = "log") => {
       if (config.debug === "true") {  
         console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} \n`);
       }
-      return fs.appendFileSync("./logs/debug.log", `\n${timestamp}    ${content} `);
+      return fs.appendFileSync("../../logs/debug.log", `\n${timestamp}    ${content} `);
     }
     case "cmd": {
       return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);

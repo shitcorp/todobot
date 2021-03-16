@@ -2,7 +2,7 @@ const messages = require('../localization/messages');
 const http = require('../modules/util/http');
 
 module.exports = {
-    id: "798890659426992141",
+    id: "",
     name: "shorten",
     run: async (client, interaction) => {
         const conf = await client.getconfig(interaction.guild_id)
@@ -18,11 +18,8 @@ module.exports = {
         try {
             response = await http.post(domain, JSON.stringify({ urlToShort }))
         } catch(e) {
-            Sentry.captureException(e)
-            
             if (e.toString().includes("Not Acceptable")) return interactionhandler.embed.error(interaction, messages.notacceptablelink[lang])
             if (e.toString().includes("Too Many Requests")) return interactionhandler.embed.error(interaction, messages.toomanyrequests[lang])
-            
             client.logger.debug(e)
         }
         //console.log("res", response)
