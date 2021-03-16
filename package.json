@@ -44,8 +44,8 @@
     "mongoose": "^5.12.0",
     "redis": "^3.0.2",
     "standard-version": "^9.1.1",
-    "uniqid": "^5.3.0",
     "utf-8-validate": "^5.0.4",
+    "uuid": "^8.3.2",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {

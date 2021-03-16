@@ -1,5 +1,5 @@
 const systime = Date.now();
-const uniqid = require('uniqid');
+const { v4: uuidv4 } = require('uuid');
 const messages = require('../localization/messages');
 const { formatDistanceToNow } = require('date-fns');
 const Pagination = require('discord-paginationembed');
@@ -55,7 +55,7 @@ module.exports = {
                     break;
                 }
                 if (content.length > 400) return interactionhandler.embed.error(interaction, `Your content is too large, you used \`${content.length}\` out of \`400\` available characters.`)
-                const ID = uniqid('rmndrid-');
+                const ID = uuidv4();
                 const rem = {
                     _id: ID,
                     user: interaction.member.user.id,
