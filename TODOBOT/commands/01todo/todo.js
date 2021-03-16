@@ -1,9 +1,7 @@
 const messages = require('../../localization/messages')
+const { v4: uuidv4 } = require("uuid");
 
 exports.run = async (client, message, args) => {
-    
-    
-    const uniqid = require('uniqid'); 
     
     const msgdel = client.config.msgdelete
     const guildconf = await client.getconfig(message.guild.id);
@@ -67,7 +65,7 @@ exports.run = async (client, message, args) => {
         let msg = await chan.send(client.todo(todoobj))
         if (!msg) return message.channel.send(client.error(messages.unabletoposttodo[lang]))
         let sanitizedobjet = {
-            _id: uniqid(),
+            _id: uuidv4(),
             guildid: message.guild.id,
             title: todoobj.title,
             content: todoobj.content,

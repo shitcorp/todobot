@@ -1,11 +1,10 @@
 const messages = require('../../localization/messages.js');
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
     id: "",
     name: "todo",
-    run: async (client, interaction) => {
-        const uniqid = require("uniqid");
-       
+    run: async (client, interaction) => {       
         const conf = await client.getconfig(interaction.guild_id)
         let lang = conf.lang ?  conf.lang : "en";
         if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
@@ -14,7 +13,7 @@ module.exports = {
             if (!interaction.data.options || interaction.data.options.length < 1) return interactionhandler.embed.error(interaction, messages.todonoargs[lang])
             
             const todoobject = { 
-                _id: uniqid(), 
+                _id: uuidv4(), 
                 guildid: interaction.guild_id, 
                 state: "open", 
                 submittedby: interaction.member.user.id, 

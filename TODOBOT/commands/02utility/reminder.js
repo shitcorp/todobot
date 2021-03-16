@@ -1,11 +1,11 @@
 const { formatDistanceToNow } = require('date-fns');
 const Pagination = require('discord-paginationembed');
+// imports
+const { remindermodel } = require('../../modules/models/remindermodel');
+const { v4: uuidv4 } = require("uuid");
 
 exports.run = async (client, message, args, level) => {
 
-    // imports
-    const { remindermodel } = require('../../modules/models/remindermodel');
-    const uniqid = require('uniqid');
     const timeout = client.config.msgdelete
 
     //Handler
@@ -122,7 +122,7 @@ exports.run = async (client, message, args, level) => {
 
     async function remindercreator() {
         if (!message.flags[1]) return message.channel.send(client.error(`You forgot to give a time for your reminder.`))
-        const ID = uniqid('rmndrid-')
+        const ID = uuidv4();
         const systime = Date.now();
         let expires;
 
