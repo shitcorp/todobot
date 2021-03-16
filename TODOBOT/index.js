@@ -9,7 +9,8 @@ const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const chalk = require("chalk");
 const redis = require("redis");
-const { job } = require("./modules/cron/every_2_minutes");
+const { MONGO_CONNECTION } = require('./config');
+const agenda = new Agenda({ db: { address: MONGO_CONNECTION } });
 
 
 const client = new Discord.Client({
@@ -147,9 +148,19 @@ const loadAndInjectClient = async (path) => {
 
   client.config.dev ? client.login(client.config.devtoken) : client.login(client.config.token);
 
-  // start the reminder cron job
-  job.start()
-  job.addCallback(() => { client.reminderjob() })
+
+
+  agenda.define("reminderjob", async (job) => {
+    client.reminderjob()
+  });
+
+  (async function () {
+    // IIFE to give access to async/await
+    await agenda.start();
+    // Alternatively, you could also do: (every 2 minutes)
+    await agenda.every("*/2 * * * *", "reminderjob");
+  })();
+
 
 
   // interaction"handler"
