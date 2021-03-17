@@ -21,6 +21,13 @@ module.exports = {
             embedDataTemplate
         ]
 
+        /**
+         * @fileoverview
+         * IDEA:
+         * go though interactions and show interaction.help.tutorial section
+         */
+
+
         const TutorialEmbed = new Pagination.FieldsEmbed()
             .setArray(arr)
             .setAuthorizedUsers([interaction.member.user.id])

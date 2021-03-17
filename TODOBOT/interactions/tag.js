@@ -1,5 +1,4 @@
 const messages = require('../localization/messages.js');
-const { configmodel } = require('../modules/models/configmodel');
 
 module.exports = {
     id: "",
@@ -15,7 +14,7 @@ module.exports = {
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options) commandopts = interaction.data.options[index].options;
         }
         if (!action) return;
-        let tagMap = await mapBuilder(conf.tags)
+        const tagMap = await mapBuilder(conf.tags)
         let tag, value;
         if (commandopts) {
             for (i in commandopts) {
@@ -37,31 +36,24 @@ module.exports = {
                 if (value.length > 1001) return interactionhandler.embed.error(interaction, messages.descriptiontoolong[lang] + value.length)
                 tagMap.set(tag, value);
                 conf.tags = tagMap;
-                configmodel.updateOne({ _id: interaction.guild_id }, conf, function (err, affected, resp) {
-                    if (!err) return interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
-                    client.invalidateCache(interaction.guild_id);
-                })
+                await client.updateconfig(interaction.guild_id, conf);
+                interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
                 break;
             case 'unlearn':
                 if (!tagMap.get(tag)) return interactionhandler.embed.error(interaction, messages.tagdoesnotexist[lang])
                 tagMap.delete(tag);
                 conf.tags = tagMap;
-                configmodel.updateOne({ _id: interaction.guild_id }, conf, function(err, affected, resp) {
-                    if (!err) interactionhandler.embed.success(interaction, messages.tagunlearned[lang] + `\`${tag}\`.`)
-                    client.invalidateCache(interaction.guild_id);
-                })
+                await client.updateconfig(interaction.guild_id, conf);
+                interactionhandler.embed.success(interaction, messages.tagunlearned[lang] + `\`${tag}\`.`)
                 break;
             case 'edit':
                 if (!tagMap.get(tag)) return interactionhandler.embed.error(interaction, messages.tagdoesnotexist[lang]);
                 if (value.length > 1001) return interactionhandler.embed.error(interaction, messages.descriptiontoolong[lang] + value.length);
                 tagMap.set(tag, value);
                 conf.tags = tagMap;
-                configmodel.updateOne({ _id: interaction.guild_id }, conf, function (err, affected, resp) {
-                    if (!err) interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
-                    client.invalidateCache(interaction.guild_id);
-                })
+                await client.updateconfig(interaction.guild_id, conf);
+                interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
                 break;
         }
-        console.log(action, commandopts)
     }
 };

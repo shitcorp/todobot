@@ -6,8 +6,8 @@ const Pagination = require('discord-paginationembed');
 const { remindermodel } = require('../modules/models/remindermodel');
 
 module.exports = {
-    id: "",
-    name: "reminder",
+    id: '',
+    name: 'reminder',
     run: async (client, interaction) => {
         if (!interaction.data.options) return;
         const conf = await client.getconfig(interaction.guild_id)

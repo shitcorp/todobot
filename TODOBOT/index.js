@@ -10,6 +10,7 @@ const Enmap = require("enmap");
 const chalk = require("chalk");
 const redis = require("redis");
 const { MONGO_CONNECTION } = require('./config');
+const Agenda= require('agenda')
 const agenda = new Agenda({ db: { address: MONGO_CONNECTION } });
 
 
