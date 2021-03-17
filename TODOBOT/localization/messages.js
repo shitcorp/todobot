@@ -213,6 +213,24 @@ module.exports = {
     "availabletags": {
         "en": "Available Tags: ",
         "de": "Verfügbare Tags: "
+    },
+
+    // blacklist interaction
+    'useralreadyblacklisted': {
+        'en': 'This user is already blacklisted.',
+        'de': 'Dieser User ist bereits auf der Blacklist'
+    },
+
+    // blacklist interaction
+    'updatedyourblacklist': {
+        'en': 'Updated your blacklist.',
+        'de': 'Deine neue Blacklist wurde gespeichert.'
+    },
+
+    // blacklist interaction
+    'channelalreadyblacklisted': {
+        'en': 'This channel is already blacklisted.',
+        'de': 'Dieser channel ist bereits auf der blacklist.'
     }
 
 }

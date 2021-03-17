@@ -32,7 +32,7 @@ module.exports = {
       
       __**Command Tutorial:**__
       
-      ${client.interactions.get("var").help.tutorial}`)
+      ${client.interactions.get("var").help.tutorial.text}`);
 
         };
 

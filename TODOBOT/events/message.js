@@ -2,18 +2,18 @@ const cmdRecently = new Set();
 
 
 module.exports = async (client, message) => {
-  
+
   const timeout = client.config.msgdelete
 
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
-  
+
   let Prefix;
   let settings;
 
   message.guild ? settings = await client.getconfig(message.guild.id) : null;
-  
-  if (client.config.dev && !message.author.bot) console.log("MANAGE_GUILD permission: ", message.member.hasPermission("MANAGE_GUILD"), message)
+
+  if (client.config.dev && !message.author.bot) console.log("MANAGE_GUILD permission: ", message.member.hasPermission("MANAGE_GUILD"))
 
   settings ? Prefix = settings.prefix :
     Prefix = "//";
@@ -34,39 +34,32 @@ module.exports = async (client, message) => {
 
   const command = args.shift().toLowerCase();
 
-  
+
   /**
    *  Begin Taghandler
    */
-  
+
   // convert settings.tag object into map
 
   if (settings) {
+    
+    // Check for blacklisted users here
+    if (settings.blacklist_users && Object.values(settings.blacklist_users).includes(message.author.id)) return;
+    
 
+    // Check if the message is in a blacklisted channel
+    if (settings.blacklist_channels && Object.values(settings.blacklist_channels).includes(message.channel.id)) return;
+
+    
+    /**
+     * Start Taghandler
+     */
     const tags = await client.mapBuilder(settings.tags);
-
-  
     tags.has(command) ? client.taghandler(message, tags.get(command)) : null;
 
     /**
      *  End Taghandler
      */
-
-
-     // Check for blacklisted users here
-     if (settings.blacklist_users) {
-       let blacklist = []
-       Object.keys(settings.blacklist_users).forEach(key => { blacklist.push(settings.blacklist_users[key]) })
-       if (blacklist.includes(message.author.id)) return 
-      }
-
-      // Check if the message is in a blacklisted channel
-      if (settings.blacklist_channels) {
-        blacklist = []
-        Object.keys(settings.blacklist_channels).forEach(key => { blacklist.push(settings.blacklist_channels[key]) })
-        if (blacklist.includes(message.channel.id)) return
-      }      
-
 
   }
 
@@ -105,7 +98,7 @@ module.exports = async (client, message) => {
   for (const index in args) {
     console.log(args)
     while (args[index].startsWith("-")) {
-      message.flags.push(args.shift().slice(1)); 
+      message.flags.push(args.shift().slice(1));
     }
   }
 
@@ -123,7 +116,7 @@ module.exports = async (client, message) => {
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {
     return message.reply(client.warning(`Please wait  \`${client.config.cooldown / 1000}\`  seconds before doing this command again!`)).then(msg => {
-     if (msg.deletable) msg.delete({ timeout })
+      if (msg.deletable) msg.delete({ timeout })
     })
   } else {
     cmdRecently.add(message.author.id)

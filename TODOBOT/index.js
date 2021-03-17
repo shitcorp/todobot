@@ -150,7 +150,6 @@ const loadAndInjectClient = async (path) => {
   client.config.dev ? client.login(client.config.devtoken) : client.login(client.config.token);
 
 
-
   agenda.define("reminderjob", async (job) => {
     client.reminderjob()
   });
@@ -167,6 +166,9 @@ const loadAndInjectClient = async (path) => {
   // interaction"handler"
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     client.logger.cmd(`Received the interaction ${interaction.data.name}`)
+    // if the user or channel are blacklisted we return an error
+    if (Object.values((await client.getconfig(interaction.guild_id)).blacklist_users.includes(interaction.member.user.id))) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
+    if (Object.values((await client.getconfig(interaction.guild_id)).blacklist_channels.includes(interaction.member.user.id))) return;
     try {
       (client.interactions.get(interaction.data.name)).run(client, interaction);
     } catch (e) {
