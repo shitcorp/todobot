@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js-light');
 
 const raw = {
     name: 'suggest',
@@ -45,15 +45,11 @@ module.exports = {
     run: async (client, interaction) => {
         
         let text, image, hidden;
-        console.log(interaction.data.options)
         for (let i= 0; i < interaction.data.options.length; i++) {
             if (interaction.data.options[i].name === 'text') text = interaction.data.options[i].value;
             if (interaction.data.options[i].name === 'image') image = interaction.data.options[i].value;
             if (interaction.data.options[i].name === 'hidden') hidden = interaction.data.options[i].value;
         }
-        console.log(text, image, hidden);
-
-
 
         const embed = new MessageEmbed()
         .setTitle(`New Suggestion:`)
@@ -68,9 +64,7 @@ module.exports = {
             embed.setImage(image)        
         }
     
-        //cdn.discordapp.com/avatars/ user.id + user avatar + .png
-        // cdn.discordapp.com/avatars/686669011601326281/a_df20ff839094f1ee656c9dfa6c53e53f.png
-        console.log(interaction.member)
+        //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
         embed.setThumbnail('https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.gif')
         embed.setDescription(`> ${text}`)
         embed.setFooter(footer);
@@ -86,9 +80,6 @@ module.exports = {
         } catch(e) {
             interaction.embed.error(`There was an error trying to post your suggestions. Was your image URL well formatted?`)
         }
-
-
-
 
     }
 

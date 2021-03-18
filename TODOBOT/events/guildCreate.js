@@ -1,5 +1,5 @@
 const
-  { MessageEmbed } = require('discord.js'),
+  { MessageEmbed } = require('discord.js-light'),
   { configmodel } = require('../modules/models/configmodel');
 
 module.exports = async (client, guild) => {

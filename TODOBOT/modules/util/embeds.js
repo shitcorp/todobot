@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js-light");
 const { format } = require("date-fns");
 
 module.exports = (client) => {

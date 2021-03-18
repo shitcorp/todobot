@@ -1,5 +1,5 @@
 const
-    { MessageEmbed } = require('discord.js'),
+    { MessageEmbed } = require('discord.js-light'),
     messages = require('../localization/messages.js'),
     Pagination = require('discord-paginationembed');
 

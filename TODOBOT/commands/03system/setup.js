@@ -1,4 +1,4 @@
-const { MessageCollector } = require('discord.js')
+const { MessageCollector } = require('discord.js-light')
 
 exports.run = async (client, message, args, level) => {
 

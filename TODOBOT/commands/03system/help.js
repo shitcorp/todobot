@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js-light');
 
 exports.run = async (client, message, args, level) => { // eslint-disable-line no-unused-vars
     

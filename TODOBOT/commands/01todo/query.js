@@ -1,4 +1,3 @@
-//const { MessageEmbed } = require('discord.js');
 const Pagination = require('discord-paginationembed');
 const { todomodel } = require('../../modules/models/todomodel')
 const messages = require('../../localization/messages.js');

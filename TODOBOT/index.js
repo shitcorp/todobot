@@ -178,9 +178,10 @@ const loadAndInjectClient = async (path) => {
       if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return;
       (client.interactions.get(interaction.data.name)).run(client, new Interaction(client, interaction));
     } catch (e) {
+      console.log(e);
       console.error(e);
       client.logger.debug(e);
-      interactionhandler.embed.error(interaction, 'An error occured, please try again.');
+      interactionhandler.embed.error(interaction, '__An error occured, please try again.');
     }
   });
 

@@ -104,13 +104,11 @@ module.exports = {
                 // to the cache array to hand over to the paginator
                 // function
                 let cache = [];
-                for await (const doc of remindermodel.find({ user: interaction.member.user.id })) {
-                    cache.push(doc)
-                }
+                for await (const doc of remindermodel.find({ user: interaction.member.user.id })) cache.push(doc)
                 // Make sure theres something in the array for
                 // the embed paginator, else return an error
                 cache.length > 0 ? newviewer(client, interaction, cache) :
-                    interaction.embed.error(`You have no open reminders at the moment. To learn more about the reminder feature run \`//help reminder\`.`)
+                    interaction.embed.error(messages.noopenreminders[lang])
                 break;
             case 'create':
                 let time, unit, content, participants, participatingroles;
@@ -133,7 +131,7 @@ module.exports = {
                         expires = systime + time * 86400000
                         break;
                 }
-                if (content.length > 400) return interaction.embed.error(`Your content is too large, you used \`${content.length}\` out of \`400\` available characters.`)
+                if (content.length > 400) return interaction.embed.error(messages.contenttoolarge[lang])
                 const ID = uuidv4();
                 const rem = {
                     _id: ID,
@@ -154,7 +152,7 @@ module.exports = {
                 newreminder.save(function (err) {
                     err
                         ? client.logger.debug(err)
-                        : interaction.embed.success(`Created your new reminder.`)
+                        : interaction.embed.success(messages.remindercreated[lang])
                 })
                 break;
         }

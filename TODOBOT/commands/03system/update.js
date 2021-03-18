@@ -1,4 +1,4 @@
-const { RichEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js-light');
 const { exec } = require('child_process');
 const { format } = require('date-fns')
 const fs = require("fs");
@@ -11,9 +11,6 @@ exports.run = async (client, message, args) => {
     exec("git pull", async (err, out, stderr) => {
         if(!err){
             message.channel.send(client.embed(out))
-            let whites = '⬜'
-            let reds = '🟥'
-            let output = ['🟥'];
             let msg = await message.channel.send(client.embed("Loading . . . . "))
             console.log(out);
            

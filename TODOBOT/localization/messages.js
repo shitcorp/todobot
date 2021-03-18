@@ -24,37 +24,37 @@
 
 
 module.exports = {
-    
+
     // modules/handlers/interactionhandler.js
     "todonoargs": {
         "en": "You must at least submit a title for your task.",
         "de": "Du musst zumindest einen Titel für deine Aufgabe angeben."
     },
-    
+
     // modules/handlers/interactionhandler.js; commands/01todo/todo.js
     "todoposted": {
         "en": "Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO.",
         "de": "Super! Deine neue Aufgabe wurde gepostet, Reagiere mit 📌 um die Aufgabe anzunehmen und mit ✅ wenn du fertig mit der Aufgabe bist."
     },
-    
+
     // modules/handlers/interactionhandler.js
     "addbottoguild": {
         "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shoten\`",
         "de": "Der Bot muss Mitglied deines Servers sein um diesen Command benutzen zu können. Verfügbare Slash Commands sind: \`/shorten\`"
     },
-    
+
     // modules/handlers/interactionhandler.js
     "emptytitle": {
         "en": "Empty titles are not allowed!",
         "de": "Leere titel sind nicht erlaubt!"
     },
-    
+
     // commands/01todo/query.js
     "nothingfound": {
         "en": "There was nothing found matching your search criteria.",
         "de": "Wir konnten nichts finden, dass deinem Suchkriterium entsprach."
     },
-    
+
     // commands/01todo/query.js
     "databaseerror": {
         "en": "Something went wrong when trying to query the database.",
@@ -66,7 +66,7 @@ module.exports = {
         "en": "You didnt give any search criteria afer the \`WHERE\` keyword.",
         "de": "Du hast vergessen einen Suchbegriff nach dem \`WHERE\` einzugeben."
     },
-    
+
     // commands/01todo//query.js    
     "wrongqueryselector": {
         "en": "This is not a valid query selector. Run `//help query` for more information on how to use the query command.",
@@ -114,7 +114,7 @@ module.exports = {
         "en": "This tag already exists, unlearn it first before overwriting..",
         "de": "Dieser Tag existiert bereits, lösche ihn zuerst (//unlearn).."
     },
-    
+
     // commands/02utility/learn.js
     "descriptiontoolong": {
         "en": "Your description was too long. From \`1000\` available characters you used: ",
@@ -261,6 +261,49 @@ module.exports = {
     'nouserorchannelgiven': {
         'en': 'You need to give a user or channel that you want to blacklist.',
         'de': 'Du musst einen User oder Channel angeben den du blacklisten willst.'
+    },
+
+
+    // reminder interaction
+    'noopenreminders': {
+        'en': 'You have no open reminders at the moment. To learn more about the reminder feature run \`/help reminder\`.',
+        'de': 'Momentan hast du keine offenen reminder. Um mehr über das Reminder Feature herauszufinden, benutze den comand \`/help reminder\`.'
+    },
+
+    // reminder interaction
+    'contenttoolarge': {
+        'en': 'Your Content is too large, from 400 available characters you used ',
+        'de': 'Dein Content ist zu lang, von 400 verfügbaren Characteren hast du benutzt '
+    },
+
+    // reminder interaction
+    'remindercreated': {
+        'en': 'Your new reminder was created!',
+        'de': 'Dein neuer Reminder wurde gespeichert!'
+    },
+
+
+
+    /********************
+     * 
+     *  SUPPORT COMMAND
+     * 
+     *******************/
+
+    'supportmessage': {
+        'en': 'To join the support discord [click here](https://discord.gg/RuEdX5T "https://discord.gg/RuEdX5T")'
+    },
+
+
+    /*******************
+     * 
+     *  INVITE COMMAND
+     * 
+     *****************/
+
+    'invitemessage': {
+        'en': '[Invite me to your server.](http://invite.todo-bot.xyz "http://invite.todo-bot.xyz")'
     }
+
 
 }

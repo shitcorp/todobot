@@ -11,6 +11,7 @@ class interaction {
         this.data = interaction.data;
         this.member = interaction.member;
         this.type = interaction.type;
+        this.timestamp = Date.now();
 
         const reply = async (msg, type = 4) => {
             return client.api.interactions(this.id, this.token).callback.post({
