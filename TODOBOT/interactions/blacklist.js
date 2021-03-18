@@ -2,49 +2,49 @@ const raw = {
     name: 'blacklist',
     description: 'Blacklist user(s) and/or channel(s)',
     options: [
-      {
-        name: 'add',
-        description: 'Add user(s) or channel(s) to the blacklist.',
-        type: 1,
-        options: [
-          {
-            name: 'user',
-            description: 'The user you want to blacklist',
-            type: 6,
-            required: false
-          },
-          {
-            name: 'channel',
-            description: 'The channel you want to blacklist',
-            type: 7,
-            required: false
-          }
-        ]
-      },
-      {
-        name: 'remove',
-        description: 'Remove user(s) or channel(s) from the blacklist.',
-        type: 1,
-        options: [
-          {
-            name: 'user',
-            description: 'The user you want to blacklist',
-            type: 6,
-            required: false
-          },
-          {
-            name: 'channel',
-            description: 'The channel you want to blacklist',
-            type: 7,
-            required: false
-          }
-        ]
-      },
-      {
-        name: 'list',
-        description: 'Show your current blacklists.',
-        type: 1
-      }
+        {
+            name: 'add',
+            description: 'Add user(s) or channel(s) to the blacklist.',
+            type: 1,
+            options: [
+                {
+                    name: 'user',
+                    description: 'The user you want to blacklist',
+                    type: 6,
+                    required: false
+                },
+                {
+                    name: 'channel',
+                    description: 'The channel you want to blacklist',
+                    type: 7,
+                    required: false
+                }
+            ]
+        },
+        {
+            name: 'remove',
+            description: 'Remove user(s) or channel(s) from the blacklist.',
+            type: 1,
+            options: [
+                {
+                    name: 'user',
+                    description: 'The user you want to blacklist',
+                    type: 6,
+                    required: false
+                },
+                {
+                    name: 'channel',
+                    description: 'The channel you want to blacklist',
+                    type: 7,
+                    required: false
+                }
+            ]
+        },
+        {
+            name: 'list',
+            description: 'Show your current blacklists.',
+            type: 1
+        }
     ]
 };
 
@@ -70,52 +70,82 @@ module.exports = {
         const messages = require('../localization/messages');
         const conf = await client.getconfig(interaction.guild_id);
         const lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+
         let action, commandopts;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name;
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options) commandopts = interaction.data.options[index].options;
         }
+        if (action !== 'list' && !commandopts) return interaction.embed.error(messages.nouserorchannelgiven[lang])
+        /**
+         * interaction.data.resolved either holds a members object or channels object
+         */
+        let chann, user;
+        if (interaction.data.resolved) {
+            if (interaction.data.resolved.channels) chann = interaction.data.resolved.channels[Object.keys(interaction.data.resolved.channels)[0]];
+            if (interaction.data.resolved.users) user = interaction.data.resolved.users[Object.keys(interaction.data.resolved.users)[0]];
+        }
+
+        let blacklist_users = [], blacklist_channels = [];
+
+        Object.keys(conf.blacklist_users).forEach(key => blacklist_users.push(conf.blacklist_users[key]));
+        Object.keys(conf.blacklist_channels).forEach(key => blacklist_channels.push(conf.blacklist_channels[key]));
+
         switch (action) {
 
             case 'add':
 
-            break;
+                if (user && user.bot === true) return interaction.embed.error(messages.cannotblacklistbots[lang])
+                if (user && blacklist_users.includes(user.id)) return interaction.embed.error(messages.useralreadyblacklisted[lang]);
+                if (chann && blacklist_channels.includes(chann.id)) return interaction.embed.error(messages.channelalreadyblacklisted[lang]);
+                if (user) blacklist_users.push(user.id);
+                if (chann) blacklist_channels.push(chann.id);
+
+                conf.blacklist_users = blacklist_users;
+                conf.blacklist_channels = blacklist_channels;
+
+                client.updateconfig(interaction.guild_id, conf);
+                interaction.embed.success(messages.updatedyourblacklist[lang]);
+
+                break;
             case 'remove':
 
-            break;
+                if (user && user.bot === true) return interaction.embed.error(messages.cannotblacklistbots[lang])
+                if (user && !blacklist_users.includes(user.id)) return interaction.embed.error(messages.usernotblacklisted[lang]);
+                if (chann && !blacklist_channels.includes(chann.id)) return interaction.embed.error(messages.channelnotblacklisted[lang]);
+                if (user) blacklist_users.splice(blacklist_users.indexOf(user.id), 1);
+                if (chann) blacklist_channels.splice(blacklist_channels.indexOf(chann.id), 1);
 
+                conf.blacklist_users = blacklist_users;
+                conf.blacklist_channels = blacklist_channels;
 
-            case 'user':
-                // if this doesnt exist we have to append that to the mongoose
-                // doc and kindly ask the user to try again
-                if (conf.blacklist_users) {
-                    let blacklist = []
-                    // turn the object from cache into an array for easier handling
-                    Object.keys(conf.blacklist_users).forEach(key => blacklist.push(conf.blacklist_users[key]));
-                    let user;
-                    for (i in commandopts) {
-                        if (commandopts[i].name === 'user') user = commandopts[i].value;
-                    }
-                    if (blacklist.includes(user)) return interactionhandler.embed.error(interaction, messages.useralreadyblacklisted[lang]);
-                    blacklist.push(user);
-                    conf.blacklist_users = blacklist;
-                    client.updateconfig(interaction.guild_id, conf);
-                    interactionhandler.embed.success(interaction, messages.updatedyourblacklist[lang]);
-                }
-                break;
-            case 'channel':
-                let blacklist = []
-                // turn the object from cache into an array for easier handling
-                Object.keys(conf.blacklist_channels).forEach(key => blacklist.push(conf.blacklist_users[key]));
-                let channel;
-                for (i in commandopts) {
-                    if (commandopts[i].name === 'channel') channel = commandopts[i].value;
-                }
-                if (blacklist.includes(channel)) return interactionhandler.embed.error(interaction, messages.channelalreadyblacklisted[lang]);
-                blacklist.push(channel);
-                conf.blacklist_users = blacklist;
                 client.updateconfig(interaction.guild_id, conf);
-                interactionhandler.embed.success(interaction, messages.updatedyourblacklist[lang]);
+
+                interaction.embed.success(messages.updatedyourblacklist[lang]);
+
+                break;
+
+            case 'list':
+
+                let output = '';
+                if (blacklist_users.length > 0) {
+                    output += '**Blacklisted Users:** \n'
+                    for (let i = 0; i < blacklist_users.length; i++) {
+                        output += `> • ${await client.users.fetch(blacklist_users[i])} \n`
+                    }
+                }
+
+                if (blacklist_channels.length > 0) {
+                    output += '\n\n **Blacklisted Channels:** \n'
+                    for (let i = 0; i < blacklist_channels.length; i++) {
+                        output += `> • ${await client.guilds.cache.get(interaction.guild_id).channels.fetch(blacklist_channels[i])} \n`
+                    }
+                }
+
+                if (output === '') output = messages.noitemsonblacklist[lang];
+
+                interaction.embed.default(output)
+
                 break;
         }
     }

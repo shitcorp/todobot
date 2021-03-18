@@ -231,6 +231,36 @@ module.exports = {
     'channelalreadyblacklisted': {
         'en': 'This channel is already blacklisted.',
         'de': 'Dieser channel ist bereits auf der blacklist.'
+    },
+
+    // blacklist interaction
+    'usernotblacklisted': {
+        'en': 'This user is not blacklisted.',
+        'de': 'Dieser User ist nicht auf der Blacklist.'
+    },
+
+    // blacklist interaction
+    'channelnotblacklisted': {
+        'en': 'This Channel is not blacklisted.',
+        'de': 'Dieser Channel ist nicht auf der Blacklist.'
+    },
+
+    // blacklist interaction
+    'noitemsonblacklist': {
+        'en': 'Currently there are no items on your blacklists.',
+        'de': 'Momentan befinden sich keine User oder Channels auf deiner Blacklist.'
+    },
+
+    //blacklist interaction
+    'cannotblacklistbots': {
+        'en': 'You cannot blacklist bots.',
+        'de': 'Du kannst Bots nicht blacklisten.'
+    },
+
+    // blacklist interaction
+    'nouserorchannelgiven': {
+        'en': 'You need to give a user or channel that you want to blacklist.',
+        'de': 'Du musst einen User oder Channel angeben den du blacklisten willst.'
     }
 
 }

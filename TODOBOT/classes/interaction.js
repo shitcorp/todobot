@@ -24,7 +24,7 @@ class interaction {
         }
 
         const embed = {
-            default: async (msg, type = 4, color = "BLUE") => {
+            default: async (msg, type = 3, color = "BLUE") => {
                 return client.api.interactions(this.id, this.token).callback.post({
                     data: {
                         type, 
