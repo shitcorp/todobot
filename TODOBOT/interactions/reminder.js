@@ -110,7 +110,7 @@ module.exports = {
                 // Make sure theres something in the array for
                 // the embed paginator, else return an error
                 cache.length > 0 ? newviewer(client, interaction, cache) :
-                    interactionhandler.embed.error(interaction, `You have no open reminders at the moment. To learn more about the reminder feature run \`//help reminder\`.`)
+                    interaction.embed.error(`You have no open reminders at the moment. To learn more about the reminder feature run \`//help reminder\`.`)
                 break;
             case 'create':
                 let time, unit, content, participants, participatingroles;
@@ -133,7 +133,7 @@ module.exports = {
                         expires = systime + time * 86400000
                         break;
                 }
-                if (content.length > 400) return interactionhandler.embed.error(interaction, `Your content is too large, you used \`${content.length}\` out of \`400\` available characters.`)
+                if (content.length > 400) return interaction.embed.error(`Your content is too large, you used \`${content.length}\` out of \`400\` available characters.`)
                 const ID = uuidv4();
                 const rem = {
                     _id: ID,
@@ -154,7 +154,7 @@ module.exports = {
                 newreminder.save(function (err) {
                     err
                         ? client.logger.debug(err)
-                        : interactionhandler.embed.success(interaction, `Created your new reminder.`)
+                        : interaction.embed.success(`Created your new reminder.`)
                 })
                 break;
         }
@@ -198,7 +198,7 @@ const newviewer = async (client, interaction, arr) => {
                             if (collected.first().deletable) collected.first().delete()
                             remindermodel.updateOne({ _id: arr[i.page - 1]._id }, { content: collected.first().content }, (err) => {
                                 if (err) client.logger.debug(err)
-                                interactionhandler.embed.success(interaction, `Updated your reminder.`)
+                                interaction.embed.success(`Updated your reminder.`)
                             })
                         })
                         .catch(collected => {
@@ -211,7 +211,7 @@ const newviewer = async (client, interaction, arr) => {
                 // Delete the reminder on the current page
                 remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, (err) => {
                     if (err) client.logger.debug(err)
-                    interactionhandler.embed.success(interaction, `Deleted your reminder.`)
+                    interaction.embed.success(`Deleted your reminder.`)
                 })
             }
         })

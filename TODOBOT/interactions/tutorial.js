@@ -27,7 +27,7 @@ module.exports = {
     },
     run: async (client, interaction) => {
         console.log(interaction);
-        interactionhandler.reply(interaction, ' ', 2);
+        interaction.reply(' ', 2);
         const embedDataTemplate = {
             image: '',
             thumbnail: '',

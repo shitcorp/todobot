@@ -9,7 +9,8 @@
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
-const Agenda = require('agenda')
+const Agenda = require('agenda');
+const Interaction = require('./classes/interaction');
 const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
 const Discord = require("discord.js-light");
@@ -175,8 +176,9 @@ const loadAndInjectClient = async (path) => {
       // if the user or channel are blacklisted we return an error
       if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
       if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return;
-      (client.interactions.get(interaction.data.name)).run(client, interaction);
+      (client.interactions.get(interaction.data.name)).run(client, new Interaction(client, interaction));
     } catch (e) {
+      console.error(e);
       client.logger.debug(e);
       interactionhandler.embed.error(interaction, 'An error occured, please try again.');
     }

@@ -29,7 +29,8 @@ module.exports = {
         }
     },
     run: async (client, interaction) => {
-
+        console.log(interaction);
+        interaction.embed.success('pp');
 
     }
 };

@@ -54,10 +54,10 @@ module.exports = {
     run: async (client, interaction) => {
         const conf = await client.getconfig(interaction.guild_id)
         let lang = conf.lang ? conf.lang : "en";
-        if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
+        if (!conf) return interaction.embed.error(messages.addbottoguild[lang]);
 
 
-        if (!interaction.data.options || interaction.data.options.length < 1) return interactionhandler.embed.error(interaction, messages.todonoargs[lang])
+        if (!interaction.data.options || interaction.data.options.length < 1) return interaction.embed.error(messages.todonoargs[lang])
 
         const todoobject = {
             _id: uuidv4(),
@@ -71,7 +71,7 @@ module.exports = {
 
         for (const index in interaction.data.options) {
             if (interaction.data.options[index].name === "title") {
-                if (interaction.data.options[index].value === "") return interactionhandler.embed.error(interaction, messages.emptytitle[lang])
+                if (interaction.data.options[index].value === "") return interaction.embed.error(messages.emptytitle[lang])
                 todoobject.title = interaction.data.options[index].value;
             }
             if (interaction.data.options[index].name === "content") {
@@ -102,10 +102,10 @@ module.exports = {
             todomsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(conf.todochannel).send(await client.todo(todoobject))
         } catch (e) {
             client.logger.debug(e);
-            return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang])
+            return interaction.embed.error(messages.unabletoposttodo[lang])
         }
-        if (!todomsg) return interactionhandler.embed.error(interaction, messages.unabletoposttodo[lang]);
-        interactionhandler.reply(interaction, messages.todoposted[lang]);
+        if (!todomsg) return interaction.embed.error(messages.unabletoposttodo[lang]);
+        interaction.reply(messages.todoposted[lang]);
 
         // were saving the channel for future reference, if the todo channel gets changed
         // and we repost a task/todo and put the link to the original message. Dont know

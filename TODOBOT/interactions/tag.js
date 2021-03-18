@@ -88,7 +88,7 @@ module.exports = {
         if (!interaction.data.options) return;
         const conf = await client.getconfig(interaction.guild_id)
         let lang = conf.lang ? conf.lang : "en";
-        if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
+        if (!conf) return interaction.embed.error(messages.addbottoguild[lang]);
         let action, commandopts;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name;
@@ -109,31 +109,31 @@ module.exports = {
                 Object.keys(conf.tags).forEach(key => {
                     output += `• \`${key}\` =>  ${conf.tags[key].slice(0, 69)} \n`;
                 })
-                interactionhandler.embed.default(interaction, messages.availabletags[lang] + `\n\n${output}`);
+                interaction.embed.default(messages.availabletags[lang] + `\n\n${output}`);
                 break;
             case 'learn':
-                if (client.commands.get(tag) || client.aliases.get(tag)) return interactionhandler.embed.error(interaction, messages.cantoverwritecommands[lang]);
-                if (tagMap.get(tag)) return interactionhandler.embed.error(interaction, messages.tagalreadyexists[lang]);
-                if (value.length > 1001) return interactionhandler.embed.error(interaction, messages.descriptiontoolong[lang] + value.length)
+                if (client.commands.get(tag) || client.aliases.get(tag)) return interaction.embed.error(messages.cantoverwritecommands[lang]);
+                if (tagMap.get(tag)) return interaction.embed.error(messages.tagalreadyexists[lang]);
+                if (value.length > 1001) return interaction.embed.error(messages.descriptiontoolong[lang] + value.length)
                 tagMap.set(tag, value);
                 conf.tags = tagMap;
                 await client.updateconfig(interaction.guild_id, conf);
-                interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
+                interaction.embed.success(messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
                 break;
             case 'unlearn':
-                if (!tagMap.get(tag)) return interactionhandler.embed.error(interaction, messages.tagdoesnotexist[lang])
+                if (!tagMap.get(tag)) return interaction.embed.error(messages.tagdoesnotexist[lang])
                 tagMap.delete(tag);
                 conf.tags = tagMap;
                 await client.updateconfig(interaction.guild_id, conf);
-                interactionhandler.embed.success(interaction, messages.tagunlearned[lang] + `\`${tag}\`.`)
+                interaction.embed.success(messages.tagunlearned[lang] + `\`${tag}\`.`)
                 break;
             case 'edit':
-                if (!tagMap.get(tag)) return interactionhandler.embed.error(interaction, messages.tagdoesnotexist[lang]);
-                if (value.length > 1001) return interactionhandler.embed.error(interaction, messages.descriptiontoolong[lang] + value.length);
+                if (!tagMap.get(tag)) return interaction.embed.error(messages.tagdoesnotexist[lang]);
+                if (value.length > 1001) return interaction.embed.error(messages.descriptiontoolong[lang] + value.length);
                 tagMap.set(tag, value);
                 conf.tags = tagMap;
                 await client.updateconfig(interaction.guild_id, conf);
-                interactionhandler.embed.success(interaction, messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
+                interaction.embed.success(messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``)
                 break;
         }
     }

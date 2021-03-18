@@ -82,9 +82,9 @@ module.exports = {
                 await msg.react(client.emojiMap['upvote']);
                 await msg.react(client.emojiMap['downvote']);
             })
-            interactionhandler.embed.success(interaction, `Your feature request has been submitted.`)
+            interaction.embed.success(`Your feature request has been submitted.`)
         } catch(e) {
-            interactionhandler.embed.error(interaction, `There was an error trying to post your suggestions. Was your image URL well formatted?`)
+            interaction.embed.error(`There was an error trying to post your suggestions. Was your image URL well formatted?`)
         }
 
 

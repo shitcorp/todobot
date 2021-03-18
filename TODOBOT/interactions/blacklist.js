@@ -69,13 +69,22 @@ module.exports = {
     run: async (client, interaction) => {
         const messages = require('../localization/messages');
         const conf = await client.getconfig(interaction.guild_id);
-        const lang = conf.lang ? conf.lang : 'en';
+        const lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
         let action, commandopts;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name;
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options) commandopts = interaction.data.options[index].options;
         }
         switch (action) {
+
+            case 'add':
+
+            break;
+            case 'remove':
+
+            break;
+
+
             case 'user':
                 // if this doesnt exist we have to append that to the mongoose
                 // doc and kindly ask the user to try again
