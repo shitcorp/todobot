@@ -5,9 +5,88 @@ const { formatDistanceToNow } = require('date-fns');
 const Pagination = require('discord-paginationembed');
 const { remindermodel } = require('../modules/models/remindermodel');
 
-module.exports = {
-    id: '',
+
+const raw = {
     name: 'reminder',
+    description: 'Create, edit and view reminders',
+    options: [
+        {
+            name: 'create',
+            description: 'Create a new reminder.',
+            type: 1,
+            options: [
+                {
+                    name: 'time',
+                    description: 'After this timespan you will be reminded.',
+                    // type 4 = integer
+                    type: 4,
+                    required: true
+                },
+                {
+                    name: 'unit',
+                    description: 'Minutes? Hours? Seconds? Choose now.',
+                    type: 3,
+                    required: true,
+                    choices: [
+                        {
+                            name: 'hours',
+                            value: 'h'
+                        },
+                        {
+                            name: 'minutes',
+                            value: 'm'
+                        },
+                        {
+                            name: 'days',
+                            value: 'd'
+                        }
+                    ]
+                },
+                {
+                    name: 'content',
+                    description: 'Reminder Text that will be shown when the reminder expires.',
+                    type: 3,
+                    required: true
+                },
+                {
+                    name: 'participants',
+                    description: 'Choose another user or users that should also be reminded.',
+                    type: 6,
+                    required: false
+                },
+                {
+                    name: 'participatingRoles',
+                    description: 'Choose a role that should be reminded.',
+                    type: 8,
+                    required: false
+                }
+            ]
+        },
+        {
+            name: 'view',
+            description: 'View your reminder(s).',
+            type: 1
+        }
+    ]
+}
+
+
+module.exports = {
+    raw,
+    id: '',
+    name: raw.name,
+    conf: {
+        enabled: true,
+        permLevel: 'STAFF',
+    },
+    help: {
+        category: 'Utility',
+        description: raw.description,
+        tutorial: {
+            text: '',
+            media: '',
+        }
+    },
     run: async (client, interaction) => {
         if (!interaction.data.options) return;
         const conf = await client.getconfig(interaction.guild_id)
@@ -45,14 +124,14 @@ module.exports = {
                 let expires;
                 switch (unit) {
                     case 'm':
-                    expires = systime+time*60000
-                    break;
+                        expires = systime + time * 60000
+                        break;
                     case 'h':
-                    expires = systime+time*3600000
-                    break;
+                        expires = systime + time * 3600000
+                        break;
                     case 'd':
-                    expires = systime+time*86400000
-                    break;
+                        expires = systime + time * 86400000
+                        break;
                 }
                 if (content.length > 400) return interactionhandler.embed.error(interaction, `Your content is too large, you used \`${content.length}\` out of \`400\` available characters.`)
                 const ID = uuidv4();
@@ -73,9 +152,9 @@ module.exports = {
                 if (participatingroles) rem['mentions'].roles = participatingroles;
                 const newreminder = new remindermodel(rem)
                 newreminder.save(function (err) {
-                    err 
-                    ? client.logger.debug(err)
-                    : interactionhandler.embed.success(interaction, `Created your new reminder.`)
+                    err
+                        ? client.logger.debug(err)
+                        : interactionhandler.embed.success(interaction, `Created your new reminder.`)
                 })
                 break;
         }

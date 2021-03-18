@@ -12,7 +12,8 @@
     "update": "ncu -u",
     "upgrade": "ncu -u && npm install",
     "commit": "cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "register": "node TODOBOT/modules/util/register.js"
   },
   "config": {
     "commitizen": {
@@ -33,6 +34,7 @@
     "delayed-stream": "^1.0.0",
     "discord-paginationembed": "^2.1.0",
     "discord.js": "^12.5.1",
+    "discord.js-light": "^3.5.4",
     "dotenv": "^8.2.0",
     "elastic-apm-node": "^3.12.1",
     "enmap": "^5.8.4",

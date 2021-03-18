@@ -15,7 +15,7 @@ const config = {
 
 const choices = [];
 
-readdirSync(path.join(__dirname + '../../interactions'))
+readdirSync(path.join(__dirname + '../../../interactions'))
   .filter((f) => !f.startsWith('_') && f.endsWith('.js'))
   .forEach((f) => {
     choices.push({

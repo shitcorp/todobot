@@ -1,13 +1,66 @@
-module.exports = {
-    id: '',
+const raw = {
     name: 'blacklist',
+    description: 'Blacklist user(s) and/or channel(s)',
+    options: [
+      {
+        name: 'add',
+        description: 'Add user(s) or channel(s) to the blacklist.',
+        type: 1,
+        options: [
+          {
+            name: 'user',
+            description: 'The user you want to blacklist',
+            type: 6,
+            required: false
+          },
+          {
+            name: 'channel',
+            description: 'The channel you want to blacklist',
+            type: 7,
+            required: false
+          }
+        ]
+      },
+      {
+        name: 'remove',
+        description: 'Remove user(s) or channel(s) from the blacklist.',
+        type: 1,
+        options: [
+          {
+            name: 'user',
+            description: 'The user you want to blacklist',
+            type: 6,
+            required: false
+          },
+          {
+            name: 'channel',
+            description: 'The channel you want to blacklist',
+            type: 7,
+            required: false
+          }
+        ]
+      },
+      {
+        name: 'list',
+        description: 'Show your current blacklists.',
+        type: 1
+      }
+    ]
+};
+
+
+
+module.exports = {
+    raw,
+    id: '',
+    name: raw.name,
     conf: {
         enabled: true,
         permLevel: 'STAFF',
     },
     help: {
         category: 'System',
-        description: 'Blacklist user(s) and or channel(s) from using the bot.',
+        description: raw.description,
         tutorial: {
             text: '',
             media: '',

@@ -3,9 +3,28 @@ const
     messages = require('../localization/messages.js'),
     Pagination = require('discord-paginationembed');
 
+const raw = {
+    name: 'tutorial',
+    description: 'Get a short tutorial on how to use the bot.'
+}
+
+
 module.exports = {
+    raw,
     id: "",
-    name: "tutorial",
+    name: raw.name,
+    conf: {
+        enabled: true,
+        permLevel: 'STAFF',
+    },
+    help: {
+        category: 'System',
+        description: raw.description,
+        tutorial: {
+            text: '',
+            media: '',
+        }
+    },
     run: async (client, interaction) => {
         console.log(interaction);
         interactionhandler.reply(interaction, ' ', 2);

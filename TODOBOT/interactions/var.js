@@ -1,13 +1,80 @@
-module.exports = {
-    id: '',
+const raw = {
     name: 'var',
+    description: 'Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable "foo"',
+    options: [
+        {
+            name: 'create',
+            // 1= subcommand
+            type: 1,
+            description: 'Create a new variable',
+            options: [
+                {
+                    name: 'name',
+                    description: 'How you want your variable to be named.',
+                    // string
+                    type: 3,
+                    required: true
+                },
+                {
+                    name: 'value',
+                    description: 'The value your variable should hold.',
+                    type: 3,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'view',
+            description: 'Show your already registered variables',
+            type: 1
+        },
+        {
+            name: 'edit',
+            description: 'Edit an already existing variable',
+            type: 1,
+            options: [
+                {
+                    name: 'name',
+                    description: 'Name of the variable you want to edit',
+                    type: 3,
+                    required: true
+                },
+                {
+                    name: 'value',
+                    description: 'The new value for your variable',
+                    type: 3,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'delete',
+            description: 'Delete a variable.',
+            type: 1,
+            options: [
+                {
+                    name: 'name',
+                    description: 'Name of the variable you want to delete',
+                    type: 3,
+                    required: true
+                }
+            ]
+        }
+    ]
+}
+
+
+module.exports = {
+    raw,
+    id: '',
+    name: raw.name,
     conf: {
         enabled: true,
         permLevel: '',
     },
     help: {
         category: "Utility",
-        description: "Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo'",
+        description: raw.description,
         tutorial: {
             text: `__**Command Options**__
         //var -s/set foo bar => Saves a new key-value pair with the key foo and the value bar

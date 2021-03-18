@@ -9,7 +9,7 @@ module.exports = async (client, messageReaction, user) => {
             await messageReaction.fetch();
         } catch (error) {
             client.logger.debug('Something went wrong when fetching the message: ' + error.toString());
-            // Return as `reaction.message.author` may be undefined/null
+            // Return as `reaction.message.author` may be undefined/undefined
             return;
         }
     }
@@ -24,7 +24,7 @@ module.exports = async (client, messageReaction, user) => {
     if (userinio === client.user.id) return;
 
     const settings = await client.getconfig(messageReaction.message.guild.id)
-    if (settings === null) return;
+    if (settings === undefined) return;
 
     if (messageReaction.message.channel.id !== settings.todochannel) return;
 
@@ -37,7 +37,7 @@ module.exports = async (client, messageReaction, user) => {
     switch (react) {
         case "📌":
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (todoobj === null || typeof todoobj !== "object") return;
+            if (todoobj === undefined || typeof todoobj !== "object") return;
 
             
             // add the reacting user to the assigned array,
@@ -72,7 +72,7 @@ module.exports = async (client, messageReaction, user) => {
 
             // (!) Make sure only assigned users can close the task
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
+            if (todoobj === undefined || typeof todoobj !== "object") return;
             let arse = []
             Object.keys(todoobj.assigned).forEach(key => {
                 arse.push(todoobj.assigned[key])
@@ -123,7 +123,7 @@ module.exports = async (client, messageReaction, user) => {
             // and edit the todo msg/embed 
 
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
+            if (todoobj === undefined || typeof todoobj !== "object") return;
 
             let ass = []
             Object.keys(todoobj.assigned).forEach(key => {
@@ -142,7 +142,7 @@ module.exports = async (client, messageReaction, user) => {
             // edit the task and edit the todo msg when finished
             //!TODO remove reaction when finished and send success msg
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-            if (typeof todoobj !== "object") return;
+            if (todoobj === undefined || typeof todoobj !== "object") return;
 
             let as = []
             if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await client.clearReactions(messageReaction.message, userinio)
@@ -257,7 +257,7 @@ module.exports = async (client, messageReaction, user) => {
     async function showmore() {
         console.log("test")
         todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-        if (typeof todoobj !== "object") return;
+        if (todoobj === undefined || typeof todoobj !== "object") return;
         todoobj.state = "detail";
         messageReaction.message.edit(client.todo(todoobj, "yes"))
         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))

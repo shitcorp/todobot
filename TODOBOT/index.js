@@ -6,18 +6,25 @@
 //   environment: process.env.DEV ? 'development' : 'production'
 // })
 
-const Discord = require("discord.js");
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
 const Agenda = require('agenda')
 const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
-
+const Discord = require("discord.js-light");
 const client = new Discord.Client({
-  partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION'],
-  disableMentions: "everyone",
-  disableMentions: "here"
+    partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
+    disableMentions: "everyone",
+    disableMentions: "here",
+    cacheGuilds: true,
+    cacheChannels: false,
+    cacheOverwrites: false,
+    cacheRoles: true,
+    cacheEmojis: true,
+    cachePresences: false,
+    cacheMembers: false,
+    ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
 
@@ -134,6 +141,7 @@ const loadAndInjectClient = async (path) => {
 
   (await readdir(__dirname + '/interactions/')).forEach(file => {
     const interactionName = file.split(".")[0];
+    if (file.includes('.template')) return;
     client.logger.log(`[INTERACTION] Loading: ${interactionName}`);
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
@@ -157,17 +165,20 @@ const loadAndInjectClient = async (path) => {
   })();
 
 
+  client.invalidateCache('709541114633519177')
 
   // interaction"handler"
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     client.logger.cmd(`Received the interaction ${interaction.data.name}`)
-    // if the user or channel are blacklisted we return an error
-    if (Object.values((await client.getconfig(interaction.guild_id)).blacklist_users.includes(interaction.member.user.id))) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
-    if (Object.values((await client.getconfig(interaction.guild_id)).blacklist_channels.includes(interaction.member.user.id))) return;
     try {
+      let conf = await client.getconfig(interaction.guild_id)
+      // if the user or channel are blacklisted we return an error
+      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
+      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return;
       (client.interactions.get(interaction.data.name)).run(client, interaction);
     } catch (e) {
       client.logger.debug(e);
+      interactionhandler.embed.error(interaction, 'An error occured, please try again.');
     }
   });
 

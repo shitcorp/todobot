@@ -1,8 +1,89 @@
 const messages = require('../localization/messages.js');
 
-module.exports = {
-    id: "",
+const raw = {
     name: "tag",
+    description: "Bild your own commands like a pro.",
+    options: [
+        {
+            name: "learn",
+            description: 'Let the bot learn a new "command" or "tag".',
+            // type 1 = subcommand
+            // type 2 = subcommand group
+            type: 1,
+            options: [
+                {
+                    name: 'name',
+                    description: 'The name of your new command/tag.',
+                    // type 3 =  string
+                    type: 3,
+                    required: true,
+                },
+                {
+                    name: 'content',
+                    description: 'This is the content that will be sent when your custom command is run.',
+                    type: 3,
+                    required: true
+                },
+            ]
+
+        },
+        {
+            name: 'unlearn',
+            description: 'Delete a command.',
+            type: 1,
+            options: [
+                {
+                    name: 'name',
+                    description: 'The command you want to delete.',
+                    type: 3,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'edit',
+            description: 'Edit an already existing tag.',
+            type: 1,
+            options: [
+                {
+                    name: 'name',
+                    description: 'Name of the command you want to edit.',
+                    type: 3,
+                    required: true
+                },
+                {
+                    name: 'content',
+                    description: 'The content that you want to save as the new tag',
+                    type: 3,
+                    required: true
+                }
+            ]
+        },
+        {
+            name: 'list',
+            description: 'List available tags.',
+            type: 1
+        }
+    ]
+}
+
+
+module.exports = {
+    raw,
+    id: "",
+    name: raw.name,
+    conf: {
+        enabled: true,
+        permLevel: 'STAFF',
+    },
+    help: {
+        category: 'Utility',
+        description: raw.description,
+        tutorial: {
+            text: '',
+            media: '',
+        }
+    },
     run: async (client, interaction) => {
         if (!interaction.data.options) return;
         const conf = await client.getconfig(interaction.guild_id)

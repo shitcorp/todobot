@@ -1,0 +1,25 @@
+const raw = {
+
+};
+
+module.exports = {
+    raw,
+    id: '',
+    name: raw.name,
+    conf: {
+        enabled: true,
+        permLevel: 'USER',
+    },
+    help: {
+        category: 'Utility',
+        description: raw.description,
+        tutorial: {
+            text: '',
+            media: '',
+        }
+    },
+    run: async (client, interaction) => {
+
+    } 
+    
+};
