@@ -43,6 +43,7 @@
     "moment": "^2.29.1",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.12.0",
+    "prompts": "^2.4.0",
     "redis": "^3.0.2",
     "slash-commands": "^1.4.0",
     "standard-version": "^9.1.1",
