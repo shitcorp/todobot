@@ -9,6 +9,6 @@ package-lock.json
 data
 *.log
 .history
-
+.env
 *.urls.json
 *.url.json

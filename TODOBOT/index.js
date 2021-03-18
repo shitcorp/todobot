@@ -1,17 +1,17 @@
+(require('dotenv').config());
+
 // const apm = require('elastic-apm-node').start({
 //   serverUrl: 'http://localhost:8200',
 //   serviceName: 'TodoDiscordBot',
-//   environment: 'production'
+//   environment: process.env.DEV ? 'development' : 'production'
 // })
 
 const Discord = require("discord.js");
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
-const chalk = require("chalk");
 const redis = require("redis");
-const { MONGO_CONNECTION } = require('./config');
-const Agenda= require('agenda')
-const agenda = new Agenda({ db: { address: MONGO_CONNECTION } });
+const Agenda = require('agenda')
+const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
 
 const client = new Discord.Client({
@@ -22,8 +22,8 @@ const client = new Discord.Client({
 
 
 client.cache = redis.createClient({
-  host: "127.0.0.1",
-  port: 6379
+  host: process.env.REDIS_ADDRESS,
+  port: process.env.REDIS_PORT
 });
 
 client.config = require("./config.js");
@@ -109,9 +109,7 @@ const loadAndInjectClient = async (path) => {
   await client.dbinit();
 
   async function loadCategory(category) {
-    let name = category.toUpperCase()
     const cmdFilesFun = await readdir(__dirname + `/commands/${category}/`);
-    client.logger.log(`${chalk.bgBlue("[CATEGORY]")} [${name}] [COMMANDS: ${chalk.green(cmdFilesFun.length)}]`);
     cmdFilesFun.forEach(f => {
       if (!f.endsWith(".js")) return;
       const response = client.loadCommand(category, f);
@@ -126,8 +124,6 @@ const loadAndInjectClient = async (path) => {
   (await readdir(__dirname + '/commands/')).forEach(category => loadCategory(category));
 
 
-
-  client.logger.log(`${chalk.bgBlue("[EVENTS]")} Loading events . . . `);
   (await readdir(__dirname + "/events/")).forEach(file => {
     const eventName = file.split(".")[0];
     client.logger.log(`[EVENT] Loading Event: ${eventName}`);
@@ -136,7 +132,6 @@ const loadAndInjectClient = async (path) => {
   });
 
 
-  client.logger.log(`${chalk.bgBlue("[INTERACTIONS]")} Loading interactions . . . `);
   (await readdir(__dirname + '/interactions/')).forEach(file => {
     const interactionName = file.split(".")[0];
     client.logger.log(`[INTERACTION] Loading: ${interactionName}`);
@@ -147,7 +142,7 @@ const loadAndInjectClient = async (path) => {
 
 
 
-  client.config.dev ? client.login(client.config.devtoken) : client.login(client.config.token);
+  process.env.DEV === 'true' ? client.login(process.env.DEV_TOKEN) : client.login(process.env.TOKEN);
 
 
   agenda.define("reminderjob", async (job) => {
