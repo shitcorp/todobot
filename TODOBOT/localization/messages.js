@@ -198,6 +198,8 @@ module.exports = {
 
         > title, this is the new title
 
+        > tasks, Task One; Task Two; Task Three
+
         > content, this is my new content
 
         > loop, true

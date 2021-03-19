@@ -41,7 +41,7 @@ class interaction {
                                         url: client.user.avatarURL()
                                     },
                                     footer: {
-                                        text: `Requested by ${this.member.user.username}#${this.member.user.discriminator}   •   ${client.user.username}   •    todo-bot.xyz`,
+                                        text: `Requested by ${this.member.user.username}#${this.member.user.discriminator}   •    www.todo-bot.xyz`,
                                         //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
                                         icon_url: 'https://cdn.discordapp.com/avatars/' + this.member.user.id + '/' + this.member.user.avatar + '.png'
                                     }

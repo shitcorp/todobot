@@ -112,6 +112,7 @@ module.exports = {
                     let staffroles = []
                     Object.values(conf.staffroles).forEach(value => staffroles.push(value));
                     staffroles.push(staffrole)
+                    conf.staffroles = staffroles;
                 }
                 await client.updateconfig(interaction.guild_id, conf)
                 interaction.embed.success('Saved your new settings.')
