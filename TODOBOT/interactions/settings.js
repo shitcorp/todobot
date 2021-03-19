@@ -126,15 +126,23 @@ module.exports = {
                     language: conf.lang
                 };
 
-                let outputString = '**Settings** \n';
+                let outputString = '**Current Settings** \n\n';
                 for (i in output) {
                     switch (i) {
                         case 'readonlychannel':
                         case 'todochannel':
-                            outputString += `${i}  =>  ${output[i] === undefined ? 'undefined' : await client.guilds.cache.get(interaction.guild_id).channels.fetch(output[i])} \n`
+                            outputString += `> ${i}  =>  ${output[i] === undefined ? 'undefined' : await client.guilds.cache.get(interaction.guild_id).channels.fetch(output[i])} \n`
+                            break;
+                        case 'staffroles':
+                            if (output[i] === [] || output[i] === '[]') outputString += `> ${i}  =>  \`${output[i] === undefined ? 'undefined' : output[i]}\` \n`
+                            else {
+                                let temp = [];
+                                output[i].forEach(async (role) => temp.push(`<@&${role}>`));
+                                outputString += `> ${i}  =>  ${output[i] === undefined ? 'undefined' : temp.join(', ')} \n`
+                            }
                             break;
                         default:
-                            outputString += `${i}  =>  \`${output[i] === undefined ? 'undefined' : output[i]}\` \n`
+                            outputString += `> ${i}  =>  \`${output[i] === undefined ? 'undefined' : output[i]}\` \n`
                     }
                 }
 

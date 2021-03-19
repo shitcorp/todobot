@@ -99,9 +99,11 @@ module.exports = {
         }
         let todomsg;
         try {
-            todomsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(conf.todochannel).send(await client.todo(todoobject))
+            let todochannel = await client.guilds.cache.get(interaction.guild_id).channels.fetch(conf.todochannel)
+            todomsg = await todochannel.send(await client.todo(todoobject))
         } catch (e) {
             client.logger.debug(e);
+            console.error(e);
             return interaction.embed.error(messages.unabletoposttodo[lang])
         }
         if (!todomsg) return interaction.embed.error(messages.unabletoposttodo[lang]);

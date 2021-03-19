@@ -95,7 +95,7 @@ module.exports = (client) => {
                 };
             }
 
-            embed.addField(`Tasks(${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
+            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
         }
         
         if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);

@@ -15,25 +15,18 @@ module.exports = async (client, guild) => {
 
   //create the configobject and insert the default settings
   let configobject = {
-    _id: guild.id,
-    prefix: "//",
-    color: "BLUE",
-    todochannel: null,
-    suggestchannel: null,
-    approvedchannel: null,
-    bugchannel: null,
-    suggestion_vote_timeout_max: 24,
-    suggestion_vote_minimum_amount: 3,
-    suggestion_comments_enabled: false,
-    suggestion_edits_enabled: false,
-    suggestions_enabled: false,
-    bugs_enabled: false,
-    staffroles: [],
-    tags: new Map(),
-    blacklist_channels: [],
-    blacklist_users: [],
-    vars: new Map(),
-    lang: "en"
+      _id: guild.id,
+      prefix: "//",
+      color: "BLUE",
+      todochannel: null,
+      readonlychannel: null,
+      bugs_enabled: false,
+      staffroles: [],
+      tags: new Map(),
+      blacklist_channels: [],
+      blacklist_users: [],
+      vars: new Map(),
+      lang: 'en'
   }
 
   await client.setconfig(configobject)

@@ -54,9 +54,9 @@ module.exports = async (client, messageReaction, user) => {
             messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                 if (todoobj.shared) client.emit('todochanged', todoobj, client);
                 await messageReaction.message.reactions.removeAll().catch(error => { client.logger.debug(error) })
-                await messageReaction.message.react("✏️")
-                await messageReaction.message.react("✅")
-                await messageReaction.message.react("➕")
+                await messageReaction.message.react(client.emojiMap['edit'])
+                await messageReaction.message.react(client.emojiMap['finish'])
+                await messageReaction.message.react(client.emojiMap['assign'])
                 if (todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
                 if (todoobj.tasks) {
                     for (let i = 0; i < todoobj.tasks.length; i++) {
@@ -66,18 +66,19 @@ module.exports = async (client, messageReaction, user) => {
             })
 
             break;
-        case "✅":
+        case 'finish':
             // mark the todo as finished (closed), or
             // restart/repost the todo when its repeating
 
             // (!) Make sure only assigned users can close the task
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
             if (todoobj === undefined || typeof todoobj !== "object") return;
+            console.log(todoobj);
             let arse = []
             Object.keys(todoobj.assigned).forEach(key => {
                 arse.push(todoobj.assigned[key])
             })
-            if (arse.includes(userinio) === true) {
+            if (Object.values(todoobj.assigned).includes(userinio) === true) {
                 // if not all tasks are finished we dont allow the todo list to be marked as finished
                 if (todoobj.tasks && todoobj.tasks.filter(task => !task.includes('finished_')).length > 0 ) return await client.clearReactions(messageReaction.message, userinio);
                 if (todoobj.loop === true) {
@@ -85,8 +86,8 @@ module.exports = async (client, messageReaction, user) => {
                     await todomodel.updateOne({ _id: todoobj._id }, { state: "open" })
                     messageReaction.message.edit(client.todo(todoobj)).then(async (msg) => {
                         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                        await msg.react("✏️")
-                        await msg.react("📌")
+                        await msg.react(client.emojiMap['edit'])
+                        await msg.react(client.emojiMap['assign'])
                     })
                 } else {
                     todoobj.state = "closed";
@@ -174,9 +175,7 @@ module.exports = async (client, messageReaction, user) => {
             // function to mark task as finished
             todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
             let parse = [];
-            Object.keys(todoobj.assigned).forEach(key => {
-                parse.push(todoobj.assigned[key])
-            })
+            Object.keys(todoobj.assigned).forEach(key => parse.push(todoobj.assigned[key]))
             if (parse.includes(userinio) !== true) return client.clearReactions(messageReaction.message, userinio);
             console.log(todoobj);
             if (todoobj.tasks[client.Mapemoji[react]-1].includes('finished_')) todoobj.tasks[client.Mapemoji[react]-1] = todoobj.tasks[client.Mapemoji[react]-1].replace('finished_', '')
@@ -185,9 +184,6 @@ module.exports = async (client, messageReaction, user) => {
             await todomodel.updateOne({ _id: todoobj._id }, todoobj);
             await messageReaction.message.edit(client.todo(todoobj))
             await client.clearReactions(messageReaction.message, userinio);
-            await messageReaction.message.react("✏️")
-            await messageReaction.message.react("✅")
-            await messageReaction.message.react("➕")
             if (todoobj.tasks) {
                 for (let i = 0; i < todoobj.tasks.length; i++) {
                     if (!todoobj.tasks[i].includes('finished_')) await messageReaction.message.react(client.emojiMap[i + 1])
