@@ -146,6 +146,7 @@ module.exports = {
                     }
                 }
 
+
                 interaction.embed.default(outputString);
                 
                 break;
