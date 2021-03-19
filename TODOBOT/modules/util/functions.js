@@ -178,14 +178,15 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", (err, promise) => {
-    //client.apm.captureError(err)
-    if (client.config.dev) console.error(err, promise)
+    client.apm.captureError(err)
+    client.apm.captureError(promise)
+    client.logger.debug(err)
+    client.logger.debug(promise)
   });
 
   process.on("uncaughtException", (err) => {
-    //client.apm.captureError(err)
-    if (client.config.dev) console.error(err)
-    process.exit(1);
+    client.apm.captureError(err)
+    client.logger.debug(err)
   });
 
 

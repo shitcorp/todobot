@@ -1,4 +1,3 @@
-const apm = require('elastic-apm-node');
 const path = require('path');
 const bunyan = require('bunyan');
 const streams_prod = {
@@ -26,11 +25,6 @@ exports.log = (content, type = "log") => {
     case "warn": {
       return log.warn(content);
     }
-    case "error":
-    case "debug": {
-      apm.captureError(content);
-      return log.debug(content);
-    }
     case "cmd": {
       return log.info(content);
     }
@@ -43,16 +37,18 @@ exports.log = (content, type = "log") => {
     case "redis": {
       return log.info('[REDIS] ' + content);
     }
+    case 'error': {
+      return log.error(content)
+    }
 
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd, dba or error.");
   }
 }; 
 
 
-exports.error = (...args) => this.log(...args, "error");
+exports.Error = (... args) => this.log(...args, 'error');
 exports.warn = (...args) => this.log(...args, "warn");
 exports.ready = (...args) => this.log(...args, "ready");
-exports.debug = (...args) => this.log(...args, "debug");
 exports.cmd = (...args) => this.log(...args, "cmd");
 exports.dba = (...args) => this.log(...args, "dba");
 exports.mongo = (...args) => this.log(...args, "mongo");

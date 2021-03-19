@@ -5,14 +5,17 @@ apm.start({
   serverUrl: process.env.DEBUG_URL_APM_SERVER,
   serviceName: process.env.BOT_NAME,
   environment: 'production',
-  active: process.env.DEV === false,
-  logger: require('bunyan')({ name: 'APM_AGENT', level: 'debug' })
+  // logLevel: 'trace',
+  active: process.env.DEV !== false,
+  logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
 })
 
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
 const Agenda = require('agenda');
+const express = require('express');
+const app = express();
 const Interaction = require('./classes/interaction');
 const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
@@ -31,6 +34,8 @@ const client = new Discord.Client({
   ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
+client.apm = apm;
+
 
 client.cache = redis.createClient({
   host: process.env.REDIS_ADDRESS,
@@ -39,6 +44,15 @@ client.cache = redis.createClient({
 
 client.config = require("./config.js");
 client.logger = require("./modules/util/Logger");
+
+client.logger.debug = (err) => {
+  client.apm.captureError(err);
+  client.logger.Error(err);
+}
+
+client.logger.error = (err) => client.logger.debug(err)
+
+client.logger.error(new Error('test'))
 
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
@@ -151,7 +165,17 @@ const loadAndInjectClient = async (path) => {
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
 
+  app.get('/', (req, res) => {
+    return res.json({ healthy: true });
+  });
 
+  app.get('/health', (req, res) => {
+    return res.json({ healthy: true });
+  });
+
+  app.listen(process.env.HEALTH_ENDPOINT_PORT, () => {
+    client.logger.log('[HEALTH API] App is listening on port ' + process.env.HEALTH_ENDPOINT_PORT)
+  });
 
 
 
