@@ -8,6 +8,8 @@ class todo {
         this.attachlink = raw_todo.attachlink;
         this.submittedby = raw_todo.submittedby;
         this.timestamp = Date.now();
+        this.time_started = raw_todo.time_started;
+        this.time_finished = raw_todo.time_finished;
         this.state = raw_todo.state;
         this.severity = raw_todo.severity;
         this.loop = raw_todo.loop;

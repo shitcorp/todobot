@@ -9,6 +9,8 @@ const todoschema = new mongoose.Schema({
     attachlink: String,
     submittedby: String,
     timestamp: String,
+    time_started: String,
+    time_finished: String,
     state: String,
     severity: Number,
     loop: Boolean,

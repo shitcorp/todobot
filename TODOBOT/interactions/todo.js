@@ -65,6 +65,8 @@ module.exports = {
             state: "open",
             submittedby: interaction.member.user.id,
             timestamp: Date.now(),
+            time_started: '',
+            time_finished: '',
             assigned: [],
             severity: 5,
             loop: false,

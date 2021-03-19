@@ -48,8 +48,9 @@ module.exports = async (client, messageReaction, user) => {
 
             todoobj.state = "assigned";
             todoobj.assigned = assigned;
+            todoobj.time_started =  `${Date.now()}`;
 
-            await todomodel.updateOne({ _id: todoobj._id }, { $push: { assigned }, state: "assigned" })
+            await client.updatetodo(todoobj._id, todoobj);
 
             messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                 if (todoobj.shared && todoobj.shared === true) client.emit('todochanged', todoobj, client);
@@ -86,6 +87,7 @@ module.exports = async (client, messageReaction, user) => {
                     })
                 } else {
                     todoobj.state = "closed";
+                    todoobj.time_finished = `${Date.now()}`;
                     client.updatetodo(todoobj._id, todoobj);
                     messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                         await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
