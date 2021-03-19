@@ -13,6 +13,7 @@ process.env.DEV === 'true' ? streams.push(streams_dev) : streams.push(streams_pr
 
 const log = bunyan.createLogger({
   name: process.env.BOT_NAME,
+  level: 'debug',
   streams
 });
 

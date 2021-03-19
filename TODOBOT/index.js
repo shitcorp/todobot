@@ -1,10 +1,13 @@
 (require('dotenv').config());
 
-// const apm = require('elastic-apm-node').start({
-//   serverUrl: 'http://localhost:8200',
-//   serviceName: 'TodoDiscordBot',
-//   environment: process.env.DEV ? 'development' : 'production'
-// })
+const apm = require('elastic-apm-node')
+apm.start({
+  serverUrl: process.env.DEBUG_URL_APM_SERVER,
+  serviceName: process.env.BOT_NAME,
+  environment: 'production',
+  active: process.env.DEV === false,
+  logger: require('bunyan')({ name: 'APM_AGENT', level: 'debug' })
+})
 
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
@@ -39,8 +42,6 @@ client.logger = require("./modules/util/Logger");
 
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
-
-
 
 /**
  * Handle caching and redis client here
