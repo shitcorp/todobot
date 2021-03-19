@@ -60,7 +60,7 @@ module.exports = {
         if (!interaction.data.options || interaction.data.options.length < 1) return interaction.embed.error(messages.todonoargs[lang])
 
         const todoobject = {
-            _id: uuidv4(),
+            _id: uuidv4().split(0, 14)[0],
             guildid: interaction.guild_id,
             state: "open",
             submittedby: interaction.member.user.id,
@@ -115,8 +115,8 @@ module.exports = {
         todoobject.todomsg = todomsg.id;
         todoobject.todochannel = conf.todochannel;
         todoobject.shared = false;
-        await todomsg.react("✏️")
-        await todomsg.react("📌")
+        await todomsg.react(client.emojiMap['edit'])
+        await todomsg.react(client.emojiMap['accept'])
         await client.settodo(todoobject)
 
     }

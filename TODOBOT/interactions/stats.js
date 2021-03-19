@@ -31,7 +31,7 @@ module.exports = {
         const pkg = require('../../package.json')
 
         const statembed = new MessageEmbed()
-            .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL())
+            .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
             .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
             .addField("• Uptime", `> ${duration}`, true)
             .addField("• Users ", `> ${client.users.cache.size}`, true)
@@ -41,6 +41,8 @@ module.exports = {
             .addField("• Ping", `> ${msg.createdTimestamp - interaction.timestamp}ms.`, true)
             .addField("• API Latency", `> ${Math.round(client.ws.ping)}ms`, true)
             .addField("• Repo", `${client.emojiMap['github']} [Github](https://github.com/MeerBiene/TODOBOT)`, true)
+            //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+            .setFooter( `Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`, 'https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.png')
             .setColor("BLUE")
 
 

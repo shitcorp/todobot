@@ -97,7 +97,7 @@ module.exports = (client) => {
 
             embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
         }
-        
+
         if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);
         if (todoobj.category) embed.addField("Category", todoobj.category, true);
         if (todoobj.attachlink) attacher();
@@ -115,29 +115,22 @@ module.exports = (client) => {
 
 
 
+
         switch (todoobj.state) {
             case "open":
                 embed.setColor("RED")
-                embed.setFooter(`____________________________
-✏️          Edit the TODO at hand.
-📌          Assign yourself to the task.`)
+                embed.setFooter(`${todoobj._id}`)
                 break;
             case "assigned":
                 embed.setColor("YELLOW")
-                embed.setFooter(`____________________________
-✏️          Edit the TODO at hand.
-✅          Mark the task as finished.
-➕          Add yourself to assigned users. `)
+                embed.setFooter(`${todoobj._id}`)
                 break;
             case "closed":
                 embed.setColor("GREEN")
-                embed.setFooter(`__________________________
-⬇️               Show more details.`)
+
                 break;
             case "detail":
                 embed.setColor("GREEN")
-                embed.setFooter(`__________________________
-⬆️               Show less details.`)
                 break;
             case "readonly":
                 embed.setColor("BLUE")
@@ -149,15 +142,15 @@ module.exports = (client) => {
 
         if (detailbool) {
             let output = "";
-            
+
             if (todoobj.assigned !== []) {
                 Object.keys(todoobj.assigned).forEach(key => {
                     output += `<@${todoobj.assigned[key]}> \n`
                 })
                 output !== "" ? embed.addField("Processed", output, true) : null;
             }
-            
-            embed.addField("Submitted By", client.users.cache.get(todoobj.submittedby), true)
+
+            embed.addField("Submitted By", `<@${todoobj.submittedby}>`, true)
             embed.addField("Submitting Time", `> ${format(parseInt(todoobj.timestamp), "PPpp")}`, true)
             embed.addField("Severity", todoobj.severity, true)
             embed.addField("Loop", todoobj.loop, true)
@@ -166,7 +159,7 @@ module.exports = (client) => {
         }
 
         return embed;
-    
+
     };
 
 

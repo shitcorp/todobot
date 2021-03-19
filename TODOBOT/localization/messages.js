@@ -33,13 +33,13 @@ module.exports = {
 
     // modules/handlers/interactionhandler.js; commands/01todo/todo.js
     "todoposted": {
-        "en": "Great! Your TODO has been posted. React with 📌 to assign it to yourself and when you're done, react with ✅ to close the TODO.",
-        "de": "Super! Deine neue Aufgabe wurde gepostet, Reagiere mit 📌 um die Aufgabe anzunehmen und mit ✅ wenn du fertig mit der Aufgabe bist."
+        "en": "Great! Your TODO has been posted. React with  <:accept_todo:822495794602442814>  to assign it to yourself and when you're done, react with  <:finish:820576533059600394>  to close the TODO.",
+        "de": "Super! Deine neue Aufgabe wurde gepostet, Reagiere mit  <:accept_todo:822495794602442814>  um dich der Aufgabe anzunehmen und mit  <:finish:820576533059600394>  wenn du fertig mit der Aufgabe bist."
     },
 
     // modules/handlers/interactionhandler.js
     "addbottoguild": {
-        "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shoten\`",
+        "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shorten\`",
         "de": "Der Bot muss Mitglied deines Servers sein um diesen Command benutzen zu können. Verfügbare Slash Commands sind: \`/shorten\`"
     },
 

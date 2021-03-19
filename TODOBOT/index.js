@@ -78,7 +78,10 @@ client.emojiMap = {
   'task_open': '<:task_open:820381667881517118>',
   'task_finished': '<:task_finished:820384679562838046>',
   'upvote': '<:upvote:820678243828105216>',
-  'downvote': '<:downvote:820677972645642290>'
+  'downvote': '<:downvote:820677972645642290>',
+  'expand': '<:expand:822466806211543080>',
+  'collapse': '<:collapse:822467028983873606>',
+  'accept': '<:accept_todo:822495794602442814>'
 }
 
 client.Mapemoji = {
@@ -179,7 +182,7 @@ const loadAndInjectClient = async (path) => {
       console.log(e);
       console.error(e);
       client.logger.debug(e);
-      interactionhandler.embed.error(interaction, '__An error occured, please try again.');
+      interactionhandler.embed.error(interaction, 'An error occured, please try again.');
     }
   });
 

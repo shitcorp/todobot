@@ -170,6 +170,7 @@ module.exports = (client) => {
         await reaction.users.remove(userID);
       };
     } catch (error) {
+      console.error(error)
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
   };

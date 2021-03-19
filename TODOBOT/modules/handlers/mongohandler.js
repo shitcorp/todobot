@@ -151,14 +151,12 @@ module.exports = (client) => {
     client.gettodobymsg = (todomsg, guildid) => { return todomodel.findOne({ todomsg, guildid }) };
 
 
-    client.updatetodo = (_id, todoobj) => {
-        return configmodel.updateOne({ _id }, todoobj, (err) => { if (err) Sentry.captureException(err) });
-    }
+    client.updatetodo = (_id, todoobj) => configmodel.updateOne({ _id }, todoobj, (err) => { if (err) console.error(err) });
 
 
     client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
-        return newtodo.save((err, doc) => { if (err) Sentry.captureException(err) });
+        return newtodo.save((err, doc) => { if (err) console.error(err) });
     };
 
     client.setreminder = (reminderobj) => {
