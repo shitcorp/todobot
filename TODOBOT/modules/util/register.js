@@ -43,7 +43,7 @@ const questions = [
 
   for (const c of response.commands) {
     const { raw } = await import(
-      path.join(__dirname + '/commands/' + c)
+      path.join(__dirname + '../../../interactions/' + c)
     );
 
     await interaction
@@ -69,6 +69,7 @@ const questions = [
           data.message &&
           data.message.includes('Invalid Form Body')
         ) {
+          console.error(data.errors)
           console.error(`
                   _________________________________
                   [503] Invalid Form Body

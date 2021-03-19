@@ -15,17 +15,17 @@ const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
 const Discord = require("discord.js-light");
 const client = new Discord.Client({
-    partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
-    disableMentions: "everyone",
-    disableMentions: "here",
-    cacheGuilds: true,
-    cacheChannels: false,
-    cacheOverwrites: false,
-    cacheRoles: true,
-    cacheEmojis: true,
-    cachePresences: false,
-    cacheMembers: false,
-    ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
+  partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
+  disableMentions: "everyone",
+  disableMentions: "here",
+  cacheGuilds: true,
+  cacheChannels: false,
+  cacheOverwrites: false,
+  cacheRoles: true,
+  cacheEmojis: true,
+  cachePresences: false,
+  cacheMembers: false,
+  ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
 
@@ -158,12 +158,10 @@ const loadAndInjectClient = async (path) => {
     client.reminderjob()
   });
 
-  (async function () {
-    // IIFE to give access to async/await
-    await agenda.start();
-    // Alternatively, you could also do: (every 2 minutes)
-    await agenda.every("*/2 * * * *", "reminderjob");
-  })();
+  // IIFE to give access to async/await
+  await agenda.start();
+  // Alternatively, you could also do: (every 2 minutes)
+  await agenda.every("*/1 * * * *", "reminderjob");
 
 
   client.invalidateCache('709541114633519177')

@@ -44,7 +44,7 @@ module.exports = {
         permLevel: 'STAFF',
     },
     help: {
-        category: 'System',
+        category: 'todo',
         description: raw.description,
         tutorial: {
             text: '',

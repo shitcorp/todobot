@@ -80,9 +80,9 @@ module.exports = (client) => {
 
   client.invalidateCache = async (_id) => {
     client.cache.del(_id, (err) => {
-      err ? Sentry.captureException(err) :
+      err ? console.error(err):
         configmodel.findOne({ _id }, (err, doc) => {
-          err ? Sentry.captureException(err) :
+          err ? console.error(err) :
             client.cache.set(_id, JSON.stringify(doc))
         })
 
@@ -138,15 +138,17 @@ module.exports = (client) => {
         // mention the user that submitted the reminder
         let output = `${await client.users.fetch(doc.user)}`
         // if theres users to mention, iterate over the users mentions array and mention them as well
-        if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.cache.get(user)}`)
+        if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.fetch(user)}`)
         // if theres roles to mention, iterate ove the roles mentions array and mention them
         if (doc.mentions.roles.length > 0) doc.mentions.roles.forEach(role => output += `, <@&${role}>`)
         // tryto get the guild where the reminder was created, then the channel, then send the reminder message in that channel
         try {
-          client.guilds.fetch(doc.guild.id).channels.fetch(doc.guild.channel).send(output, client.reminder(doc))
+          let chann = await client.guilds.cache.get(doc.guild.id).channels.fetch(doc.guild.channel)
+          await chann.send(output, client.reminder(doc))
         // if the message cant be sent, or the guild cant be fetched or theres some other 
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
+          console.log(e);    
           client.logger.debug(e)
           remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }

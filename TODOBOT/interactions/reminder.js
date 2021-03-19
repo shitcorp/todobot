@@ -170,7 +170,7 @@ const newviewer = async (client, interaction, arr) => {
     const FieldsEmbed = new Pagination.FieldsEmbed()
         .setArray(arr)
         .setAuthorizedUsers([interaction.member.user.id])
-        .setChannel(client.guilds.cache.fetch(interaction.guild_id).channels.cache.fetch(interaction.channel_id))
+        .setChannel(await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id))
         .setElementsPerPage(1)
         // Initial page on deploy
         .setPage(1)
