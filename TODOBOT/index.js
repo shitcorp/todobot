@@ -49,10 +49,9 @@ client.logger.debug = (err) => {
   client.apm.captureError(err);
   client.logger.Error(err);
 }
-
 client.logger.error = (err) => client.logger.debug(err)
 
-client.logger.error(new Error('test'))
+
 
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
@@ -165,10 +164,6 @@ const loadAndInjectClient = async (path) => {
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
 
-  app.get('/', (req, res) => {
-    return res.json({ healthy: true });
-  });
-
   app.get('/health', (req, res) => {
     return res.json({ healthy: true });
   });
@@ -198,11 +193,23 @@ const loadAndInjectClient = async (path) => {
   client.ws.on("INTERACTION_CREATE", async (interaction) => {
     client.logger.cmd(`Received the interaction ${interaction.data.name}`)
     try {
+      const trans = apm.startTransaction('Interaction Handler', 'handler', {
+        startTime: Date.now()
+      })
+      apm.setUserContext({
+        id: interaction.member.user.id,
+        username: interaction.member.user.username
+      })
+      const span = trans.startSpan(interaction.data.name, 'discord_interaction', {
+        startTime: Date.now()
+      })
       let conf = await client.getconfig(interaction.guild_id)
       // if the user or channel are blacklisted we return an error
       if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
       if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return;
       (client.interactions.get(interaction.data.name)).run(client, new Interaction(client, interaction));
+      span.end()
+      apm.endTransaction('success', Date.now())
     } catch (e) {
       console.log(e);
       console.error(e);

@@ -56,7 +56,7 @@ module.exports = {
         if (!interaction.data.options || interaction.data.options.length < 1) return interaction.embed.error(messages.todonoargs[lang])
 
         const todoobject = {
-            _id: uuidv4().split(0, 14)[0],
+            _id: uuidv4().slice(0, 13),
             guildid: interaction.guild_id,
             state: "open",
             submittedby: interaction.member.user.id,
@@ -111,8 +111,16 @@ module.exports = {
             console.error(e);
             return interaction.embed.error(messages.unabletoposttodo[lang])
         }
+        
         if (!todomsg) return interaction.embed.error(messages.unabletoposttodo[lang]);
-        interaction.reply(messages.todoposted[lang]);
+        
+        // acknowledge the interaction
+        interaction.reply(' ', 2);
+        // send a success message and delete it after a while
+        const interactionChannel = await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id);
+        interactionChannel.send(client.success(messages.todoposted[lang])).then((msg) => { if (msg.deletable) msg.delete({ timeout: process.env.MSG_DELETE }) })
+        
+
 
         // were saving the channel for future reference, if the todo channel gets changed
         // and we repost a task/todo and put the link to the original message. Dont know
