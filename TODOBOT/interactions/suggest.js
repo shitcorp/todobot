@@ -36,11 +36,7 @@ module.exports = {
     },
     help: {
         category: 'Utility',
-        description: raw.description,
-        tutorial: {
-            text: '',
-            media: '',
-        }
+        description: raw.description
     },
     run: async (client, interaction) => {
         

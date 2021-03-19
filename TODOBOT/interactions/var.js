@@ -74,18 +74,7 @@ module.exports = {
     },
     help: {
         category: "Utility",
-        description: raw.description,
-        tutorial: {
-            text: `__**Command Options**__
-        //var -s/set foo bar => Saves a new key-value pair with the key foo and the value bar
-        
-        //var -v/view foo => Returns "bar", the value of foo
-        
-        //var -u/update/-e/edit foo newbar => Updates foo to the new value "newbar"
-        
-        //var -d/del foo => Deletes foo`,
-            media: '',
-        }
+        description: raw.description
     },
     run: async (client, interaction) => {
 

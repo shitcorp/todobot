@@ -60,11 +60,7 @@ module.exports = {
     },
     help: {
         category: 'System',
-        description: raw.description,
-        tutorial: {
-            text: '',
-            media: '',
-        }
+        description: raw.description
     },
     run: async (client, interaction) => {
         const messages = require('../localization/messages');
