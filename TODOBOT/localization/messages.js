@@ -303,7 +303,28 @@ module.exports = {
 
     'invitemessage': {
         'en': '[Invite me to your server.](http://invite.todo-bot.xyz "http://invite.todo-bot.xyz")'
-    }
+    },
 
+
+    /****************
+     * 
+     *  HELP COMMAND
+     * 
+     ***************/
+
+     'available_commands': {
+         'en': 'Available Commands',
+         'de': 'Verfügbare Commands'
+     },
+
+     'moreinformation': {
+         'en': 'For more information about a specific command run the command \`/help <commandname>\`.',
+         'de': 'Für mehr informationen über einen speziellen command benutze den help command folgendermaßen: \`/help <commandname>\`'
+     },
+
+     'commandnotfound': {
+         'en': 'Command not found.',
+         'de': 'Command wurde nicht gefunden.'
+     }
 
 }

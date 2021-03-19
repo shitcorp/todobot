@@ -109,7 +109,7 @@ module.exports = {
                 Object.keys(conf.tags).forEach(key => {
                     output += `• \`${key}\` =>  ${conf.tags[key].slice(0, 69)} \n`;
                 })
-                interaction.embed.default(messages.availabletags[lang] + `\n\n${output}`);
+                interaction.embed.default(`**` + messages.availabletags[lang] + `**` + `\n\n${output}`);
                 break;
             case 'learn':
                 if (client.commands.get(tag) || client.aliases.get(tag)) return interaction.embed.error(messages.cantoverwritecommands[lang]);

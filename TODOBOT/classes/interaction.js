@@ -33,7 +33,18 @@ class interaction {
                             embeds: [
                                 {
                                     description: msg,
-                                    color: Colors[color]
+                                    color: Colors[color],
+                                    auhtor: {
+                                        name: client.user.username
+                                    },
+                                    thumbnail: {
+                                        url: client.user.avatarURL()
+                                    },
+                                    footer: {
+                                        text: `Requested by ${this.member.user.username}#${this.member.user.discriminator}   •   ${client.user.username}   •    todo-bot.xyz`,
+                                        //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+                                        icon_url: 'https://cdn.discordapp.com/avatars/' + this.member.user.id + '/' + this.member.user.avatar + '.png'
+                                    }
                                 }
                             ]
                         }
