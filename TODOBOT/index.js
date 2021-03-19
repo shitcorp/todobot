@@ -15,7 +15,7 @@ const Enmap = require("enmap");
 const redis = require("redis");
 const Agenda = require('agenda');
 const express = require('express');
-const app = express();
+const healthapp = express();
 const Interaction = require('./classes/interaction');
 const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
@@ -164,11 +164,11 @@ const loadAndInjectClient = async (path) => {
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
 
-  app.get('/health', (req, res) => {
+  healthapp.get('/health', (req, res) => {
     return res.json({ healthy: true });
   });
 
-  app.listen(process.env.HEALTH_ENDPOINT_PORT, () => {
+  healthapp.listen(process.env.HEALTH_ENDPOINT_PORT, () => {
     client.logger.log('[HEALTH API] App is listening on port ' + process.env.HEALTH_ENDPOINT_PORT)
   });
 

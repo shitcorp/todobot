@@ -137,8 +137,8 @@ module.exports = (client) => {
         return await todomodel.find({ assigned: user }, (err, docs) => { if (err) return Sentry.captureException(err) });
     }
 
-    client.getonetodo = (_id) => {
-        return todomodel.findOne({ _id }, (err, doc) => { if (err) return Sentry.captureException(err) });
+    client.getonetodo = async (_id) => {
+        return await todomodel.findOne({ _id }, (err, doc) => { if (err) return client.logger.debug(err) });
     };
 
     /**

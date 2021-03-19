@@ -8,10 +8,12 @@ class interaction {
         this.token = interaction.token;
         this.guild_id = interaction.guild_id;
         this.channel_id = interaction.channel_id;
+        this.channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id);
         this.data = interaction.data;
         this.member = interaction.member;
         this.type = interaction.type;
         this.timestamp = Date.now();
+        
 
         const reply = async (msg, type = 4) => {
             return client.api.interactions(this.id, this.token).callback.post({
