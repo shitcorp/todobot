@@ -1,9 +1,9 @@
 const mongoose = require('mongoose'),
-{ MONGO_CONNECTION } = require('../../config'),
-{ configmodel } = require('../models/configmodel'),
-{ todomodel } = require('../models/todomodel'),
-{ remindermodel } = require('../models/remindermodel'),
-{ promisify } = require("util");
+    { MONGO_CONNECTION } = require('../../config'),
+    { configmodel } = require('../models/configmodel'),
+    { todomodel } = require('../models/todomodel'),
+    { remindermodel } = require('../models/remindermodel'),
+    { promisify } = require("util");
 
 
 module.exports = (client) => {
@@ -14,17 +14,17 @@ module.exports = (client) => {
         mongoose.connect(MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
 
         const db = mongoose.connection;
-        
+
         db.on("error", error => {
             Sentry.captureException(error)
             client.logger.debug(error)
         })
-    
+
         db.once("open", async () => {
             client.logger.mongo("Database connection was established.")
             await client.guilds.cache.forEach(async guild => {
                 const _id = guild.id
-                const inCache = await getAsync(_id)    
+                const inCache = await getAsync(_id)
                 if (inCache === null) {
                     // pull config from db and set to cache
                     configmodel.findOne({ _id }, (err, doc) => {
@@ -39,7 +39,7 @@ module.exports = (client) => {
                     // delete from cache and pull from db then set to cache
                     client.cache.del(_id, (err) => {
                         err ? new Error(err) :
-                            configmodel.findOne({ _id }, (err, doc) => {    
+                            configmodel.findOne({ _id }, (err, doc) => {
                                 if (err) throw new Error(err)
                                 if (typeof doc === "object") {
                                     client.cache.set(_id, JSON.stringify(doc), (err) => {
@@ -49,7 +49,7 @@ module.exports = (client) => {
                             })
                     })
                 }
-                
+
             })
         });
     };
@@ -65,7 +65,7 @@ module.exports = (client) => {
      */
 
     client.setconfig = (configobj) => {
-        
+
         const newconf = new configmodel(configobj)
         const cache = getAsync(configobj._id)
 
@@ -80,10 +80,10 @@ module.exports = (client) => {
         }
 
 
-        return newconf.save(function(err, doc) {
+        return newconf.save(function (err, doc) {
             if (err) throw new Error(err)
 
-        }) 
+        })
     };
 
 
@@ -95,21 +95,15 @@ module.exports = (client) => {
      * by id. It checks the redis cache
      * first before querying mongodb.
      */
-    
-    client.getconfig = async (_id) => {
-        
-        const cache = await getAsync(_id)
-        
-        if (cache !== null) {
-            return JSON.parse(cache) 
-        } else {
-            let docs = await configmodel.findOne({ _id });
-            if (docs) {
-                client.cache.set(_id, JSON.stringify(docs))
-                return docs;
-            }
-        }
 
+    client.getconfig = async (_id) => {
+        const cache = await getAsync(_id)
+        if (cache) return JSON.parse(cache)
+        let docs = await configmodel.findOne({ _id });
+        if (docs) {
+            client.cache.set(_id, JSON.stringify(docs))
+            return docs;
+        }
     };
 
 
@@ -128,11 +122,11 @@ module.exports = (client) => {
 
 
     client.getguildtodos = (guildid) => {
-        return todomodel.find({guildid}), (err, doc) => { if (err) return Sentry.captureException(err)}
+        return todomodel.find({ guildid }), (err, doc) => { if (err) return Sentry.captureException(err) }
     };
 
-    client.querytodos = (queryobj) => {    
-        return todomodel.find({queryobj} , (err, docs) => { if (err) return Sentry.captureException(err) })
+    client.querytodos = (queryobj) => {
+        return todomodel.find({ queryobj }, (err, docs) => { if (err) return Sentry.captureException(err) })
     };
 
     client.getusertodos = (user) => {
@@ -140,7 +134,7 @@ module.exports = (client) => {
     };
 
     client.getprocessedtodos = async (user) => {
-        return await todomodel.find({ assigned: user }, (err, docs) => { if (err) return Sentry.captureException(err)});
+        return await todomodel.find({ assigned: user }, (err, docs) => { if (err) return Sentry.captureException(err) });
     }
 
     client.getonetodo = (_id) => {
