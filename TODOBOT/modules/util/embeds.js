@@ -116,14 +116,15 @@ module.exports = (client) => {
 
 
 
+
         switch (todoobj.state) {
             case "open":
                 embed.setColor("RED")
-                embed.setFooter(`${todoobj._id}`)
+                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
                 break;
             case "assigned":
                 embed.setColor("YELLOW")
-                embed.setFooter(`${todoobj._id}`)
+                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
                 break;
             case "closed":
                 embed.setColor("GREEN")
@@ -139,7 +140,9 @@ module.exports = (client) => {
                 embed.setColor("YELLOW")
         }
 
-
+       
+        
+        
         if (detailbool) {
             let output = "";
 
@@ -157,7 +160,11 @@ module.exports = (client) => {
             embed.addField("ID", `> ${todoobj._id}`, true)
 
         }
-
+        
+        if (todoobj.error && todoobj.error !== '') {
+            embed.addField('Error', '```' + todoobj.error + '```')
+            embed.setColor('RED')
+        }
         return embed;
 
     };

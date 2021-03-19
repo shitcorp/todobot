@@ -37,6 +37,29 @@ module.exports = {
         "de": "Super! Deine neue Aufgabe wurde gepostet, Reagiere mit  <:accept_todo:822495794602442814>  um dich der Aufgabe anzunehmen und mit  <:finish:820576533059600394>  wenn du fertig mit der Aufgabe bist."
     },
 
+
+    // todo interaction
+    'cantclosetodo': {
+        'en': 'You can\'t close this TODO unless you finished all tasks.',
+        'de': 'Du kannst dieses TODO nicht schließen, so lange du noch offene Aufgaben hast.'
+    },
+
+    'alreadyassigned': {
+        'en': 'You are already assigned.',
+        'de': 'Das TODO ist dir bereits zugewiesen.'
+    },
+
+    'novalidkey': {
+        'en': 'This is not a valid key to edit. Valid keys are: title, tasks, loop, state, content and category.',
+        'de': 'Diese Einstellung kann nicht bearbeitet werden. Verfügbare Einstellungen sind: title, tasks, loop, state, content und category.'
+    },
+
+    'noreadonlychannel': {
+        'en': 'You have no readonly channel specified in your config. Do so by running the settings command like so: /settings set readonlychannel: #somechannel',
+        'de': 'Du hast keinen read only channel in deiner config festgelegt. Um das zu tun, benutze den comand /settings set readonlychannel: #irgendeinchannel'
+    },
+
+
     // modules/handlers/interactionhandler.js
     "addbottoguild": {
         "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shorten\`",

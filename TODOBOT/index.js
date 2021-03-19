@@ -19,7 +19,7 @@ const client = new Discord.Client({
   disableMentions: "everyone",
   disableMentions: "here",
   cacheGuilds: true,
-  cacheChannels: false,
+  cacheChannels: true,
   cacheOverwrites: false,
   cacheRoles: true,
   cacheEmojis: true,

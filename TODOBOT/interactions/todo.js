@@ -66,7 +66,10 @@ module.exports = {
             submittedby: interaction.member.user.id,
             timestamp: Date.now(),
             assigned: [],
-            severity: 5
+            severity: 5,
+            loop: false,
+            readonlychannel: '',
+            readonlymessage: ''
         };
 
         for (const index in interaction.data.options) {
@@ -81,6 +84,10 @@ module.exports = {
             if (interaction.data.options[index].name === "attachment") {
                 if (interaction.data.options[index].value === "") return;
                 todoobject.attachlink = interaction.data.options[index].value;
+            }
+            if (interaction.data.options[index].name === "loop") {
+                if (interaction.data.options[index].value === "") return;
+                todoobject.loop = interaction.data.options[index].value;
             }
             if (interaction.data.options[index].name === "tasks") {
                 if (interaction.data.options[index].value === "") return;

@@ -19,9 +19,18 @@ class todo {
         this.assigned = raw_todo.assigned;
         this.category = raw_todo.category;
 
-        this.assign = async (userid) => {
-            this.assigned.push(userid);
-            await client.updatetodo(this._id, this);
+        // if this is given, we show an error inside of the todo embed;
+        this.error = '';
+
+        this.errordisplay = (message, user, error) => {
+            this.error = error;
+            client.clearReactions(message, user);
+            message.edit(client.todo(this))
+            setTimeout(async () => {
+                this.error = '';
+                client.clearReactions(message, user);
+                message.edit(client.todo(this));
+            }, 10000)
         }
 
     }

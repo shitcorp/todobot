@@ -151,7 +151,9 @@ module.exports = (client) => {
     client.gettodobymsg = (todomsg, guildid) => { return todomodel.findOne({ todomsg, guildid }) };
 
 
-    client.updatetodo = (_id, todoobj) => configmodel.updateOne({ _id }, todoobj, (err) => { if (err) console.error(err) });
+    client.updatetodo = (_id, todoobj) => {
+        return todomodel.updateOne({ _id }, todoobj, (err) => { if (err) console.error(err) }); 
+    };
 
 
     client.settodo = (todoobj) => {
