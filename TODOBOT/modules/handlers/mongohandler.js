@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'),
-    { MONGO_CONNECTION } = require('../../config'),
+    MONGO_CONNECTION = process.env.MONGO_CONNECTION,
     { configmodel } = require('../models/configmodel'),
     { todomodel } = require('../models/todomodel'),
     { remindermodel } = require('../models/remindermodel'),
@@ -16,7 +16,6 @@ module.exports = (client) => {
         const db = mongoose.connection;
 
         db.on("error", error => {
-            Sentry.captureException(error)
             client.logger.debug(error)
         })
 
@@ -64,7 +63,7 @@ module.exports = (client) => {
      * when called
      */
 
-    client.setconfig = (configobj) => {
+    client.setconfig = async (configobj) => {
 
         const newconf = new configmodel(configobj)
         const cache = getAsync(configobj._id)
@@ -79,11 +78,7 @@ module.exports = (client) => {
             })
         }
 
-
-        return newconf.save(function (err, doc) {
-            if (err) throw new Error(err)
-
-        })
+        return await newconf.save()
     };
 
 

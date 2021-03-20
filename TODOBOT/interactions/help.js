@@ -18,7 +18,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'STAFF',
+        permLevel: 'BOT_USER',
     },
     help: {
         category: 'System',
@@ -26,7 +26,7 @@ module.exports = {
     },
     run: async (client, interaction) => {
         const messages = require('../localization/messages');
-        const conf = await client.getconfig(interaction.guild_id)
+        const conf = interaction.conf;
         let lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
         const myCommands = client.interactions
         const commandNames = myCommands.keyArray();

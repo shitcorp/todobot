@@ -59,11 +59,16 @@ module.exports = {
         'de': 'Du hast keinen read only channel in deiner config festgelegt. Um das zu tun, benutze den comand /settings set readonlychannel: #irgendeinchannel'
     },
 
+    'notodochannel': {
+        'en': 'There is no todo channel configured for your guild. Make sure to set it by running the settings command like so: \`/settings set todochannel: yourchannel\`',
+        'de': 'Du hast keinen todo channel eingestellt. Das kannst du ändern mit dem Command \`/settings set todochannel: #deinchannel\`'
+    },
+
 
     // modules/handlers/interactionhandler.js
     "addbottoguild": {
-        "en": "Please add the bot to your guild in order to use this command. Available slash commands are: \`/shorten\`",
-        "de": "Der Bot muss Mitglied deines Servers sein um diesen Command benutzen zu können. Verfügbare Slash Commands sind: \`/shorten\`"
+        "en": "I couldn\'t find any configuration for your guild. To change that run the \`/settings set\` command once.",
+        "de": "Ich habe keine Konfiguration für deinen Server gefunden. Um eine zu erstellen, benutze bitte den \`/settings set\` command"
     },
 
     // modules/handlers/interactionhandler.js

@@ -77,7 +77,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'STAFF',
+        permLevel: 'USER',
     },
     help: {
         category: 'Utility',
@@ -85,9 +85,9 @@ module.exports = {
     },
     run: async (client, interaction) => {
         if (!interaction.data.options) return;
-        const conf = await client.getconfig(interaction.guild_id)
-        let lang = conf.lang ? conf.lang : "en";
-        if (!conf) return interactionhandler.embed.error(interaction, messages.addbottoguild[lang]);
+        const conf = interaction.conf;
+        let lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+        if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang]);
         let action, commandopts;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name;
@@ -104,7 +104,7 @@ module.exports = {
                 // Make sure theres something in the array for
                 // the embed paginator, else return an error
                 cache.length > 0 ? newviewer(client, interaction, cache) :
-                    interaction.embed.error(messages.noopenreminders[lang])
+                    interaction.errorDisplay(messages.noopenreminders[lang])
                 break;
             case 'create':
                 let time, unit, content, participants, participatingroles;
@@ -127,7 +127,7 @@ module.exports = {
                         expires = systime + time * 86400000
                         break;
                 }
-                if (content.length > 400) return interaction.embed.error(messages.contenttoolarge[lang])
+                if (content.length > 400) return interaction.errorDisplay(messages.contenttoolarge[lang])
                 const ID = uuidv4();
                 const rem = {
                     _id: ID,
@@ -148,7 +148,7 @@ module.exports = {
                 newreminder.save(function (err) {
                     err
                         ? client.logger.debug(err)
-                        : interaction.embed.success(messages.remindercreated[lang])
+                        : interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.remindercreated[lang]))
                 })
                 break;
         }
@@ -192,7 +192,7 @@ const newviewer = async (client, interaction, arr) => {
                             if (collected.first().deletable) collected.first().delete()
                             remindermodel.updateOne({ _id: arr[i.page - 1]._id }, { content: collected.first().content }, (err) => {
                                 if (err) client.logger.debug(err)
-                                interaction.embed.success(`Updated your reminder.`)
+                                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Updated your reminder.`))
                             })
                         })
                         .catch(collected => {
@@ -205,7 +205,7 @@ const newviewer = async (client, interaction, arr) => {
                 // Delete the reminder on the current page
                 remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, (err) => {
                     if (err) client.logger.debug(err)
-                    interaction.embed.success(`Deleted your reminder.`)
+                    interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted your reminder.`))
                 })
             }
         })

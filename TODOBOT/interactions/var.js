@@ -1,3 +1,5 @@
+const messages = require('../localization/messages');
+
 const raw = {
     name: 'var',
     description: 'Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable "foo"',
@@ -70,7 +72,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: '',
+        permLevel: 'STAFF',
     },
     help: {
         category: "Utility",
@@ -78,7 +80,9 @@ module.exports = {
     },
     run: async (client, interaction) => {
 
-        const conf = await client.getconfig(interaction.guild_id)
+        const conf = interaction.conf;
+        const lang = interaction.lang;
+        if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
         if (!conf.vars) conf.vars = { "example": "This is an example variable" }
         const variableMap = await client.mapBuilder(conf.vars)
 
@@ -100,11 +104,11 @@ module.exports = {
         switch (action) {
             // set a new key value pair
             case 'create':
-                if (variableMap.get(name)) return interaction.embed.error(`This key already exists.`)
+                if (variableMap.get(name)) return interaction.errorDisplay(`This key already exists.`)
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf)
-                interaction.embed.success(`Saved your new configvariable with the key \`${name}\` and the value \`${value}\` `)
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Saved your new configvariable with the key \`${name}\` and the value \`${value}\` `))
                 break;
             // view key value pair by key (maybe add -all flag)
             case 'view':
@@ -119,15 +123,15 @@ module.exports = {
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf);
-                interaction.embed.success(`Updated the key \`${name}\` and saved the new value \`${value}\``)
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Updated the key \`${name}\` and saved the new value \`${value}\``))
                 break;
             // delete key value pair by key
             case "delete":
-                if (!variableMap.has(name)) return interactionhandler.embed.error(interaction, `You can only delete keys that exist`);
+                if (!variableMap.has(name)) return interaction.errorDisplay(`You can only delete keys that exist`);
                 variableMap.delete(name)
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf)
-                interaction.embed.success(`Deleted the key \`${args[1]}\``);
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted the key \`${args[1]}\``))
                 break;
         }
 

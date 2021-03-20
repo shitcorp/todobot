@@ -61,7 +61,7 @@ module.exports = {
         }
     
         //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
-        embed.setThumbnail('https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.gif')
+        embed.setThumbnail('https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.png')
         embed.setDescription(`> ${text}`)
         embed.setFooter(footer);
     
@@ -72,9 +72,9 @@ module.exports = {
                 await msg.react(client.emojiMap['upvote']);
                 await msg.react(client.emojiMap['downvote']);
             })
-            interaction.embed.success(`Your feature request has been submitted.`)
+            interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Your feature request has been submitted.`));
         } catch(e) {
-            interaction.embed.error(`There was an error trying to post your suggestions. Was your image URL well formatted?`)
+            interaction.errorDisplay(`There was an error trying to post your suggestions. Was your image URL well formatted?`);
         }
 
     }

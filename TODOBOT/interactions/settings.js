@@ -27,8 +27,14 @@ const raw = {
                     required: false
                 },
                 {
+                    name: 'userrole',
+                    description: 'Add a new userrole. Userroles can interact with the bot but cannot change bot settings.',
+                    type: 8,
+                    required: false
+                },
+                {
                     name: 'staffrole',
-                    description: 'Add a new staffrole.',
+                    description: 'Add a new staffrole. Staffroles can edit bot settings and force assign users.',
                     type: 8,
                     required: false
                 },
@@ -93,15 +99,16 @@ module.exports = {
             vars: new Map(),
             lang: "en"
         }
-        
+        if (!action) return;
         switch (action) {
             case 'set':
-                let staffrole
+                let staffrole, userrole
                 for (i in commandopts) {
                     if (commandopts[i].name === 'prefix') conf.prefix = commandopts[i].value;
                     if (commandopts[i].name === 'todochannel') conf.todochannel = commandopts[i].value;
                     if (commandopts[i].name === 'readonlychannel') conf.readonlychannel = commandopts[i].value;
                     if (commandopts[i].name === 'staffrole') staffrole = commandopts[i].value;
+                    if (commandopts[i].name === 'userrole') userrole = commandopts[i].value;
                     if (commandopts[i].name === 'language') conf.lang = commandopts[i].value;
                 }
                 if (staffrole) {
@@ -110,8 +117,18 @@ module.exports = {
                     staffroles.push(staffrole)
                     conf.staffroles = staffroles;
                 }
-                await client.updateconfig(interaction.guild_id, conf)
-                interaction.embed.success('Saved your new settings.')
+                if (userrole) {
+                    let userroles = []
+                    Object.values(conf.userroles).forEach(value => staffroles.push(value));
+                    userroles.push(userrole)
+                    conf.userroles = userroles;
+                }
+                try {
+                    await client.setconfig(conf);
+                } catch (e) {
+                    await client.updateconfig(interaction.guild_id, conf);
+                }
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success('Saved your new settings'))
                 break;
             case 'view':
 
@@ -119,22 +136,25 @@ module.exports = {
                     prefix: conf.prefix,
                     todochannel: conf.todochannel,
                     readonlychannel: conf.readonlychannel,
+                    userroles: conf.userroles,
                     staffroles: conf.staffroles,
                     language: conf.lang
                 };
 
                 let outputString = '**Current Settings** \n\n';
+                
                 for (i in output) {
                     switch (i) {
                         case 'readonlychannel':
                         case 'todochannel':
                             outputString += `> ${i}  =>  ${output[i] === undefined ? 'undefined' : await client.guilds.cache.get(interaction.guild_id).channels.fetch(output[i])} \n`
                             break;
+                        case 'userroles':
                         case 'staffroles':
                             if (output[i] === [] || output[i] === '[]') outputString += `> ${i}  =>  \`${output[i] === undefined ? 'undefined' : output[i]}\` \n`
                             else {
                                 let temp = [];
-                                output[i].forEach(async (role) => temp.push(`<@&${role}>`));
+                                if (output[i]) output[i].forEach(async (role) => temp.push(`<@&${role}>`));
                                 outputString += `> ${i}  =>  ${output[i] === undefined ? 'undefined' : temp.join(', ')} \n`
                             }
                             break;
@@ -143,8 +163,11 @@ module.exports = {
                     }
                 }
 
-
-                interaction.embed.default(outputString);
+                const embedToSend = client.embed(outputString);
+                embedToSend.setThumbnail(client.user.avatarURL());
+                //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+                embedToSend.setFooter(`Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`, `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`)
+                interaction.replyWithMessageAndDeleteAfterAWhile(embedToSend)
                 
                 break;
         }

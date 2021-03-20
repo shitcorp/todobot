@@ -15,7 +15,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'STAFF',
+        permLevel: 'USER',
     },
     help: {
         category: 'System',

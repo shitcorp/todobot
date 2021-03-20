@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model} = require('mongoose');
 
-const todoschema = new mongoose.Schema({
+const todoschema = new Schema({
     _id: String,
     guildid: String,
     title: String,
@@ -24,4 +24,4 @@ const todoschema = new mongoose.Schema({
     category: String
 });
 
-exports.todomodel = new mongoose.model("todos_dev", todoschema)
+exports.todomodel = new model("todos_dev", todoschema)

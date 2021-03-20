@@ -1,4 +1,5 @@
 const { Colors } = require('../modules/util/colors');
+const { GuildMember } = require("discord.js-light");
 
 class interaction {
     constructor(client, interaction) {
@@ -7,12 +8,18 @@ class interaction {
         this.id = interaction.id;
         this.token = interaction.token;
         this.guild_id = interaction.guild_id;
+        this.guild = client.guilds.cache.get(interaction.guild_id);
         this.channel_id = interaction.channel_id;
-        this.channel = client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id);
+        this.channel = this.guild.channels.cache.get(interaction.channel_id);
         this.data = interaction.data;
         this.member = interaction.member;
+        this.GuildMember = new GuildMember(client, interaction.member, this.guild);
         this.type = interaction.type;
         this.timestamp = Date.now();
+        this.lang = interaction.lang ? interaction.lang : 'en';
+        this.conf = interaction.conf;
+        // either USER or STAFF (0 - normal USER no perms, 1 - Bot user, 2- STAFF (can change bot settings))
+        this.level = interaction.level;
         
 
         const reply = async (msg, type = 4) => {
@@ -24,6 +31,22 @@ class interaction {
                     }
                 }
             })
+        }
+
+        const replyWithMessageAndDeleteAfterAWhile = (msg) => {
+            // acknowledge the interaction
+            try {
+                reply(' ', 2);
+            } catch (e) {
+                client.logger.error(e);
+            }
+            this.channel.send(msg).then((m) => {
+                if (m.deletable) m.delete({ timeout: process.env.MSG_DELETE })
+            })
+        }
+
+        const errorDisplay = (msg) => {
+            replyWithMessageAndDeleteAfterAWhile(client.error(msg))
         }
 
         const embed = {
@@ -89,6 +112,8 @@ class interaction {
         }
 
         this.reply = (msg, type) => reply(msg, type);
+        this.errorDisplay = (msg) => errorDisplay(msg);
+        this.replyWithMessageAndDeleteAfterAWhile = (msg) => replyWithMessageAndDeleteAfterAWhile(msg);
         this.embed = {
             success: (msg, type, color) => embed.success(msg, type, color),
             default: (msg, type, color) => embed.default(msg, type, color),

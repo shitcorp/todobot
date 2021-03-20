@@ -8,7 +8,6 @@ module.exports = async (client, todoobj) => {
         const msg = await chann.messages.fetch(todoobj.readonlymessage);
         await msg.edit(client.todo(todoobj));
     } catch (e) {
-        console.log(e)
         client.logger.log(e)
     }
 

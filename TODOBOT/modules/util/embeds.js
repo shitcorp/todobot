@@ -18,7 +18,7 @@ module.exports = (client) => {
     client.embed = (desc, obj) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
-            .setColor("#2C2F33")
+            .setColor("BLUE")
         if (obj && obj.color) embed.setColor(obj.color)
         if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
         if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)

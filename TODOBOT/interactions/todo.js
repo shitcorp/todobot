@@ -41,19 +41,20 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'STAFF',
+        permLevel: 'BOT_USER',
     },
     help: {
         category: 'todo',
         description: raw.description
     },
     run: async (client, interaction) => {
-        const conf = await client.getconfig(interaction.guild_id)
-        let lang = conf.lang ? conf.lang : "en";
-        if (!conf) return interaction.embed.error(messages.addbottoguild[lang]);
+        const conf = interaction.conf;
+        const lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+        if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang]);
+        if (!conf.todochannel || conf.todoochannel === '') return interaction.errorDisplay(messages.notodochannel[lang])
 
 
-        if (!interaction.data.options || interaction.data.options.length < 1) return interaction.embed.error(messages.todonoargs[lang])
+        if (!interaction.data.options || interaction.data.options.length < 1) return interaction.errorDisplay(messages.todonoargs[lang])
 
         const todoobject = {
             _id: uuidv4().slice(0, 13),
@@ -72,7 +73,7 @@ module.exports = {
 
         for (const index in interaction.data.options) {
             if (interaction.data.options[index].name === "title") {
-                if (interaction.data.options[index].value === "") return interaction.embed.error(messages.emptytitle[lang])
+                if (interaction.data.options[index].value === "") return interaction.errorDisplay(messages.emptytitle[lang])
                 todoobject.title = interaction.data.options[index].value;
             }
             if (interaction.data.options[index].name === "content") {
@@ -109,16 +110,12 @@ module.exports = {
         } catch (e) {
             client.logger.debug(e);
             console.error(e);
-            return interaction.embed.error(messages.unabletoposttodo[lang])
+            return interaction.errorDisplay(messages.unabletoposttodo[lang])
         }
         
-        if (!todomsg) return interaction.embed.error(messages.unabletoposttodo[lang]);
+        if (!todomsg) return interaction.errorDisplay(messages.unabletoposttodo[lang]);
         
-        // acknowledge the interaction
-        interaction.reply(' ', 2);
-        // send a success message and delete it after a while
-        const interactionChannel = await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id);
-        interactionChannel.send(client.success(messages.todoposted[lang])).then((msg) => { if (msg.deletable) msg.delete({ timeout: process.env.MSG_DELETE }) })
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.todoposted[lang]))
         
 
 

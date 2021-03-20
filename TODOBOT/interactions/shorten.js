@@ -41,18 +41,18 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'STAFF',
+        permLevel: 'USER',
     },
     help: {
         category: 'Utility',
         description: raw.description
     },
     run: async (client, interaction) => {
-        const conf = await client.getconfig(interaction.guild_id)
+        const conf = interaction.conf;
         console.log(conf)
         const lang = 'en';
         let domain = "https://m.stlf.me/"
-        if (!interaction.data.options) return interactionhandler.embed.error(interaction, messages.nolinkgiven[lang]);
+        if (!interaction.data.options) return interaction.errorDisplay(client.error(messages.nolinkgiven[lang]));
         const { data } = interaction;
         const urlToShort = data.options[0].value
         if (data.options[1] && data.options[1].name === "domain") domain = data.options[1].value
@@ -61,14 +61,14 @@ module.exports = {
         try {
             response = await http.post(domain, JSON.stringify({ urlToShort }))
         } catch (e) {
-            if (e.toString().includes("Not Acceptable")) return interactionhandler.embed.error(interaction, messages.notacceptablelink[lang])
-            if (e.toString().includes("Too Many Requests")) return interactionhandler.embed.error(interaction, messages.toomanyrequests[lang])
+            if (e.toString().includes("Not Acceptable")) return interaction.errorDisplay(messages.notacceptablelink[lang])
+            if (e.toString().includes("Too Many Requests")) return interaction.errorDisplay(messages.toomanyrequests[lang])
             client.logger.debug(e)
         }
-        //console.log("res", response)
-        if (!response) return interactionhandler.embed.error(interaction, messages.backendoffline[lang]);
-        if (response && response.status && response.status >= 500) return interactionhandler.embed.error(interaction, messages.backendoffline[lang])
+        
+        if (!response) return interaction.errorDisplay(messages.backendoffline[lang]);
+        if (response && response.status && response.status >= 500) return interaction.errorDisplay(messages.backendoffline[lang])
         let url = response.url ? response.url.replace("http", "https") : messages.somethingwentwrong[lang];
-        interactionhandler.embed.success(interaction, messages.shortenedurl[lang] + "\n> " + url, 3);
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.shortenedurl[lang] + "\n> " + url, 3));
     }
 };

@@ -64,15 +64,16 @@ module.exports = {
     },
     run: async (client, interaction) => {
         const messages = require('../localization/messages');
-        const conf = await client.getconfig(interaction.guild_id);
+        const conf = interaction.conf;
         const lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+        if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
 
         let action, commandopts;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name;
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options) commandopts = interaction.data.options[index].options;
         }
-        if (action !== 'list' && !commandopts) return interaction.embed.error(messages.nouserorchannelgiven[lang])
+        if (action !== 'list' && !commandopts) return interaction.errorDisplay(messages.nouserorchannelgiven[lang])
         /**
          * interaction.data.resolved either holds a members object or channels object
          */
@@ -92,8 +93,8 @@ module.exports = {
             case 'add':
 
                 if (user && user.bot === true) return interaction.embed.error(messages.cannotblacklistbots[lang])
-                if (user && blacklist_users.includes(user.id)) return interaction.embed.error(messages.useralreadyblacklisted[lang]);
-                if (chann && blacklist_channels.includes(chann.id)) return interaction.embed.error(messages.channelalreadyblacklisted[lang]);
+                if (user && blacklist_users.includes(user.id)) return interaction.errorDisplay(messages.useralreadyblacklisted[lang]);
+                if (chann && blacklist_channels.includes(chann.id)) return interaction.errorDisplay(messages.channelalreadyblacklisted[lang]);
                 if (user) blacklist_users.push(user.id);
                 if (chann) blacklist_channels.push(chann.id);
 
@@ -107,8 +108,8 @@ module.exports = {
             case 'remove':
 
                 if (user && user.bot === true) return interaction.embed.error(messages.cannotblacklistbots[lang])
-                if (user && !blacklist_users.includes(user.id)) return interaction.embed.error(messages.usernotblacklisted[lang]);
-                if (chann && !blacklist_channels.includes(chann.id)) return interaction.embed.error(messages.channelnotblacklisted[lang]);
+                if (user && !blacklist_users.includes(user.id)) return interaction.errorDisplay(messages.usernotblacklisted[lang]);
+                if (chann && !blacklist_channels.includes(chann.id)) return interaction.errorDisplay(messages.channelnotblacklisted[lang]);
                 if (user) blacklist_users.splice(blacklist_users.indexOf(user.id), 1);
                 if (chann) blacklist_channels.splice(blacklist_channels.indexOf(chann.id), 1);
 
@@ -117,7 +118,7 @@ module.exports = {
 
                 client.updateconfig(interaction.guild_id, conf);
 
-                interaction.embed.success(messages.updatedyourblacklist[lang]);
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.updatedyourblacklist[lang]));
 
                 break;
 

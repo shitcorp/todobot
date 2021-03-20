@@ -20,6 +20,7 @@ const Interaction = require('./classes/interaction');
 const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
 
 const Discord = require("discord.js-light");
+const messages = require('./localization/messages');
 const client = new Discord.Client({
   partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
   disableMentions: "everyone",
@@ -111,6 +112,12 @@ client.Mapemoji = {
   '🔟': 10,
 }
 
+client.permMap = {
+  'USER': 0,
+  'BOT_USER': 1,
+  'STAFF': 2
+}
+
 
 
 client.commands = new Enmap();
@@ -190,8 +197,11 @@ const loadAndInjectClient = async (path) => {
   client.invalidateCache('709541114633519177')
 
   // interaction"handler"
-  client.ws.on("INTERACTION_CREATE", async (interaction) => {
+  client.ws.on("INTERACTION_CREATE", async (raw_interaction) => {
+    raw_interaction.level = 0;
+    const interaction = new Interaction(client, raw_interaction)
     client.logger.cmd(`Received the interaction ${interaction.data.name}`)
+    console.log(interaction.member)
     try {
       const trans = apm.startTransaction('Interaction Handler', 'handler', {
         startTime: Date.now()
@@ -205,16 +215,29 @@ const loadAndInjectClient = async (path) => {
       })
       let conf = await client.getconfig(interaction.guild_id)
       // if the user or channel are blacklisted we return an error
-      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interactionhandler.embed.error(interaction, 'You are blacklisted from using the bot.');
-      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return;
-      (client.interactions.get(interaction.data.name)).run(client, new Interaction(client, interaction));
+      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay('You are blacklisted from using the bot.');
+      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return interaction.errorDisplay('This channel is blacklisted from bot usage.');
+      // user is a normal bot user
+      if (conf && findCommonElements(conf.userroles, interaction.member.roles)) interaction.level = 1;
+      // user is a staff member and can change bot settings
+      if (conf && findCommonElements(conf.staffroles, interaction.member.roles)) interaction.level = 2;
+      interaction.lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+      interaction.conf = conf;
+      // this is important for the initial setup where the user has to set
+      // a staff role so we need something to detemrmine they are permitted
+      if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
+      const cmd = client.interactions.get(interaction.data.name)
+      console.log(interaction.level)
+      if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay('You can not use this command because your permission level is too low')
+      console.log(client.permMap[cmd.conf.permLevel])
+      cmd.run(client, interaction);
       span.end()
       apm.endTransaction('success', Date.now())
     } catch (e) {
-      console.log(e);
       console.error(e);
       client.logger.debug(e);
-      interactionhandler.embed.error(interaction, 'An error occured, please try again.');
+      interaction.errorDisplay('An error occured, please try again.');
+      if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
     }
   });
 
