@@ -20,8 +20,8 @@ module.exports = (client) => {
             .setDescription(`${desc}`)
             .setColor("BLUE")
         if (obj && obj.color) embed.setColor(obj.color)
-        if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
-        if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)
+        if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(obj.img)
+        if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(obj.thumb)
         return embed;
 
     }

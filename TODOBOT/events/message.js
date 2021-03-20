@@ -13,10 +13,9 @@ module.exports = async (client, message) => {
 
   message.guild ? settings = await client.getconfig(message.guild.id) : null;
 
-  if (client.config.dev && !message.author.bot) console.log("MANAGE_GUILD permission: ", message.member.hasPermission("MANAGE_GUILD"))
-
-  settings ? Prefix = settings.prefix :
-    Prefix = "//";
+  settings  
+    ? Prefix = settings.prefix 
+    : Prefix = "//";
 
 
   const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);

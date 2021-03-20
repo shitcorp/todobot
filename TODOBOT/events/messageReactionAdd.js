@@ -23,13 +23,26 @@ module.exports = async (client, messageReaction, user) => {
     const react = messageReaction.emoji.name
     const userinio = user.id
 
+    const member = await client.guilds.cache.get(messageReaction.message.guild.id).members.fetch(user.id);
+
+
     // if the reacting user is us we should return
     if (userinio === client.user.id) return;
+
 
     const settings = await client.getconfig(messageReaction.message.guild.id)
     if (settings === undefined) return;
 
-    if (messageReaction.message.channel.id !== settings.todochannel) return;
+    
+    if (messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
+    
+    let level = 0;
+    if (findCommonElements(member._roles, settings.userroles)) level = 1;
+    if (findCommonElements(member._roles, settings.staffroles)) level = 2;
+    if (member.hasPermission('MANAGE_GUILD')) level = 2;
+
+    // if the user is not BOT_USER they cant use the reactions
+    if (level < 1) return messageReaction.users.remove(userinio);
 
     let lang = settings ? settings.lang ? settings.lang : 'en' : 'en';
 
@@ -37,17 +50,16 @@ module.exports = async (client, messageReaction, user) => {
     if (todoobj === undefined || typeof todoobj !== "object") return;
 
     // TODO remove reactions when permission level is too low
-    console.log(react);
+
     switch (react) {
         case 'accept_todo':
             // add the reacting user to the assigned array,
             // mark the todo as assigned and edit the todo
             // message, then react with the white checkmark
 
-            let assigned = [userinio]
+            if (!todoobj.assigned.includes(userinio)) todoobj.assigned.push(userinio);
 
             todoobj.state = "assigned";
-            todoobj.assigned = assigned;
             todoobj.time_started =  `${Date.now()}`;
 
             await client.updatetodo(todoobj._id, todoobj);
@@ -241,7 +253,6 @@ module.exports = async (client, messageReaction, user) => {
 
 
     async function showmore() {
-        console.log("test")
         todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
         if (todoobj === undefined || typeof todoobj !== "object") return;
         todoobj.state = "detail";

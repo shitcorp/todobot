@@ -60,6 +60,25 @@ const raw = {
             name: 'view',
             description: 'View your current settings.',
             type: 1
+        },
+        {
+            name: 'remove',
+            description: 'Remove a user or staffrole.',
+            type: 1,
+            options: [
+                {
+                    name: 'userrole',
+                    description: 'Add a new userrole. Userroles can interact with the bot but cannot change bot settings.',
+                    type: 8,
+                    required: false
+                },
+                {
+                    name: 'staffrole',
+                    description: 'Add a new staffrole. Staffroles can edit bot settings and force assign users.',
+                    type: 8,
+                    required: false
+                }
+            ]
         }
     ]
 };
