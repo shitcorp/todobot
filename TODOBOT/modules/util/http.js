@@ -33,7 +33,7 @@ const req = async (route, method, body) => {
 		// 	return { status: res.statusCode };
 		// }
 	} catch (globalError) {
-		apm.captureError(e, { message: { file: 'modules/util/http', line: 36 } })
+		apm.captureError(globalError, { message: { file: 'modules/util/http', line: 36 } })
 	}
 };
 

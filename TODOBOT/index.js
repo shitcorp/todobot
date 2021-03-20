@@ -227,9 +227,9 @@ const loadAndInjectClient = async (path) => {
       // a staff role so we need something to detemrmine they are permitted
       if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
       const cmd = client.interactions.get(interaction.data.name)
-      console.log(interaction.level)
+
       if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay('You can not use this command because your permission level is too low')
-      console.log(client.permMap[cmd.conf.permLevel])
+
       cmd.run(client, interaction);
       span.end()
       apm.endTransaction('success', Date.now())

@@ -211,8 +211,8 @@ module.exports = {
 
     // modules/interactions/shorten.js
     "shortenedurl": {
-        "en": "Heres your shortened URL. Keep in mind that it expires in 24 hours. \n",
-        "de": "Hier ist dein Kurzlink. Denk dran dass der Link in 24 Stunden gelöscht wird. \n"
+        "en": "Heres your shortened URL. \nKeep in mind that it expires in 24 hours. \n",
+        "de": "Hier ist dein Kurzlink. \nDenk dran dass der Link in 24 Stunden gelöscht wird. \n"
     },
 
     // events/messageReactionAdd.js

@@ -18,7 +18,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        permLevel: 'BOT_USER',
+        permLevel: 'USER',
     },
     help: {
         category: 'System',
@@ -28,7 +28,7 @@ module.exports = {
         const messages = require('../localization/messages');
         const conf = interaction.conf;
         let lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
-        const myCommands = client.interactions
+        const myCommands = client.interactions.filter(cmd => client.permMap[cmd.conf.permLevel] <= interaction.level) 
         const commandNames = myCommands.keyArray();
         const longest = commandNames.reduce((long, str) => Math.max(long, str.length), 0);
         const toProperCase = function (txt) {
