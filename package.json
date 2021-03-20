@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon TODOBOT/index.js",
-    "dev:worker": "nodemon WORKER/index.js",
     "start": "node TODOBOT/index.js",
     "dc:up": "docker-compose up -d",
-    "start:worker": "node WORKER/index.js",
     "update": "ncu -u",
     "upgrade": "ncu -u && npm install",
     "commit": "cz",
@@ -24,7 +22,6 @@
   "license": "WTFPL",
   "dependencies": {
     "@aero/centra": "^1.0.6",
-    "@octokit/request": "^5.4.14",
     "agenda": "^4.1.0",
     "bufferutil": "^4.0.3",
     "bunyan": "^1.8.15",
@@ -54,7 +51,6 @@
   },
   "devDependencies": {
     "commitizen": "^4.2.3",
-    "cz-conventional-changelog": "^3.3.0",
     "cz-emoji": "^1.3.1",
     "standard-version": "^9.1.1"
   }
