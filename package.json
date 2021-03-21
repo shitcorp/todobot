@@ -7,6 +7,7 @@
     "dev": "nodemon TODOBOT/index.js",
     "start": "node TODOBOT/index.js",
     "dc:up": "docker-compose up -d",
+    "dc:down": "docker-compose down",
     "update": "ncu -u",
     "upgrade": "ncu -u && npm install",
     "commit": "cz",
