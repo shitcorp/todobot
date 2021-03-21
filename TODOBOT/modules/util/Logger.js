@@ -1,45 +1,44 @@
-// TODO: replace moment with date-fns
+const path = require('path');
+const bunyan = require('bunyan');
+const streams_prod = {
+  path: path.join(__dirname + '../../../logs/' + process.env.BOT_NAME + '.log')
+}
+const streams_dev = {
+  stream: process.stderr
+}
+const streams = [];
 
-const fs = require('fs');
-const chalk = require("chalk");
-const moment = require("moment");
-const apm = require('elastic-apm-node');
-const config = require("../../config")
+process.env.DEV === 'true' ? streams.push(streams_dev) : streams.push(streams_prod)
+
+const log = bunyan.createLogger({
+  name: process.env.BOT_NAME,
+  level: 'debug',
+  streams
+});
+
 
 exports.log = (content, type = "log") => {
-  const timestamp = `[${moment().format("YYYY-MM-DD HH:mm:ss")}]:`;
   switch (type) {
     case "log": {
-      return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `);
+      return log.info(content)
     }
     case "warn": {
-      return console.log(`${timestamp} ${chalk.black.bgYellow(type.toUpperCase())} ${content} `);
-    }
-    case "error": {
-      apm.captureError(content);
-      return console.log(`${timestamp} ${chalk.bgRed(type.toUpperCase())} ${content} `);
-    }
-    case "debug": {
-      apm.captureError(content);
-      if (config.debug === "true") {  
-        console.log(`${timestamp} ${chalk.green(type.toUpperCase())} ${content} \n`);
-      }
-      return fs.appendFileSync("./logs/debug.log", `\n${timestamp}    ${content} `);
+      return log.warn(content);
     }
     case "cmd": {
-      return console.log(`${timestamp} ${chalk.black.bgWhite(type.toUpperCase())} ${content} `);
+      return log.info(content);
     }
     case "ready": {
-      return console.log(`${timestamp} ${chalk.greenBright(type.toUpperCase())} ${content} `);
-    }
-    case "dba": {
-      return console.log(`${timestamp} ${chalk.bgBlue(type.toUpperCase())} ${content} `)
+      return log.info('[READY] ' + content);
     }
     case "mongo": {
-      return console.log(`${timestamp} ${chalk.greenBright("[ " + type.toUpperCase() + " ]")} ${content}`)
+      return log.info('[MONGO] ' + content);
     }
     case "redis": {
-      return console.log(`${timestamp} ${chalk.red("[ " + type.toUpperCase() + " ]")} ${content}`)
+      return log.info('[REDIS] ' + content);
+    }
+    case 'error': {
+      return log.error(content)
     }
 
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd, dba or error.");
@@ -47,10 +46,9 @@ exports.log = (content, type = "log") => {
 }; 
 
 
-exports.error = (...args) => this.log(...args, "error");
+exports.Error = (... args) => this.log(...args, 'error');
 exports.warn = (...args) => this.log(...args, "warn");
 exports.ready = (...args) => this.log(...args, "ready");
-exports.debug = (...args) => this.log(...args, "debug");
 exports.cmd = (...args) => this.log(...args, "cmd");
 exports.dba = (...args) => this.log(...args, "dba");
 exports.mongo = (...args) => this.log(...args, "mongo");

@@ -2,11 +2,14 @@ node_modules
 config.js
 data.sqlite
 data.sqlite-shm
-data.sqlite-wal
+data.sqlite-wal4
+playground.js
 update.json
+package-lock.json
 data
 *.log
 .history
-
+.env
 *.urls.json
 *.url.json
+apm-server.yml

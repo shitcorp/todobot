@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
+const { Schema, model} = require('mongoose');
 
-const configschema = new mongoose.Schema({
+const configschema = new Schema({
     _id: String,
     prefix: String,
     color: String,
     todochannel: String,
     readonlychannel: String,
+    userroles: Array,
     staffroles: Array,
     tags: Map,
     blacklist_channels: Array,
@@ -14,4 +15,4 @@ const configschema = new mongoose.Schema({
     lang: String
 })
 
-exports.configmodel = new mongoose.model("todoconfig", configschema)
+exports.configmodel = new model("todoconfig", configschema)

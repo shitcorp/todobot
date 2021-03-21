@@ -28,15 +28,15 @@ module.exports = (client) => {
   client.discordlog = () => {
 
 
-    client.discordlog = (content, message, event) => {
-      if (client.config.debug !== "true") return
-      if (event) {
-        return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-      }
+    // client.discordlog = (content, message, event) => {
+    //   if (client.config.debug !== "true") return
+    //   if (event) {
+    //     return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
+    //   }
 
-      return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
+    //   return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
 
-    }
+    // }
 
 
 
@@ -80,9 +80,9 @@ module.exports = (client) => {
 
   client.invalidateCache = async (_id) => {
     client.cache.del(_id, (err) => {
-      err ? Sentry.captureException(err) :
+      err ? console.error(err):
         configmodel.findOne({ _id }, (err, doc) => {
-          err ? Sentry.captureException(err) :
+          err ? console.error(err) :
             client.cache.set(_id, JSON.stringify(doc))
         })
 
@@ -117,6 +117,9 @@ module.exports = (client) => {
   };
 
 
+  global.findCommonElements = (arr1, arr2) => { 
+    return arr1.some(item => arr2.includes(item)) 
+} 
 
 
 
@@ -136,25 +139,26 @@ module.exports = (client) => {
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
-        let output = `${await client.users.cache.get(doc.user)}`
+        let output = `${await client.users.fetch(doc.user)}`
         // if theres users to mention, iterate over the users mentions array and mention them as well
-        if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.cache.get(user)}`)
+        if (doc.mentions.users.length > 0) doc.mentions.users.forEach(user => output += `, ${client.users.fetch(user)}`)
         // if theres roles to mention, iterate ove the roles mentions array and mention them
         if (doc.mentions.roles.length > 0) doc.mentions.roles.forEach(role => output += `, <@&${role}>`)
         // tryto get the guild where the reminder was created, then the channel, then send the reminder message in that channel
         try {
-          client.guilds.cache.get(doc.guild.id).channels.cache.get(doc.guild.channel).send(output, client.reminder(doc))
+          let chann = await client.guilds.cache.get(doc.guild.id).channels.fetch(doc.guild.channel)
+          await chann.send(output, client.reminder(doc))
         // if the message cant be sent, or the guild cant be fetched or theres some other 
         // error, we have to catch the error and delete the reminder(doc) from the database
         } catch(e) {
-          Sentry.captureException(e)
-          client.logger.debug(e.toString())
-          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) Sentry.captureException(err) })
+          console.log(e);    
+          client.logger.debug(e)
+          remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }
         // if the reminderproperty "loop" is set to false delete the reminder
         doc.loop === false ? remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
           // else update the reminder in the database with the new expires timestamp
-          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) Sentry.captureException(err) })
+          : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
       };
     };
   };
@@ -169,6 +173,7 @@ module.exports = (client) => {
         await reaction.users.remove(userID);
       };
     } catch (error) {
+      console.error(error)
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
   };
@@ -176,14 +181,15 @@ module.exports = (client) => {
 
 
   process.on("unhandledRejection", (err, promise) => {
-    //client.apm.captureError(err)
-    if (client.config.dev) console.error(err, promise)
+    client.apm.captureError(err)
+    client.apm.captureError(promise)
+    client.logger.debug(err)
+    client.logger.debug(promise)
   });
 
   process.on("uncaughtException", (err) => {
-    //client.apm.captureError(err)
-    if (client.config.dev) console.error(err)
-    process.exit(1);
+    client.apm.captureError(err)
+    client.logger.debug(err)
   });
 
 

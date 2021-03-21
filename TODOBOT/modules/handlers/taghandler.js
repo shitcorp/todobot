@@ -102,7 +102,7 @@ module.exports = (client) => {
         let temp = cont.split(" ")
         let index = temp.indexOf("<COLOR>")
         let endindex = temp.indexOf("</COLOR>")
-        obj.color = temp[endindex -index]
+        obj.color = temp[((endindex+index)/2)].replace(' ', '')
         temp.splice(index, 3)
         cont = temp.join(" ")
       }
@@ -111,7 +111,7 @@ module.exports = (client) => {
         let temp = cont.split(" ")
         let index = temp.indexOf("<IMG>")
         let endindex = temp.indexOf("</IMG>")
-        obj.img = temp[endindex -index]
+        obj.img = temp[(endindex+index)/2].replace(' ', '')
         temp.splice(index, 3)
         cont = temp.join(" ")
       }
@@ -120,7 +120,7 @@ module.exports = (client) => {
         let temp = cont.split(" ")
         let index = temp.indexOf("<THUMB>")
         let endindex = temp.indexOf("</THUMB>")
-        obj.thumb = temp[endindex -index]
+        obj.thumb = temp[(endindex+index)/2].replace(' ', '')
         temp.splice(index, 3)
         cont = temp.join(" ")
       }
@@ -137,7 +137,7 @@ module.exports = (client) => {
      * that include <EMBED> or some other function
      * keywords that are no variables
      */
-    tag.includes("<EMBED>") || tag.includes("</EMBED>") ? embedhandler(tag) 
+    tag.toUpperCase().includes("<EMBED>") || tag.toUpperCase().includes("</EMBED>") ? embedhandler(tag) 
       : message.channel.send(await regexHandler(tag))
 
 

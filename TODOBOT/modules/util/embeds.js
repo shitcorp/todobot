@@ -1,6 +1,5 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed } = require("discord.js-light");
 const { format } = require("date-fns");
-const todo = require("../interactions/todo");
 
 module.exports = (client) => {
 
@@ -19,10 +18,10 @@ module.exports = (client) => {
     client.embed = (desc, obj) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
-            .setColor("#2C2F33")
+            .setColor("BLUE")
         if (obj && obj.color) embed.setColor(obj.color)
-        if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(img)
-        if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(thumb)
+        if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(obj.img)
+        if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(obj.thumb)
         return embed;
 
     }
@@ -82,14 +81,23 @@ module.exports = (client) => {
             }
         }
 
-        if (todoobj.tasks) {
+        if (todoobj.tasks && todoobj.tasks.length > 0) {
             let output = '';
+            let count = 0;
+            let prograssBar = [];
             for (let i = 0; i < todoobj.tasks.length; i++) {
                 output += `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]} \n`
+                if (todoobj.tasks[i].includes('finished_')) {
+                    count++
+                    prograssBar.push(client.emojiMap['+']);
+                } else {
+                    prograssBar.push(client.emojiMap['-']);
+                };
             }
-            embed.addField(`Tasks(${todoobj.tasks.length}):`, `${output}`)
+
+            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
         }
-        
+
         if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);
         if (todoobj.category) embed.addField("Category", todoobj.category, true);
         if (todoobj.attachlink) attacher();
@@ -107,29 +115,23 @@ module.exports = (client) => {
 
 
 
+
+
         switch (todoobj.state) {
             case "open":
                 embed.setColor("RED")
-                embed.setFooter(`____________________________
-✏️          Edit the TODO at hand.
-📌          Assign yourself to the task.`)
+                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
                 break;
             case "assigned":
                 embed.setColor("YELLOW")
-                embed.setFooter(`____________________________
-✏️          Edit the TODO at hand.
-✅          Mark the task as finished.
-➕          Add yourself to assigned users. `)
+                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
                 break;
             case "closed":
                 embed.setColor("GREEN")
-                embed.setFooter(`__________________________
-⬇️               Show more details.`)
+
                 break;
             case "detail":
                 embed.setColor("GREEN")
-                embed.setFooter(`__________________________
-⬆️               Show less details.`)
                 break;
             case "readonly":
                 embed.setColor("BLUE")
@@ -138,27 +140,33 @@ module.exports = (client) => {
                 embed.setColor("YELLOW")
         }
 
-
+       
+        
+        
         if (detailbool) {
             let output = "";
-            
+
             if (todoobj.assigned !== []) {
                 Object.keys(todoobj.assigned).forEach(key => {
                     output += `<@${todoobj.assigned[key]}> \n`
                 })
                 output !== "" ? embed.addField("Processed", output, true) : null;
             }
-            
-            embed.addField("Submitted By", client.users.cache.get(todoobj.submittedby), true)
+
+            embed.addField("Submitted By", `<@${todoobj.submittedby}>`, true)
             embed.addField("Submitting Time", `> ${format(parseInt(todoobj.timestamp), "PPpp")}`, true)
             embed.addField("Severity", todoobj.severity, true)
             embed.addField("Loop", todoobj.loop, true)
             embed.addField("ID", `> ${todoobj._id}`, true)
 
         }
-
+        
+        if (todoobj.error && todoobj.error !== '') {
+            embed.addField('Error', '```' + todoobj.error + '```')
+            embed.setColor('RED')
+        }
         return embed;
-    
+
     };
 
 

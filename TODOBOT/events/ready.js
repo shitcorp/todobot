@@ -1,5 +1,7 @@
 const { stati } = require('../data/stati.json');
-const { job } = require('../modules/cron/every_10_minutes');
+const { MONGO_CONNECTION } = require('../config');
+const Agenda= require('agenda')
+const agenda = new Agenda({ db: { address: MONGO_CONNECTION } });
 
 module.exports = async (client) => {
   
@@ -8,13 +10,20 @@ module.exports = async (client) => {
     client.user.setActivity("you", { type: "WATCHING" })
     
     let i = 0;
-    const statusFunction = async () => {
+
+    agenda.define("statusjob", async (job) => {
       client.user.setActivity(stati[i], { type: "WATCHING" });
       i++
       if (i >= stati.length) i = 0;
-    }
-    
-    job.start();
-    job.addCallback(statusFunction())
+    });
+  
+    (async function () {
+      // IIFE to give access to async/await
+      await agenda.start();
+      // Alternatively, you could also do: (every 10 minutes)
+      await agenda.every("*/10 * * * *", "statusjob");
+    })();
+
+
                                                                                                                       
 };

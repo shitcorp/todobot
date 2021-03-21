@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const { Schema, model} = require('mongoose');
 
-const todoschema = new mongoose.Schema({
+const todoschema = new Schema({
     _id: String,
     guildid: String,
     title: String,
@@ -9,13 +9,19 @@ const todoschema = new mongoose.Schema({
     attachlink: String,
     submittedby: String,
     timestamp: String,
+    time_started: String,
+    time_finished: String,
     state: String,
     severity: Number,
     loop: Boolean,
+    // if this is true we have to update the message in the read only channel as well
+    shared: Boolean,
     todomsg: String,
     todochannel: String,
+    readonlymessage: String,
+    readonlychannel:  String,
     assigned: Array,
     category: String
 });
 
-exports.todomodel = new mongoose.model("todos_dev", todoschema)
+exports.todomodel = new model("todos_dev", todoschema)

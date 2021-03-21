@@ -1,19 +1,18 @@
-const { RichEmbed } = require('discord.js');
 const { exec } = require('child_process');
-const { format } = require('date-fns')
-const fs = require("fs");
+const { writeFileSync } = require("fs");
+const { format } = require('date-fns');
 
 exports.run = async (client, message, args) => {
 
+    if (!process.env.OWNER) return;
+    // making sure only bot owner can run the command
+    if (message.author.id !== process.env.OWNER) return;
 
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
     exec("git pull", async (err, out, stderr) => {
         if(!err){
             message.channel.send(client.embed(out))
-            let whites = '⬜'
-            let reds = '🟥'
-            let output = ['🟥'];
             let msg = await message.channel.send(client.embed("Loading . . . . "))
             console.log(out);
            
@@ -29,7 +28,7 @@ exports.run = async (client, message, args) => {
                 errors: err,
                 stderr: stderr
             };
-            fs.writeFileSync(`update.json`, JSON.stringify(update));
+            writeFileSync(`update.json-${Date.now()}`, JSON.stringify(update));
             msg.edit(client.embed(`Restarting . . . `))
             exec("pm2 restart TODO2", (err, out, stderr) => {
                 if(err && stderr !== "") {
