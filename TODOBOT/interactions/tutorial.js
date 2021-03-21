@@ -28,7 +28,7 @@ module.exports = {
         interaction.reply(' ', 2);
 
         // Define the arrays of the commands separed by category
-        const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Other Commands'];
+        const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Advanced Custom Commands', 'Other Commands'];
         let page = 1;
 
         const tutorialEmbed = new MessageEmbed()
@@ -100,10 +100,10 @@ module.exports = {
                         {
                             name: 'Tutorial Sections',
                             value: `**-** Introduction (this page)
-                                **-** Set up the bot
-                                **-** Create your first todo
-                                **-** Create your first custom command
-                                **-** Other Commands`
+                                **•** Set up the bot
+                                **•** Create your first todo
+                                **•** Create your first custom command
+                                **•** Other Commands`
                         },
                         {
                             name: 'How to move trough this tutorial',
@@ -120,11 +120,11 @@ module.exports = {
                             
                             __**Values:**__
 
-                            - \`todochannel\` => the channel where your tasks will be posted.
-                            - \`readonlychannel\` => the channel where shared tods will be posted. The shared messages will be updated as you progress with the todo.
-                            - \`staffrole\` => members with this role can edit bot settings and create custom commands.
-                            - \`userrole\` => members with this role can interact with the bot and create todos.
-                            - \`lanugage\` => the language in which the bot will talk to you.
+                            **•** \`todochannel\` => the channel where your tasks will be posted.
+                            **•** \`readonlychannel\` => the channel where shared tods will be posted. The shared messages will be updated as you progress with the todo.
+                            **•** \`staffrole\` => members with this role can edit bot settings and create custom commands.
+                            **•** \`userrole\` => members with this role can interact with the bot and create todos.
+                            **•** \`lanugage\` => the language in which the bot will talk to you.
                             `);
                     tutorialEmbed.image = undefined;
                     tutorialEmbed.thumbnail = undefined;
@@ -134,24 +134,45 @@ module.exports = {
                     tutorialEmbed
                         .setTitle(pages[page - 1])
                         .setDescription(`To create a todo simply run the \`/todo\` command and submit at least a title. Once the todo is submitted it will be posted in your preconfigured todochannel. From there on everything else is done with reactions.
-                        **Note** To submit multiple tasks within a TODO, simply seperate them with a semicolon(;).
+                        
+                        **Note** To submit multiple tasks within a TODO, simply seperate them with a semicolon (;).
                         `)
-                        .setImage('https://i.ibb.co/5kKpQrs/embed-Example.png')
+                        .setImage('https://raw.githubusercontent.com/shitcorp/TODOBOT/develop/assets/todo_cmd_demo.gif')
                         .setThumbnail(client.user.displayAvatarURL());
                     tutorialEmbed.fields = [];
                 }
                 if (page === 4) {
                     tutorialEmbed
                         .setTitle(pages[page - 1])
-                        .setDescription('**Now that you know how to personalize the help-desk embed, you can start adding questions to it.**\n\nThe main two commands for that are:\n**>** `hd?addQuestion`\n**>** `hd?delQuestion`\n\nYou can use `hd?help addQuestion` to learn how to add a question.\n\nYou can move on to the next sections to learn about the `Special Question`.');
-                    tutorialEmbed.image = undefined;
-                    tutorialEmbed.thumbnail = undefined;
+                        .setDescription(`
+                        To create a custom command, use the command \`/tag learn\`. The name will be the command and the content is what the bot will return. For more advanced usage you can do stuff like embeds and more.
+                        `)
+                        .setImage('https://cdn.discordapp.com/attachments/822998851848765440/822999581767630869/tagcmd_demo.gif');
                     tutorialEmbed.fields = [];
                 }
                 if (page === 5) {
                     tutorialEmbed
                         .setTitle(pages[page - 1])
-                        .setDescription('**If you know how to use json files you can edit my settings in a much quicker way!**\n\n**>** Download the current settings of an #help-desk with `hd?save`.\nThis will give you an example of what the help-desk settings look like.\n\n**>** Once you tweaked the json file a bit, you can load those settings into an help desk with `hd?load`.\n\nYou can use tools like [jsoneditoronline](https://jsoneditoronline.org/) to modify json files.\n\n**Just like that you can export and import #help-desk templates!**\n\n*The tutorial has ended, hopefully it was helpful to you.\nHere are some other useful links:*\n[Support](https://discord.gg/4BTXnXu) | [Invite](https://discord.com/oauth2/authorize?client_id=739796627681837067&scope=bot&permissions=268954832)');
+                        .setDescription(`
+                        If you want to build custom commands where you show your users information that could change theres something called variables that you can set and use in your custom commands. Set a new variable with the coand \`/var create\`. Then you can use the variable like this \`<%name%>\` in your custom commands.
+                        `)
+                        .setImage('https://cdn.discordapp.com/attachments/823001120590528532/823002155983568896/vars_demo.gif');
+                }
+                if (page === 6) {
+                    tutorialEmbed
+                        .setTitle(pages[page - 1])
+                        .setDescription(`
+                        You can always run \`/help\` to see all available commands. If you want to learn more about a specific command just do \`help <commandname>\`. Some important ones are:
+
+                        **•** \`blacklist\` => blacklist users and or channels from bot usage
+                        **•** \`shorten\` => shorten a link (theres even multiple domains to choose from)
+                        **•** \`reminder\` => create small reminders and get pinged when the time expires
+                        **•** \`suggest\` => Suggest new features to be added into the bot
+
+
+                        *This ends the tutorial, I hope it was helpful to you. Here are some other useful links:*
+                        
+                        [Support](https://discord.gg/RuEdX5T)       |       [Invite](https://invite.todo-bot.xyz)      |        [Wiki](https://github.com/shitcorp/TODOBOT/wiki)`);
                     tutorialEmbed.image = undefined;
                     tutorialEmbed.thumbnail = undefined;
                     tutorialEmbed.fields = [];

@@ -131,7 +131,7 @@ module.exports = {
                 variableMap.delete(name)
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf)
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted the key \`${args[1]}\``))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted the key \`${name}\``))
                 break;
         }
 
