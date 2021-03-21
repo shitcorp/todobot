@@ -110,8 +110,8 @@ module.exports = {
             color: "BLUE",
             todochannel: null,
             readonlychannel: null,
-            bugs_enabled: false,
             staffroles: [],
+            userroles: [],
             tags: new Map(),
             blacklist_channels: [],
             blacklist_users: [],
@@ -188,6 +188,8 @@ module.exports = {
                 embedToSend.setFooter(`Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`, `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`)
                 interaction.replyWithMessageAndDeleteAfterAWhile(embedToSend)
                 
+                break;
+            case 'remove':
                 break;
         }
     }

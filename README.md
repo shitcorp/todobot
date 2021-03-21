@@ -34,11 +34,13 @@ If you like the bot and want to give back to me, you can do so via github sponso
 
 ## Contributing:
 
-All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. Contributors will be listed below:
+All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. All Contributors will be listed below:
 
-- Julian Puffler  [Github](https://github.com/puf17640)
+- Julian Puffler  [Github](https://github.com/puf17640) | *Code Contributor*
+- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
 
-**If you are reading this, I still need help with localization(language support), if you want to help, hit me up on discord**
+
+**If you are reading this, I still need help with localization(language support), if you want to help, join the [Support Discord](https://discord.gg/RuEdX5T) and ping me.**
 
 <br>
 
