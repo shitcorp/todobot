@@ -1,5 +1,3 @@
-const moment = require("moment");
-require("moment-duration-format");
 const { MessageEmbed } = require('discord.js-light')
 
 const raw = {
@@ -21,7 +19,7 @@ module.exports = {
     },
     run: async (client, interaction) => {
 
-        const duration = moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]");
+        const duration = client.uptime;
         const chan = await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id);
         const msg = await chan.send('loading . . . ')
         const pkg = require('../../package.json')
@@ -29,7 +27,7 @@ module.exports = {
         const statembed = new MessageEmbed()
             .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
             .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
-            .addField("• Uptime", `> ${duration}`, true)
+            .addField("• Uptime", `> ${duration} s`, true)
             .addField("• Users ", `> ${client.users.cache.size}`, true)
             .addField("• Guilds", `> ${client.guilds.cache.size}`, true)
             .addField("• Version", `> v${pkg.version}`, true)
