@@ -138,7 +138,7 @@ module.exports = {
                 }
                 if (userrole) {
                     let userroles = []
-                    Object.values(conf.userroles).forEach(value => staffroles.push(value));
+                    Object.values(conf.userroles).forEach(value => userroles.push(value));
                     userroles.push(userrole)
                     conf.userroles = userroles;
                 }
@@ -190,6 +190,31 @@ module.exports = {
                 
                 break;
             case 'remove':
+                let staffrole_to_remove, userrole_to_remove
+                for (i in commandopts) {
+                    if (commandopts[i].name === 'staffrole') staffrole_to_remove = commandopts[i].value;
+                    if (commandopts[i].name === 'userrole') userrole_to_remove = commandopts[i].value;
+                }
+                if (staffrole_to_remove) {
+                    let staffroles = []
+                    Object.values(conf.staffroles).forEach(value => staffroles.push(value));
+                    if (!staffroles.includes(staffrole_to_remove)) return interaction.errorDisplay('This role is not in your staffroles array.');
+                    staffroles.splice(staffroles.indexOf(staffrole_to_remove), 1)
+                    conf.staffroles = staffroles;
+                }
+                if (userrole_to_remove) {
+                    let userroles = []
+                    Object.values(conf.userroles).forEach(value => userroles.push(value));
+                    if (!conf.userroles.includes(userrole_to_remove)) return interaction.errorDisplay('This role is not in your userroles array.')
+                    userroles.splice(userroles.indexOf(userrole_to_remove, 1))
+                    conf.userroles = userroles;
+                }
+                try {
+                    await client.setconfig(conf);
+                } catch (e) {
+                    await client.updateconfig(interaction.guild_id, conf);
+                }
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success('Saved your new settings'))
                 break;
         }
     }
