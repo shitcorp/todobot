@@ -1,10 +1,14 @@
 <h1 align="center"> TODO Bot for  Discord  
-<a href="https://discord.com/oauth2/authorize?client_id=710225677974241431&permissions=67497040&scope=applications.commands%20bot">
+<a href="http://invite.todo-bot.xyz">
     <img src="https://img.shields.io/badge/Add%20Bot-7289DA.svg?style=for-the-badge"/>
 </a>
 </h1>
 
+
+
 <h4 align="center">
+
+<img src="https://img.shields.io/maintenance/yes/2021?style=for-the-badge" />
 
 <a href="https://discord.gg/RuEdX5T">
 <img src="https://img.shields.io/discord/710022036252262485?style=for-the-badge"/>
@@ -13,38 +17,28 @@
 <img src="https://img.shields.io/github/license/MeerBiene/TODOBOT?style=for-the-badge"/>
 
 
-
 </h4>
 
+<h3 align="center">
 
-
-
-## 📝 About the Bot
-
-This Bot aims to provide a virtual TODO list inside your discord server. Instead of relying on commands for interacting with the bot, I tried my best to make the most important functions controlled by reactions. 
-
-<br>
-
-## Support the developer(s)
-
-If you like the bot and want to give back to me, you can do so via github sponsors. Its greatly appreciated
+<img src="./assets/todo_cmd_demo.gif" />
+</h3>
 
 
 <br>
-
-## Contributing:
-
-All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. All Contributors will be listed below:
-
-- Julian Puffler  [Github](https://github.com/puf17640) | *Code Contributor*
-- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+<br>
 
 
-**If you are reading this, I still need help with localization(language support), if you want to help, join the [Support Discord](https://discord.gg/RuEdX5T) and ping me.**
+# 📝 About the Bot
+
+This Bot aims to provide a virtual TODO list inside your discord server. Instead of relying on commands for interacting with the bot, I tried my best to make the entire "user interface" with reactions. That way your users dont have to learn hundrets of new commands and how to use them.
 
 <br>
 
-## Getting Started
+
+
+
+# Getting Started
 
 After inviting the Bot to your server, run the command `//setup` (// is the default prefix) and answer the questions the bot asks you. When youre done, run the command `//todo myfirsttodo` and submit your first todo. When the task is posted, you can either edit it by reacting with ✏️ or assign yourself by using the ➕ reaction. When youre done, react with ✅ to mark the task as finished. If you want to post the task in a read-only channel for your members to see, click the ➡️ reaction on the finished task embed.
 
@@ -52,7 +46,7 @@ After inviting the Bot to your server, run the command `//setup` (// is the defa
 
 <br>
 
-## Commands
+# Commands
 
 To view all the commands the bot supports, run the `//help` command. If you want to get more specific information about a command run the command `//help` with the command that you want information about as frist argument. So if you wanted to get information about the todo command, you would want to run the command like so: `//help todo`.
 
@@ -63,7 +57,7 @@ Alternatevely, run the command that you want information about with the -h or -h
 <br>
 
 
-## Tags
+# ⌨️ Custom Commands
 
 Tags are a way to essentially build your own commands. Let the bot learn new tags by using the `learn` command like so:
 
@@ -102,7 +96,7 @@ The `edit` command takes in the tag, followed by the new description (yes it wil
 
 <br>
 
-### **Placeholders**
+# **Placeholders**
 
 The following placeholders are available:
 
@@ -124,7 +118,7 @@ The following placeholders are available:
 
 <br>
 
-### **Configvariables**
+# **Variables**
 
 Configvariables are a way to store key-value pairs for your guild/server, so you can use them in your tags. This is usefull if you have a discord for a game server where the ip could change. To follow our example, we would create a variable called "ip" and store the ip adress:
 
@@ -147,7 +141,7 @@ The ip of our server is: 127.0.0.1
 
 <br>
 
-## Reminders
+# 🔔 Reminders
 
 
 ### **Overview**
@@ -210,7 +204,32 @@ Example:
 
 <br>
 
-## Support
+# 😇 Support the developer(s)
+
+I do this project in my freetime and I host the bot for free. If you like the Bot and it is helpful to you, consider sponsoring me here on github. Your profile or organization will then be placed below.
+
+**Sponsors(0)**:
+
+
+<br>
+
+# 👥 Contributing:
+
+All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. 
+
+For information on the development setup, check out the [contributing guidelines](/.github/CONTRIBUTING.md).
+
+All Contributors will be listed below:
+
+- Julian Puffler  [Github](https://github.com/puf17640) | *Code Contributor*
+- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+
+
+**If you are reading this, I still need help with localization(language support), if you want to help, join the [Support Discord](https://discord.gg/RuEdX5T) and ping me.**
+
+<br>
+
+# ℹ️ Get Help
 
 <a href="https://discord.gg/RuEdX5T">
 
