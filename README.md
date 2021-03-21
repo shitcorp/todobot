@@ -26,7 +26,6 @@
 
 
 <br>
-<br>
 
 
 # 📝 About the Bot
@@ -38,67 +37,71 @@ This Bot aims to provide a virtual TODO list inside your discord server. Instead
 
 
 
-# Getting Started
+# 🎬 Getting Started
 
-After inviting the Bot to your server, run the command `//setup` (// is the default prefix) and answer the questions the bot asks you. When youre done, run the command `//todo myfirsttodo` and submit your first todo. When the task is posted, you can either edit it by reacting with ✏️ or assign yourself by using the ➕ reaction. When youre done, react with ✅ to mark the task as finished. If you want to post the task in a read-only channel for your members to see, click the ➡️ reaction on the finished task embed.
+After inviting the Bot to your server, run the command `/settings set todochannel: #yourchannel`. This generates a new config and saves your todochannel. Your TODOS or tasks will then be posted in that channel.
 
-![todo-cmd-demo](https://cdn.discordapp.com/attachments/724022856740110408/807590728502214696/todo_bot_todo_cmd_demo.gif)
-
-<br>
-
-# Commands
-
-To view all the commands the bot supports, run the `//help` command. If you want to get more specific information about a command run the command `//help` with the command that you want information about as frist argument. So if you wanted to get information about the todo command, you would want to run the command like so: `//help todo`.
-
-Alternatevely, run the command that you want information about with the -h or -help flag, so in the example from above we would just run `//todo -h`.
-
-![help-cmd-demo](https://cdn.discordapp.com/attachments/724022856740110408/807599522997731344/todo_bot_help_cmd_demo.gif)
-
-<br>
+![getting started demo](./assets/getting-started.gif)
 
 
-# ⌨️ Custom Commands
+# 🖥️ Commands
 
-Tags are a way to essentially build your own commands. Let the bot learn new tags by using the `learn` command like so:
+To view all the commands the bot supports, run the `/help` command. If you want to get more specific information about a command run the command `/help` with the command that you want information about as frist argument. So if you wanted to get information about the todo command, you would want to run the command like so: `/help todo`.
 
-```
-//learn example This is an example tag
+**Available Commands:**
 
-OR
+- `assign` *[STAFF]* Force assign someone to a task
 
-//learn embedtest <EMBED> This message will be displayed in an embed with the color blue. <COLOR> BLUE </COLOR>
+- `blacklist` *[STAFF]*  Blacklist user(s) or channel(s) from bot usage.
 
-OR
+- `reminder` *[STAFF]*  Create reminders and get notified
 
-//learn joinposition Your join position is: <JOIN_POS>
-```
+- `settings` *[STAFF]*  Viewand change the bot settings
 
-The command takes in the tag, followed by the description. The tags are then registered like normal commands for your guild.
+- `shorten`  Shorten Links
 
-![Tag Example](https://cdn.discordapp.com/attachments/710020973746716694/754270430134796298/unknown.png)
+- `suggest`  Suggest new features to be added into the bot
 
-To unlearn a tag, simple use the `unlearn` command like so:
+- `tag` *[STAFF]*  Create custom commands
 
-```
-//unlearn example
-```
+- `todo` *[USER]*  Central todo command to create a new TODO or task
 
-![Unlearn Example](https://cdn.discordapp.com/attachments/710020770369110038/754271780566204446/unknown.png)
-
-To edit a tag use the `edit` command like so:
-
-```
-//edit example This is the new description
-```
-
-The `edit` command takes in the tag, followed by the new description (yes it will be overwritten.)
-
+- `tutorial` => Get a quick tutorial on how to use the bot
 
 <br>
 
-# **Placeholders**
+# 🔐 Permissions
 
-The following placeholders are available:
+There are 2 permission levels: `USER` and `STAFF`. They are determined by roles. 
+
+To set the role, use the settings command like so:
+
+(yes multiple roles are allowed)
+
+![permissions demo](./assets/permissions.gif)
+
+To remove a role from the user of staffroles array just use the `/settings remove userrole: | staffrole:` command
+
+<br>
+
+
+# ⌨️ Custom Commands / Tags
+
+Tags are a way to essentially build your own custom commands. Let the bot learn new tags by using the `/tag learn` command like so:
+
+![tag command demo](./assets/tagcmd_demo.gif)
+
+Delete a custom command by using the `/tag unlearn` command followed by the name of your tag.
+
+
+
+<br>
+
+## **Placeholders**
+
+Placeholders are words that you can place inside your tags, that will be replaced with a certain value, when the custom command is run. 
+
+Available Placeholders:
 
 ```diff
 + <MEMCOUNT> => Will be rpelaced with the membercount of the current guild
@@ -112,95 +115,42 @@ The following placeholders are available:
 + <MSG_AUTHOR_TAG> => Will be replaced with the message authors tag, so in my case "MeerBiene#7060"
 + <GUILD_NAME> => Will be replaced with the guilds name where the message was sent
 ```
+
 **Notes:** 
-+ All the tags are ignorecase, so you can use the like "<join_pos>" or "<guild_name>"
-+ you can combine all the tags, so you can use the "<guild_name>" tag within an embed
+- All placeholders are ignorecase, so you can use them like `<join_pos>` or `<guild_name>`
+
+- You can combine all the placeholders, so you can use the `<guild_name>` placeholder within an embed
 
 <br>
 
-# **Variables**
+## **Variables**
 
-Configvariables are a way to store key-value pairs for your guild/server, so you can use them in your tags. This is usefull if you have a discord for a game server where the ip could change. To follow our example, we would create a variable called "ip" and store the ip adress:
+Variables are a way to store key-value pairs for your guild/server, so you can use them in your tags. This is useful if you have a discord for lets say a game server where the ip could change. To follow our example, we would create a variable called `ip` and store the ip adress:
 
-```
-//var set ip 127.0.0.1
-```
 
-Then we create a tag called "ip" and use the ip variable in there:
-
-```
-//learn ip The ip of our server is: <%ip%>
-```
-
-If a user then uses the command "//ip" they will get the following output:
-
-```
-The ip of our server is: 127.0.0.1
-```
+![variable command demo](./assets/vars_demo.gif)
 
 
 <br>
 
 # 🔔 Reminders
 
+![reminder command demo](./assets/reminder_cmd_demo.gif)
 
-### **Overview**
-
-In V2 I introduced reminders. The reminder command offers 2 flags 
-
-> `-v` to view your open reminders 
-
-and 
-
-> `-c` to create a new reminder. 
-
-To create a new reminder you have to pass in your arguments as follows:
-
-~~~
-//reminder -c -1h Food! 
-~~~
-
-To edit and or delete reminders, use the `-v` flag and the reaction emojis like so
-
-~~~
-//reminder -v
-~~~
-
-![reminder_command_todobot.gif](https://cdn.discordapp.com/attachments/710020973746716694/757139558516391966/reminder_command_todobot.gif)
-
-Remember: 
-
-- **Your time has to always be passed in as the second flag!**
+Note: 
 
 - **The lowest possible time is 1m (1 Minute)!**
 
-- **The loop flag or -l has to be passed in as the last flag before the reminders content**
 
 
 
-#### **Mentions**
-
-<br>
+## **Mentions**
 
 If you want to mention certain users or roles when the reminder finished, just mention them in the reminders content when creating a new reminder.
 
-Example:
+## **Repeating reminders**
 
-~~~
-//reminder -c -1h @SomeUser @SomeOtherUser @SomeRole Get to work!
-~~~
-
-#### **Repeating reminders**
-
-<br>
-
-For repeating reminders, simply pass in the `-loop` flag when creating the reminder. **Keep in mind that the lowest possible time for repeating reminders is 1 hour!**
-
-Example:
-
-~~~
-//reminder -c -6h -loop Walk the dog!
-~~~
+For repeating reminders, simply set the `loop` property to true when creating the reminder. **Keep in mind that the lowest possible time for repeating reminders is 1 hour!**
 
 <br>
 
@@ -229,13 +179,15 @@ All Contributors will be listed below:
 
 <br>
 
-# ℹ️ Get Help
 
+<h1>
 <a href="https://discord.gg/RuEdX5T">
-
 <img src="https://img.shields.io/discord/710022036252262485?style=for-the-badge"/>
-
+Support Discord
+💬
 </a>
+</h1>
+
 
 Whether you need help with the bot, want to try the bot and see it in action, want to suggest new features, or just want to flame me for my bad code, join the support server with the button above.
 
