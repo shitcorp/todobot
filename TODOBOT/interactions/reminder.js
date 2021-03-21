@@ -192,7 +192,7 @@ const newviewer = async (client, interaction, arr) => {
                             if (collected.first().deletable) collected.first().delete()
                             remindermodel.updateOne({ _id: arr[i.page - 1]._id }, { content: collected.first().content }, (err) => {
                                 if (err) client.logger.debug(err)
-                                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Updated your reminder.`))
+                                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.updatedreminder[lang]))
                             })
                         })
                         .catch(collected => {
@@ -205,7 +205,7 @@ const newviewer = async (client, interaction, arr) => {
                 // Delete the reminder on the current page
                 remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, (err) => {
                     if (err) client.logger.debug(err)
-                    interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted your reminder.`))
+                    interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.deletedreminder[lang]))
                 })
             }
         })

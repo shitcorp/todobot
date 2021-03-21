@@ -104,11 +104,11 @@ module.exports = {
         switch (action) {
             // set a new key value pair
             case 'create':
-                if (variableMap.get(name)) return interaction.errorDisplay(`This key already exists.`)
+                if (variableMap.get(name)) return interaction.errorDisplay(messages.varalreadyexists[lang])
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf)
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Saved your new configvariable with the key \`${name}\` and the value \`${value}\` `))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``))
                 break;
             // view key value pair by key (maybe add -all flag)
             case 'view':
@@ -123,15 +123,15 @@ module.exports = {
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf);
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Updated the key \`${name}\` and saved the new value \`${value}\``))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.updatedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``))
                 break;
             // delete key value pair by key
             case "delete":
-                if (!variableMap.has(name)) return interaction.errorDisplay(`You can only delete keys that exist`);
+                if (!variableMap.has(name)) return interaction.errorDisplay(messages.varmustexist[lang]);
                 variableMap.delete(name)
                 conf.vars = variableMap;
                 await client.updateconfig(interaction.guild_id, conf)
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Deleted the key \`${name}\``))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.deletedvar[lang] +  ' \`${name}\`'))
                 break;
         }
 

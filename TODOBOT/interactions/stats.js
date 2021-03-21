@@ -36,7 +36,7 @@ module.exports = {
             .addField("• Node", `> ${process.version}`, true)
             .addField("• Ping", `> ${msg.createdTimestamp - interaction.timestamp}ms.`, true)
             .addField("• API Latency", `> ${Math.round(client.ws.ping)}ms`, true)
-            .addField("• Repo", `${client.emojiMap['github']} [Github](https://github.com/MeerBiene/TODOBOT)`, true)
+            .addField("• Repo", `${client.emojiMap['github']} [Github](${pkg.repository.url})`, true)
             //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
             .setFooter( `Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`, 'https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.png')
             .setColor("BLUE")

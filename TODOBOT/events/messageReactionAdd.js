@@ -1,7 +1,6 @@
 const { todomodel } = require("../modules/models/todomodel")
 const todo = require('../classes/todo');
 const messages = require('../localization/messages');
-const timeout = process.env.MSG_DELETE
 
 module.exports = async (client, messageReaction, user) => {
 
@@ -11,8 +10,9 @@ module.exports = async (client, messageReaction, user) => {
             await messageReaction.fetch();
         } catch (error) {
             console.error(error)
-            client.logger.debug('Something went wrong when fetching the message: ' + error.toString());
+            client.logger.debug('Something went wrong when fetching a partial message')
             // Return as `reaction.message.author` may be undefined/undefined
+            client.logger.debug(error);
             return;
         }
     }
@@ -42,21 +42,22 @@ module.exports = async (client, messageReaction, user) => {
         '🔟'
     ]
 
-    
+
+    // make sure we only do something if the reaction is allowed
     if (!whitelisted_emojis.includes(react)) return;
 
-    
+
     // if the reacting user is us we should return
     if (userinio === client.user.id) return;
-    
+
     const member = await client.guilds.cache.get(messageReaction.message.guild.id).members.fetch(user.id);
-    
+
     const settings = await client.getconfig(messageReaction.message.guild.id)
     if (settings === undefined) return;
 
-    
+
     if (messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
-    
+
     let level = 0;
     if (findCommonElements(member._roles, settings.userroles)) level = 1;
     if (findCommonElements(member._roles, settings.staffroles)) level = 2;
@@ -71,7 +72,6 @@ module.exports = async (client, messageReaction, user) => {
     if (!todoobj) return;
     todoobj = new todo(client, todoobj);
 
-    // TODO remove reactions when permission level is too low
 
     switch (react) {
         case 'accept_todo':
@@ -82,7 +82,7 @@ module.exports = async (client, messageReaction, user) => {
             if (!todoobj.assigned.includes(userinio)) todoobj.assigned.push(userinio);
 
             todoobj.state = "assigned";
-            todoobj.time_started =  `${Date.now()}`;
+            todoobj.time_started = `${Date.now()}`;
 
             await client.updatetodo(todoobj._id, todoobj);
 
@@ -104,32 +104,31 @@ module.exports = async (client, messageReaction, user) => {
         case 'finish':
             // mark the todo as finished (closed), or
             // restart/repost the todo when its repeating           
-            if (Object.values(todoobj.assigned).includes(userinio) === true) {
-                // if not all tasks are finished we dont allow the todo list to be marked as finished
-                if (todoobj.tasks && todoobj.tasks.filter(task => !task.includes('finished_')).length > 0) {
-                    client.clearReactions(messageReaction.message, userinio); 
-                    return todoobj.errordisplay(messageReaction.message, userinio, messages.cantclosetodo[lang])
-                }
-                client.emit('todochanged', todoobj, client);
-                if (todoobj.loop === true) {
-                    todoobj.state = "open";
-                    client.updatetodo(todoobj._id, todoobj);
-                    messageReaction.message.edit(client.todo(todoobj)).then(async (msg) => {
-                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                        await msg.react(client.emojiMap['edit'])
-                        await msg.react(client.emojiMap['assign'])
-                    })
-                } else {
-                    todoobj.state = "closed";
-                    todoobj.time_finished = `${Date.now()}`;
-                    client.updatetodo(todoobj._id, todoobj);
-                    messageReaction.message.edit(client.todo(todoobj)).then(async () => {
-                        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
-                        await messageReaction.message.react(client.emojiMap['expand'])
-                        if (todoobj.shared && todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
-                    })
-                }
-            } else await client.clearReactions(messageReaction.message, userinio)
+            if (Object.values(todoobj.assigned).includes(userinio) !== true) return messageReaction.users.remove(userinio);
+            // if not all tasks are finished we dont allow the todo list to be marked as finished
+            if (todoobj.tasks && todoobj.tasks.filter(task => !task.includes('finished_')).length > 0) {
+                client.clearReactions(messageReaction.message, userinio);
+                return todoobj.errordisplay(messageReaction.message, userinio, messages.cantclosetodo[lang])
+            }
+            client.emit('todochanged', todoobj, client);
+            if (todoobj.loop === true) {
+                todoobj.state = "open";
+                client.updatetodo(todoobj._id, todoobj);
+                messageReaction.message.edit(client.todo(todoobj)).then(async (msg) => {
+                    await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
+                    await msg.react(client.emojiMap['edit'])
+                    await msg.react(client.emojiMap['assign'])
+                })
+            } else {
+                todoobj.state = "closed";
+                todoobj.time_finished = `${Date.now()}`;
+                client.updatetodo(todoobj._id, todoobj);
+                messageReaction.message.edit(client.todo(todoobj)).then(async () => {
+                    await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
+                    await messageReaction.message.react(client.emojiMap['expand'])
+                    if (todoobj.shared && todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
+                })
+            }
             break;
         case "share":
             // send todo to read only channel
@@ -167,7 +166,7 @@ module.exports = async (client, messageReaction, user) => {
                 await client.clearReactions(messageReaction.message, userinio);
                 client.emit('todochanged', todoobj, client);
             }
-            
+
 
             break;
         case 'edit':

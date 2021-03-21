@@ -214,8 +214,8 @@ const loadAndInjectClient = async (path) => {
       })
       let conf = await client.getconfig(interaction.guild_id)
       // if the user or channel are blacklisted we return an error
-      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay('You are blacklisted from using the bot.');
-      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return interaction.errorDisplay('This channel is blacklisted from bot usage.');
+      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
+      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
       // user is a normal bot user
       if (conf && findCommonElements(conf.userroles, interaction.member.roles)) interaction.level = 1;
       // user is a staff member and can change bot settings
@@ -227,7 +227,7 @@ const loadAndInjectClient = async (path) => {
       if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
       const cmd = client.interactions.get(interaction.data.name)
 
-      if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay('You can not use this command because your permission level is too low')
+      if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay(messages.permissionleveltoolow[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
 
       cmd.run(client, interaction);
       span.end()
@@ -235,7 +235,7 @@ const loadAndInjectClient = async (path) => {
     } catch (e) {
       console.error(e);
       client.logger.debug(e);
-      interaction.errorDisplay('An error occured, please try again.');
+      interaction.errorDisplay(messages.generalerror[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
       if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
     }
   });

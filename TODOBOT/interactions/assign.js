@@ -1,4 +1,5 @@
 const todo = require('../classes/todo');
+const messages = require('../localization/messages');
 
 const raw = {
     name: 'assign',
@@ -36,20 +37,23 @@ module.exports = {
         // acknowledge the interaction
         interaction.reply(' ', 2)
 
+        if (!interaction.conf) return interaction.errorDisplay(messages.addbottoguild['en'])
+        let lang = interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en';
+
         let user = Object.values(interaction.data.resolved.users)[0]
 
-        if (user.bot === true) return interaction.errorDisplay('You cannot assign bots.');
+        if (user.bot === true) return interaction.errorDisplay(messages.cannotassignbots[lang]);
         
         let id;
         for (index in interaction.data.options) if (interaction.data.options[index].name === 'id') id = interaction.data.options[index].value;
         
         const check = await client.getonetodo(id);
 
-        if (!check) return interaction.channel.send(client.error('This TODO does not seem to exist.'));
+        if (!check) return interaction.channel.send(client.error(messages.tododoesntexist[lang]));
 
         const todoClass = new todo(client, check);
 
-        if (todoClass.assigned.includes(user.id)) return interaction.errorDisplay('This user is already assigned.');
+        if (todoClass.assigned.includes(user.id)) return interaction.errorDisplay(messages.useralreadyassigned[lang]);
         
         if (todoClass.state === 'open') todoClass.state = 'assigned';
         

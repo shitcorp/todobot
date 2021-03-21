@@ -17,6 +17,6 @@ module.exports = {
         category: 'Utility',
         description: raw.description
     },
-    run: async (client, interaction) => interaction.embed.default(messages.supportmessage['en'])
+    run: async (client, interaction) => interaction.embed.default(messages.supportmessage[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
     
 };

@@ -1,3 +1,5 @@
+const messages = require("../localization/messages");
+
 const raw = {
     name: 'settings',
     description: 'View and edit bot settings.',
@@ -118,6 +120,7 @@ module.exports = {
             vars: new Map(),
             lang: "en"
         }
+        const lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
         if (!action) return;
         switch (action) {
             case 'set':
@@ -147,7 +150,7 @@ module.exports = {
                 } catch (e) {
                     await client.updateconfig(interaction.guild_id, conf);
                 }
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success('Saved your new settings'))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedsettings[lang]))
                 break;
             case 'view':
 
@@ -198,14 +201,14 @@ module.exports = {
                 if (staffrole_to_remove) {
                     let staffroles = []
                     Object.values(conf.staffroles).forEach(value => staffroles.push(value));
-                    if (!staffroles.includes(staffrole_to_remove)) return interaction.errorDisplay('This role is not in your staffroles array.');
+                    if (!staffroles.includes(staffrole_to_remove)) return interaction.errorDisplay(messages.rolenotinarray[lang]);
                     staffroles.splice(staffroles.indexOf(staffrole_to_remove), 1)
                     conf.staffroles = staffroles;
                 }
                 if (userrole_to_remove) {
                     let userroles = []
                     Object.values(conf.userroles).forEach(value => userroles.push(value));
-                    if (!conf.userroles.includes(userrole_to_remove)) return interaction.errorDisplay('This role is not in your userroles array.')
+                    if (!conf.userroles.includes(userrole_to_remove)) return interaction.errorDisplay(messages.rolenotinarray[lang]);
                     userroles.splice(userroles.indexOf(userrole_to_remove, 1))
                     conf.userroles = userroles;
                 }
@@ -214,7 +217,7 @@ module.exports = {
                 } catch (e) {
                     await client.updateconfig(interaction.guild_id, conf);
                 }
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success('Saved your new settings'))
+                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedsettings[lang]))
                 break;
         }
     }

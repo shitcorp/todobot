@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js-light');
+const messages = require('../localization/messages');
 
 const raw = {
     name: 'suggest',
@@ -72,9 +73,9 @@ module.exports = {
                 await msg.react(client.emojiMap['upvote']);
                 await msg.react(client.emojiMap['downvote']);
             })
-            interaction.replyWithMessageAndDeleteAfterAWhile(client.success(`Your feature request has been submitted.`));
+            interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.requestsubmitted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']));
         } catch(e) {
-            interaction.errorDisplay(`There was an error trying to post your suggestions. Was your image URL well formatted?`);
+            interaction.errorDisplay(messages.errorposting[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
         }
 
     }
