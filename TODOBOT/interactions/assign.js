@@ -49,7 +49,7 @@ module.exports = {
 
         const todoClass = new todo(client, check);
 
-        if (todoClass.assigned.includes(user.id)) return interaction.errorDisplay('This user is alredy assigned.');
+        if (todoClass.assigned.includes(user.id)) return interaction.errorDisplay('This user is already assigned.');
         
         if (todoClass.state === 'open') todoClass.state = 'assigned';
         

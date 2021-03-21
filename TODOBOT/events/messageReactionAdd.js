@@ -23,13 +23,34 @@ module.exports = async (client, messageReaction, user) => {
     const react = messageReaction.emoji.name
     const userinio = user.id
 
-    const member = await client.guilds.cache.get(messageReaction.message.guild.id).members.fetch(user.id);
+    const whitelisted_emojis = [
+        'share',
+        'assign_yourself',
+        'expand',
+        'collapse',
+        'accept_todo',
+        'finish',
+        '1️⃣',
+        '2️⃣',
+        '3️⃣',
+        '4️⃣',
+        '5️⃣',
+        '6️⃣',
+        '7️⃣',
+        '8️⃣',
+        '9️⃣',
+        '🔟'
+    ]
 
+    
+    if (!whitelisted_emojis.includes(react)) return;
 
+    
     // if the reacting user is us we should return
     if (userinio === client.user.id) return;
-
-
+    
+    const member = await client.guilds.cache.get(messageReaction.message.guild.id).members.fetch(user.id);
+    
     const settings = await client.getconfig(messageReaction.message.guild.id)
     if (settings === undefined) return;
 
@@ -46,8 +67,9 @@ module.exports = async (client, messageReaction, user) => {
 
     let lang = settings ? settings.lang ? settings.lang : 'en' : 'en';
 
-    let todoobj = new todo(client, await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id))
-    if (todoobj === undefined || typeof todoobj !== "object") return;
+    let todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id);
+    if (!todoobj) return;
+    todoobj = new todo(client, todoobj);
 
     // TODO remove reactions when permission level is too low
 
@@ -122,7 +144,6 @@ module.exports = async (client, messageReaction, user) => {
                     todoobj.readonlymessage = msg.id;
                     await client.updatetodo(todoobj._id, todoobj);
                     // remove the reaction so users cant share again
-                    console.log(todoobj)
                     messageReaction.remove();
                 } catch (e) {
                     console.error(e)
@@ -137,7 +158,6 @@ module.exports = async (client, messageReaction, user) => {
             //add the reacting user to the assigned array
             // and edit the todo msg/embed 
 
-            console.log(Object.values(todoobj.assigned).includes(userinio))
             if ((Object.values(todoobj.assigned).includes(userinio)) === true) {
                 todoobj.errordisplay(messageReaction.message, userinio, messages.alreadyassigned[lang]);
                 await client.clearReactions(messageReaction.message, userinio);

@@ -47,7 +47,6 @@ module.exports = {
             msg.delete();
             chan.send(statembed);
         } catch (e) {
-            console.log(e);
             client.logger.debug(e)
             interaction.embed.error('An error occured, please try again.')
         }

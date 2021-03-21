@@ -201,7 +201,6 @@ const loadAndInjectClient = async (path) => {
     raw_interaction.level = 0;
     const interaction = new Interaction(client, raw_interaction)
     client.logger.cmd(`Received the interaction ${interaction.data.name}`)
-    console.log(interaction.member)
     try {
       const trans = apm.startTransaction('Interaction Handler', 'handler', {
         startTime: Date.now()

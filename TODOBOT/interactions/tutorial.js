@@ -1,7 +1,10 @@
+/**
+ * @fileoverview 
+ * Kindly stolen from https://github.com/Giuliopime/HelpDesk/blob/master/commands/Utility/tutorial.js
+ */
+
 const
-    { MessageEmbed } = require('discord.js-light'),
-    messages = require('../localization/messages.js'),
-    Pagination = require('discord-paginationembed');
+    { MessageEmbed } = require('discord.js-light')
 
 const raw = {
     name: 'tutorial',
@@ -22,83 +25,154 @@ module.exports = {
         description: raw.description
     },
     run: async (client, interaction) => {
-        console.log(interaction);
         interaction.reply(' ', 2);
-        const embedDataTemplate = {
-            image: '',
-            thumbnail: '',
-            heading: 'test heading',
-            body: 'test body',
-            footer: 'test footer'
-        }
 
-        let arr = [
-            embedDataTemplate
-        ]
+        // Define the arrays of the commands separed by category
+        const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Other Commands'];
+        let page = 1;
 
-        /**
-         * @fileoverview
-         * IDEA:
-         * go though interactions and show interaction.help.tutorial section
-         */
+        const tutorialEmbed = new MessageEmbed()
+            .setColor('BLUE')
+            .setTitle('Welcome to the Tutorial!')
+            .setThumbnail(client.user.displayAvatarURL())
+            .setDescription(`Let's get started!\nNavigate trough this tutorial sections to learn how to use <@${client.user.id}>.`)
+            .addFields(
+                {
+                    name: 'Tutorial Sections',
+                    value: `**-** Introduction (this page)
+                    **-** Set up the bot
+                    **-** Create your first todo
+                    **-** Create your first custom command
+                    **-** Other Commands`
+                },
+                {
+                    name: 'How to move trough this tutorial',
+                    value: 'Use reactions below to navigate trough the tutorial pages'
+                },
+            )
+            .setFooter(`Page ${page} of ${pages.length}`);
+        interaction.channel.send(tutorialEmbed).then(async msg => {
+            const nextEmoji = '➡';
+            const stopEmoji = '❌';
+            const beforeEmoji = '◀️';
+            await msg.react(beforeEmoji);
+            await msg.react(stopEmoji);
+            await msg.react(nextEmoji);
+            const Filter = (reaction, user) => (reaction.emoji.name === beforeEmoji || reaction.emoji.name === nextEmoji || reaction.emoji.name === stopEmoji) && user.id === interaction.member.user.id && user.id !== client.user.id;
+            const otherFilter = (reaction, user) => (reaction.emoji.name !== beforeEmoji && reaction.emoji.name !== nextEmoji && reaction.emoji.name !== stopEmoji) || (user.id !== interaction.member.id && user.id !== client.user.id);
 
+            const update = msg.createReactionCollector(Filter, { time: 600000 });
+            const other = msg.createReactionCollector(otherFilter, { time: 600000 });
 
-        const TutorialEmbed = new Pagination.FieldsEmbed()
-            .setArray(arr)
-            .setAuthorizedUsers([interaction.member.user.id])
-            .setChannel(client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.channel_id))
-            .setElementsPerPage(1)
-            // Initial page on deploy
-            .setPage(1)
-            .setPageIndicator(true)
-            .formatField('Chapter', i => `\`\`\` ${i.heading} \`\`\``, false)
-            .formatField('Body', i => `\`\`\` ${i.body} \`\`\``, false)
-            .formatField('Content', i => `> ${i.footer}`, false)
-            // Deletes the embed upon awaiting timeout
-            .setDeleteOnTimeout(true)
-            // Disable built-in navigation emojis, in this case: 🗑 (Delete Embed)
-            //.setDisabledNavigationEmojis(['delete'])
-            // .setFunctionEmojis({
-            //     "✏️": async (user, i) => {
-            //         // edit the remider on the current page
-            //         const filter = m => m.author.id === message.author.id;
-            //         message.channel.send(client.embed(`
-            //     Enter the new text for your reminder now:
-            //     `)).then(() => {
-            //             if (message.deletable) message.delete({ timeout })
-            //             message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
-            //                 .then(collected => {
-            //                     if (collected.first().deletable) collected.first().delete()
-            //                     remindermodel.updateOne({ _id: arr[i.page - 1]._id }, { content: collected.first().content }, (err) => {
-            //                         if (err) client.logger.debug(err)
-            //                         interactionhandler.embed.success(interaction, `Updated your reminder.`)
-            //                     })
-            //                 })
-            //                 .catch(collected => {
-            //                     // Delete message here
-            //                     client.logger.debug(collected)
-            //                 });
-            //         })
-            //     },
-            //     "❌": async (user, i) => {
-            //         // Delete the reminder on the current page
-            //         remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, (err) => {
-            //             if (err) client.logger.debug(err)
-            //             interactionhandler.embed.success(interaction, `Deleted your reminder.`)
-            //         })
-            //     }
-            // })
-            // Sets whether function emojis should be deployed after navigation emojis
-            .setEmojisFunctionAfterNavigation(false);
+            let time = Date.now();
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
 
-        TutorialEmbed.embed
-            .setColor("BLUE")
-            .setFooter(`Manual:
-✏️          Edit the reminder
-❌          Delete the reminder
-🗑️          Destroy this embed`);
-        await TutorialEmbed.build();
+            other.on('collect', (r, u) => {
+                r.users.remove(u);
+            });
 
+            update.on('collect', async (r, u) => {
+                time = Date.now();
+                if (r.emoji.name === stopEmoji) {
+                    update.stop();
+                }
+                if (r.emoji.name === nextEmoji) {
+                    if (page === pages.length) return r.users.remove(u);
+                    page++;
+                    await r.users.remove(u);
+                    tutorialEmbed.setFooter(`Page ${page} of ${pages.length}`);
+                }
+                if (r.emoji.name === beforeEmoji) {
+                    if (page === 1) return r.users.remove(u);
+                    page--;
+                    await r.users.remove(u);
+                    tutorialEmbed.setFooter(`Page ${page} of ${pages.length}`);
+                }
+
+                if (page === 1) {
+                    tutorialEmbed
+                        .setTitle('Welcome to the Tutorial!')
+                        .setThumbnail(client.user.displayAvatarURL())
+                        .setDescription(`Let's get started!\nNavigate trough this tutorial sections to learn how to use <@${client.user.id}>.`);
+                    tutorialEmbed.fields = [
+                        {
+                            name: 'Tutorial Sections',
+                            value: `**-** Introduction (this page)
+                                **-** Set up the bot
+                                **-** Create your first todo
+                                **-** Create your first custom command
+                                **-** Other Commands`
+                        },
+                        {
+                            name: 'How to move trough this tutorial',
+                            value: 'Use reactions below to navigate trough the tutorial pages'
+                        },
+                    ];
+                    tutorialEmbed.image = undefined;
+                }
+                if (page === 2) {
+                    tutorialEmbed
+                        .setTitle(pages[page - 1])
+                        .setDescription(`
+                            To set up the bot use the \`/settings set\` command. Thanks to discords new slash commands you can just click the value that you want to edit and enter your new value.
+                            
+                            __**Values:**__
+
+                            - \`todochannel\` => the channel where your tasks will be posted.
+                            - \`readonlychannel\` => the channel where shared tods will be posted. The shared messages will be updated as you progress with the todo.
+                            - \`staffrole\` => members with this role can edit bot settings and create custom commands.
+                            - \`userrole\` => members with this role can interact with the bot and create todos.
+                            - \`lanugage\` => the language in which the bot will talk to you.
+                            `);
+                    tutorialEmbed.image = undefined;
+                    tutorialEmbed.thumbnail = undefined;
+                    tutorialEmbed.fields = [];
+                }
+                if (page === 3) {
+                    tutorialEmbed
+                        .setTitle(pages[page - 1])
+                        .setDescription(`To create a todo simply run the \`/todo\` command and submit at least a title. Once the todo is submitted it will be posted in your preconfigured todochannel. From there on everything else is done with reactions.
+                        **Note** To submit multiple tasks within a TODO, simply seperate them with a semicolon(;).
+                        `)
+                        .setImage('https://i.ibb.co/5kKpQrs/embed-Example.png')
+                        .setThumbnail(client.user.displayAvatarURL());
+                    tutorialEmbed.fields = [];
+                }
+                if (page === 4) {
+                    tutorialEmbed
+                        .setTitle(pages[page - 1])
+                        .setDescription('**Now that you know how to personalize the help-desk embed, you can start adding questions to it.**\n\nThe main two commands for that are:\n**>** `hd?addQuestion`\n**>** `hd?delQuestion`\n\nYou can use `hd?help addQuestion` to learn how to add a question.\n\nYou can move on to the next sections to learn about the `Special Question`.');
+                    tutorialEmbed.image = undefined;
+                    tutorialEmbed.thumbnail = undefined;
+                    tutorialEmbed.fields = [];
+                }
+                if (page === 5) {
+                    tutorialEmbed
+                        .setTitle(pages[page - 1])
+                        .setDescription('**If you know how to use json files you can edit my settings in a much quicker way!**\n\n**>** Download the current settings of an #help-desk with `hd?save`.\nThis will give you an example of what the help-desk settings look like.\n\n**>** Once you tweaked the json file a bit, you can load those settings into an help desk with `hd?load`.\n\nYou can use tools like [jsoneditoronline](https://jsoneditoronline.org/) to modify json files.\n\n**Just like that you can export and import #help-desk templates!**\n\n*The tutorial has ended, hopefully it was helpful to you.\nHere are some other useful links:*\n[Support](https://discord.gg/4BTXnXu) | [Invite](https://discord.com/oauth2/authorize?client_id=739796627681837067&scope=bot&permissions=268954832)');
+                    tutorialEmbed.image = undefined;
+                    tutorialEmbed.thumbnail = undefined;
+                    tutorialEmbed.fields = [];
+                }
+
+                await msg.edit(tutorialEmbed);
+            });
+            update.on('end', async () => {
+                time = undefined;
+                await msg.reactions.removeAll();
+            });
+            let condition = true;
+            while (condition) {
+                if (!time) condition = false;
+                await sleep(30000);
+                if (Date.now() - time >= 300000) {
+                    condition = false;
+                    update.stop();
+                }
+            }
+        });
 
     }
 };

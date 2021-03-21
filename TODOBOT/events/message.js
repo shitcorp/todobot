@@ -95,7 +95,6 @@ module.exports = async (client, message) => {
 
   message.flags = [];
   for (const index in args) {
-    console.log(args)
     while (args[index].startsWith("-")) {
       message.flags.push(args.shift().slice(1));
     }
