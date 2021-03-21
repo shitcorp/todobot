@@ -4,7 +4,8 @@
  */
 
 const
-    { MessageEmbed } = require('discord.js-light')
+    { MessageEmbed } = require('discord.js-light'),
+    pkg = require('../../package.json');
 
 const raw = {
     name: 'tutorial',
@@ -172,7 +173,7 @@ module.exports = {
 
                         *This ends the tutorial, I hope it was helpful to you. Here are some other useful links:*
                         
-                        [Support](https://discord.gg/RuEdX5T)       |       [Invite](https://invite.todo-bot.xyz)      |        [Wiki](https://github.com/shitcorp/TODOBOT/wiki)`);
+                        [Support](https://discord.gg/RuEdX5T)       |       [Invite](https://invite.todo-bot.xyz)      |        [Wiki](${pkg.repository.url}#readme)`);
                     tutorialEmbed.image = undefined;
                     tutorialEmbed.thumbnail = undefined;
                     tutorialEmbed.fields = [];
