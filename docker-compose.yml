@@ -14,7 +14,19 @@ services:
       - "127.0.0.1:27017:27017"
     volumes:
       - ./data/mongo:/data/db
-  #apm-server:
-  #  image:
-  #  ports: 
-  #  - "127.0.0.1:8200:8200"
+  apm-server:
+    build:
+      context: DOCKER/apm-server/
+      args:
+        ELK_VERSION: 7.11.1
+      command:
+          # Disable strict permission checking on 'apm-server.yml' configuration file
+          # https://www.elastic.co/guide/en/beats/libbeat/current/config-file-permissions.html
+        - --strict.perms=false
+      volumes: 
+        - type: bind
+          source: ./DOCKER/apm-server/config/apm-server.yml
+          target: /usr/share/apm-server/apm-server.yml
+          read_only: true
+      ports:
+        - '127.0.0.1:8200:8200'
