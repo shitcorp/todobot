@@ -1,7 +1,14 @@
 const { stati } = require('../data/stati.json');
-const { MONGO_CONNECTION } = require('../config');
+const MONGO_CONNECTION = process.env.MONGO_CONNECTION
 const Agenda= require('agenda')
-const agenda = new Agenda({ db: { address: MONGO_CONNECTION } });
+const agenda = new Agenda({ 
+  db: { 
+    address: process.env.MONGO_CONNECTION ?? 'mongodb://localhost:27017/todobot',
+    options: {
+      useUnifiedTopology: true
+    }
+  } 
+});
 
 module.exports = async (client) => {
   
@@ -11,7 +18,7 @@ module.exports = async (client) => {
     
     let i = 0;
 
-    agenda.define("statusjob", async (job) => {
+    agenda.define("botstatusjob", async (job) => {
       client.user.setActivity(stati[i], { type: "WATCHING" });
       i++
       if (i >= stati.length) i = 0;
@@ -21,7 +28,7 @@ module.exports = async (client) => {
       // IIFE to give access to async/await
       await agenda.start();
       // Alternatively, you could also do: (every 10 minutes)
-      await agenda.every("*/10 * * * *", "statusjob");
+      await agenda.every("*/10 * * * *", "botstatusjob");
     })();
 
 

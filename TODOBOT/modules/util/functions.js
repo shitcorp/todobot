@@ -28,18 +28,31 @@ module.exports = (client) => {
   client.discordlog = () => {
 
 
-    // client.discordlog = (content, message, event) => {
-    //   if (client.config.debug !== "true") return
-    //   if (event) {
-    //     return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${event} \n${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-    //   }
+    // DEBUG=false
+    // DEBUG_GUILD=709541114633519177
+    // DEBUG_CHANNEL=
+    // DEBUG_LOG_CHANNEL=
+    // DEBUG_URL_APM_SERVER=http://localhost:8200/
 
-    //   return client.guilds.get(client.config.debugguild).channels.get(client.config.debugchannel).send(`__**Error:**__ ${content} \n> __**Guild:**__ ${message.guild.name}(${message.guild.id}) \n> __**Channel**__ ${message.channel.id} \n> __**Message:**__ ${message.id} \n> __**Command**__ ${message.content} \n> __**Time:**__ ${dateFormat()}`)
-
-    // }
-
-
-
+    client.discordlog = async ({ error, event, guild, channel, message, command }) => {
+      // if (!process.env.DEBUG || !process.env.DEBUG_GUILD || !process.env.DEBUG_CHANNEL) return;
+      if (process.env.DEBUG !== "true") return
+      console.log('a')
+      return client.guilds.cache.get(process.env.DEBUG_GUILD).channels.cache.get(process.env.DEBUG_CHANNEL).send(client.embed(`
+          __**Error:**__ [${event ?? 'none given'}] 
+          ${error} 
+          > __**Guild:**__ 
+          ${guild ?? 'none given'} 
+          > __**Channel**__ 
+          ${channel ?? 'none given'} 
+          > __**Message:**__ 
+          ${message ?? 'none given'} 
+          > __**Command**__ 
+          ${command ?? 'none given'} 
+          > __**Time:**__ 
+          ${Date.now().toLocaleString()}`
+          ))
+    }
   };
 
 
@@ -80,7 +93,7 @@ module.exports = (client) => {
 
   client.invalidateCache = async (_id) => {
     client.cache.del(_id, (err) => {
-      err ? console.error(err):
+      err ? console.error(err) :
         configmodel.findOne({ _id }, (err, doc) => {
           err ? console.error(err) :
             client.cache.set(_id, JSON.stringify(doc))
@@ -108,7 +121,7 @@ module.exports = (client) => {
 
 
 
-  global.mapBuilder = async(obj) => {
+  global.mapBuilder = async (obj) => {
     let map = new Map();
     Object.keys(obj).forEach(key => {
       map.set(key, obj[key]);
@@ -117,9 +130,9 @@ module.exports = (client) => {
   };
 
 
-  global.findCommonElements = (arr1, arr2) => { 
-    return arr1.some(item => arr2.includes(item)) 
-} 
+  global.findCommonElements = (arr1, arr2) => {
+    return arr1.some(item => arr2.includes(item))
+  }
 
 
 
@@ -148,10 +161,10 @@ module.exports = (client) => {
         try {
           let chann = await client.guilds.cache.get(doc.guild.id).channels.fetch(doc.guild.channel)
           await chann.send(output, client.reminder(doc))
-        // if the message cant be sent, or the guild cant be fetched or theres some other 
-        // error, we have to catch the error and delete the reminder(doc) from the database
-        } catch(e) {
-          console.log(e);    
+          // if the message cant be sent, or the guild cant be fetched or theres some other 
+          // error, we have to catch the error and delete the reminder(doc) from the database
+        } catch (e) {
+          console.log(e);
           client.logger.debug(e)
           remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
         }
@@ -185,9 +198,11 @@ module.exports = (client) => {
     client.apm.captureError(promise)
     client.logger.debug(err)
     client.logger.debug(promise)
+    client.discordlog({ error: err, content: 'Promise: ' + promise })
   });
 
   process.on("uncaughtException", (err) => {
+    client.discordlog({ error: err })
     client.apm.captureError(err)
     client.logger.debug(err)
   });

@@ -3,7 +3,7 @@ const cmdRecently = new Set();
 
 module.exports = async (client, message) => {
 
-  const timeout = client.config.msgdelete
+  const timeout = process.env.MSG_DELETE || 90000
 
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
@@ -66,9 +66,6 @@ module.exports = async (client, message) => {
   if (message.guild && !message.member) await message.guild.fetchMember(message.author);
 
 
-  const level = client.permlevel(message);
-
-
   const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command));
 
   if (!cmd) return;
@@ -78,20 +75,6 @@ module.exports = async (client, message) => {
     return message.channel.send(client.warning("This command is unavailable via private message. Please run this command in a guild."));
 
 
-
-  // if (level < client.levelCache[cmd.conf.permLevel]) {
-
-
-  //   return message.channel.send(client.warning(`You do not have permission to use this command.
-  //   > Your permission level is **${client.config.permLevels.find(l => l.level === level).name}**
-  //   > This command requires **${cmd.conf.permLevel}**`)).then(msg => {
-  //     if (msg.deletable) msg.delete({ timeout })
-  //   })
-
-  // }
-
-
-  message.author.permLevel = level;
 
   message.flags = [];
   for (const index in args) {
@@ -113,20 +96,20 @@ module.exports = async (client, message) => {
 
   // global cooldown here
   if (cmdRecently.has(message.author.id)) {
-    return message.reply(client.warning(`Please wait  \`${client.config.cooldown / 1000}\`  seconds before doing this command again!`)).then(msg => {
+    return message.reply(client.warning(`Please wait  \`${client.cooldown / 1000}\`  seconds before doing this command again!`)).then(msg => {
       if (msg.deletable) msg.delete({ timeout })
     })
   } else {
     cmdRecently.add(message.author.id)
     setTimeout(() => {
       cmdRecently.delete(message.author.id)
-    }, client.config.cooldown)
+    }, client.cooldown)
 
-    client.logger.cmd(`[CMD] ${client.config.permLevels.find(l => l.level === level).name} ${message.author.username} (ID: ${message.author.id}) ran the command '${cmd.help.name}', in the guild '${message.guild.name}' (ID: ${message.guild.id})`);
+    client.logger.cmd(`[CMD] ${message.author.username} (ID: ${message.author.id}) ran the command '${cmd.help.name}', in the guild '${message.guild.name}' (ID: ${message.guild.id})`);
     try {
       cmd.run(client, message, args, level);
     } catch (e) {
-
+      client.logger.debug(e);
     }
   }
 
