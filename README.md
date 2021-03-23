@@ -194,6 +194,6 @@ Whether you need help with the bot, want to try the bot and see it in action, wa
 You can also use Github Issues if you dont want to join the discord.
 
 
-Theres also a `//suggest` command. It takes in an image as first flag (if you want to attach one), or the -hide flag if you want to hide in which server the suggestion was sent. Either way, the suggestion will end up in the #suggestions channel in the support cord.
+Theres also a `/suggest` command for sending suggestions to the support server where ppl can up or downvote them.
 
 I also do regular votes on new features in there, so if you want to have a say in the features that will be implemented, you know what to do.
