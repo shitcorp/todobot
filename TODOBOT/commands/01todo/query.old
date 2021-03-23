@@ -87,9 +87,7 @@ exports.run = async (client, message, args, level) => {
                 limit = docs.length
             }
             
-            if (err) {
-                errormessage(messages.databaseerror[lang])
-            }
+            if (err) return errormessage(messages.databaseerror[lang])
 
             if (!docs) return errormessage(messages.nothingfound[lang]);
 

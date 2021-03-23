@@ -116,8 +116,8 @@ module.exports = (client) => {
     };
 
 
-    client.getguildtodos = (guildid) => {
-        return todomodel.find({ guildid }), (err, doc) => { if (err) return Sentry.captureException(err) }
+    client.getguildtodos = async (guildid) => {
+        return await todomodel.find({ guildid })
     };
 
     client.querytodos = (queryobj) => {

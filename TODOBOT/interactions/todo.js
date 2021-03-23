@@ -27,6 +27,11 @@ const raw = {
             type: 3
         },
         {
+            name: 'category',
+            description: 'The category this todo should belong to.',
+            type: 3
+        },
+        {
             name: "loop",
             description: "Create repeating tasks",
             type: 5
@@ -87,6 +92,10 @@ module.exports = {
             if (interaction.data.options[index].name === "loop") {
                 if (interaction.data.options[index].value === "") return;
                 todoobject.loop = interaction.data.options[index].value;
+            }
+            if (interaction.data.options[index].name === "category") {
+                if (interaction.data.options[index].value === "") return;
+                todoobject.category = interaction.data.options[index].value;
             }
             if (interaction.data.options[index].name === "tasks") {
                 if (interaction.data.options[index].value === "") return;

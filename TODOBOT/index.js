@@ -45,7 +45,7 @@ const client = new Client({
 });
 
 client.apm = apm;
-client.cooldown = process.env.CMD_COOLDOWN ?? 60000;
+client.cooldown = parseInt(process.env.CMD_COOLDOWN) ?? 30000;
 client.logger = require("./modules/util/Logger");
 
 
@@ -248,7 +248,7 @@ const loadAndInjectClient = async (path) => {
 
         // interaction cooldown
         interactionRecently.add(raw_interaction.member.user.id)
-        setTimeout(() => { interactionRecently.delete(raw_interaction.member.id) }, client.cooldown)
+        setTimeout(() => { interactionRecently.delete(raw_interaction.member.user.id) }, client.cooldown)
 
       } catch (e) {
         console.error(e);
