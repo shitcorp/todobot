@@ -63,6 +63,7 @@ client.logger.error = (err) => client.logger.debug(err)
 
 
 
+require("./modules/util/botlistupdater.js")(client);
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
 

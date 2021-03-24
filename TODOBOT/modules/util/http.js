@@ -4,10 +4,14 @@ const
 
 
 const headers = {
-	//'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+	'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
     Accept: 'application/json',
     'Content-Type': 'application/json'
 	//'X-Auth-Token': ''
+};
+
+const setToken = (token) => {
+	headers['Authorization'] = token;
 };
 
 
@@ -46,6 +50,7 @@ const put = async (route, body) => await req(route, 'PUT', body);
 const del = async (route) => await req(route, 'DELETE');
 
 module.exports = {
+	setToken,
 	get,
 	post,
 	put,
