@@ -34,11 +34,11 @@ module.exports = (client) => {
             });
         },
         updateAll: async () => {
-            await client.updateTopgg();
-            await client.updateDelly();
-            await client.updateDBL();
-            await client.updateBoats();
-            await client.updateSpace();
+            await client.updater.updateTopgg();
+            await client.updater.updateDelly();
+            await client.updater.updateDBL();
+            await client.updater.updateBoats();
+            await client.updater.updateSpace();
         }
     }
 };
