@@ -28,7 +28,7 @@ module.exports = {
 
         const statembed = new MessageEmbed()
             .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
-            .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
+            .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB / ${(os.totalmem() / 1000 / 1000 / 1000).toFixed(2)} GB`, true)
             .addField("• Load Avg (Unix)", `> ${load.join(', ')}`, true)
             .addField("• Uptime", `> ${Math.round(client.uptime / 3600000)}h`, true)
             .addField("• Users ", `> ${client.users.cache.size}`, true)
