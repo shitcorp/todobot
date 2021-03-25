@@ -56,12 +56,6 @@ module.exports = {
                     interaction.channel.send(client.embed(`[Original Message](${URL})`));
                     console.log(guildTodos[instance.page - 1])
                 },
-                "🔗": async (user, instance) => {
-                    // TODO: only post link to todo message
-                    const dcbase = "https://discordapp.com/channels/"
-                    const URL = dcbase + interaction.guild_id + "/" + guildTodos[instance.page - 1].todochannel + "/" + guildTodos[instance.page - 1].todomsg
-                    interaction.channel.send(client.embed(`[Original Message](${URL})`));
-                },
                 "❌": async (user, i) => {
 
                 }
