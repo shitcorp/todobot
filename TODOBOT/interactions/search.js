@@ -71,7 +71,7 @@ module.exports = {
         description: raw.description
     },
     run: async (client, interaction) => {
-
+        console.log(interaction.conf);
     }
 
 };

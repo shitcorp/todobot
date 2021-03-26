@@ -55,6 +55,13 @@ const raw = {
                             value: 'de'
                         }
                     ]
+                },
+                {
+                    name: 'autopurge',
+                    description: 'Toggle messages being auto purged in the todochannel.',
+                    // BOOLEAN
+                    type: 5,
+                    required: false,
                 }
             ]
         },
@@ -132,6 +139,7 @@ module.exports = {
                     if (commandopts[i].name === 'staffrole') staffrole = commandopts[i].value;
                     if (commandopts[i].name === 'userrole') userrole = commandopts[i].value;
                     if (commandopts[i].name === 'language') conf.lang = commandopts[i].value;
+                    if (commandopts[i].name === 'autopurge') conf.autopurge = commandopts[i].value;
                 }
                 if (staffrole) {
                     let staffroles = []

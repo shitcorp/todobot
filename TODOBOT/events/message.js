@@ -13,15 +13,17 @@ module.exports = async (client, message) => {
 
   message.guild ? settings = await client.getconfig(message.guild.id) : null;
 
-  settings  
-    ? Prefix = settings.prefix 
+  settings
+    ? Prefix = settings.prefix
     : Prefix = "//";
 
+  if (settings && settings.autopurge === true && message.channel.id === settings.todochannel) 
+    return message.delete().catch(e => client.logger.debug(e));
 
   const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
   if (message.content.match(prefixMention)) {
     return message.reply(client.embed(`My prefix on this guild is ${Prefix}`))
-      .then(msg => { if (msg.deleteable) msg.delete({ timeout }) })
+      .then(msg => { msg.delete({ timeout }).catch(e => client.logger.debug(e)) });
   }
 
 
@@ -41,15 +43,15 @@ module.exports = async (client, message) => {
   // convert settings.tag object into map
 
   if (settings) {
-    
+
     // Check for blacklisted users here
     if (settings.blacklist_users && Object.values(settings.blacklist_users).includes(message.author.id)) return;
-    
+
 
     // Check if the message is in a blacklisted channel
     if (settings.blacklist_channels && Object.values(settings.blacklist_channels).includes(message.channel.id)) return;
 
-    
+    console.log(settings);
     /**
      * Start Taghandler
      */
