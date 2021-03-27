@@ -127,7 +127,7 @@ module.exports = {
                             **•** \`readonlychannel\` => the channel where shared tods will be posted. The shared messages will be updated as you progress with the todo.
                             **•** \`staffrole\` => members with this role can edit bot settings and create custom commands.
                             **•** \`userrole\` => members with this role can interact with the bot and create todos.
-                            **•** \`lanugage\` => the language in which the bot will talk to you.
+                            **•** \`language\` => the language in which the bot will talk to you.
                             `);
                     tutorialEmbed.image = undefined;
                     tutorialEmbed.thumbnail = undefined;
