@@ -1,9 +1,10 @@
+const http = require('../modules/util/http');
 const { Colors } = require('../modules/util/colors');
 const { GuildMember } = require("discord.js-light");
 
 class interaction {
     constructor(client, interaction) {
-        
+
         this.application_id = interaction.application_id;
         this.id = interaction.id;
         this.token = interaction.token;
@@ -20,7 +21,7 @@ class interaction {
         this.conf = interaction.conf;
         // either USER or STAFF (0 - normal USER no perms, 1 - Bot user, 2- STAFF (can change bot settings))
         this.level = interaction.level;
-        
+
 
         const reply = async (msg, type = 4) => {
             return client.api.interactions(this.id, this.token).callback.post({
@@ -33,16 +34,41 @@ class interaction {
             })
         }
 
+        const replyRawEmbed = async (embed) => {
+            await client.api.interactions(this.id, this.token).callback.post({
+                data: {
+                    type: 4,
+                    data: {
+                        embeds: [
+                            embed
+                        ]
+                    }
+                }
+            })
+        }
+
+        const deleteOriginal = async (timeout) => {
+            http.setToken(process.env.TOKEN);
+            if (!timeout) return await http.delete(`https://discord.com/api/v8/webhooks/${process.env.APPLICATION_ID}/${this.token}/messages/@original`)
+            setTimeout(async () => {
+                await http.delete(`https://discord.com/api/v8/webhooks/${process.env.APPLICATION_ID}/${this.token}/messages/@original`)
+            }, timeout);
+        }
+
         const replyWithMessageAndDeleteAfterAWhile = (msg) => {
             // acknowledge the interaction
             try {
-                reply(' ', 2);
+                replyRawEmbed(msg);
+                deleteOriginal(process.env.MSG_DELETE);
             } catch (e) {
-                client.logger.error(e);
+                client.logger.debug(e);
+                try {
+                    reply(msg);
+                    deleteOriginal(process.env.MSG_DELETE);
+                } catch (e) {
+                    client.logger.debug(e);
+                }
             }
-            this.channel.send(msg).then((m) => {
-                if (m.deletable) m.delete({ timeout: process.env.MSG_DELETE })
-            })
         }
 
         const errorDisplay = (msg) => {
@@ -50,10 +76,10 @@ class interaction {
         }
 
         const embed = {
-            default: async (msg, type = 3, color = "BLUE") => {
+            default: async (msg, type = 4, color = "BLUE") => {
                 return client.api.interactions(this.id, this.token).callback.post({
                     data: {
-                        type, 
+                        type,
                         data: {
                             embeds: [
                                 {
@@ -74,10 +100,10 @@ class interaction {
                             ]
                         }
                     }
-                        
-                }) 
+
+                })
             },
-            success: async (msg, type = 3, color = "GREEN") => {
+            success: async (msg, type = 4, color = "GREEN") => {
                 return client.api.interactions(this.id, this.token).callback.post({
                     data: {
                         type,
@@ -93,7 +119,7 @@ class interaction {
                     }
                 })
             },
-            error: async(msg, type = 4, color = "RED") => {
+            error: async (msg, type = 4, color = "RED") => {
                 return client.api.interactions(this.id, this.token).callback.post({
                     data: {
                         type,
@@ -107,11 +133,13 @@ class interaction {
                             ]
                         }
                     }
-                }) 
+                })
             }
         }
 
         this.reply = (msg, type) => reply(msg, type);
+        this.replyRawEmbed = (embed) => replyRawEmbed(embed);
+        this.delete = (timeout) => deleteOriginal(timeout);
         this.errorDisplay = (msg) => errorDisplay(msg);
         this.replyWithMessageAndDeleteAfterAWhile = (msg) => replyWithMessageAndDeleteAfterAWhile(msg);
         this.embed = {

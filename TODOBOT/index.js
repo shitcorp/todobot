@@ -1,10 +1,10 @@
 (require('dotenv').config());
-  
-  const apm = require('elastic-apm-node')
-  apm.start({
-    serverUrl: process.env.DEBUG_URL_APM_SERVER,
-    serviceName: process.env.BOT_NAME,
-    environment: 'production',
+
+const apm = require('elastic-apm-node')
+apm.start({
+  serverUrl: process.env.DEBUG_URL_APM_SERVER,
+  serviceName: process.env.BOT_NAME,
+  environment: 'production',
   // uncmment this for troubleshooting the apm agent
   // logLevel: 'trace',
   logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
@@ -261,7 +261,7 @@ const loadAndInjectClient = async (path) => {
   });
 
 
-  
+
 })();
 
 

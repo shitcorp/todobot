@@ -43,12 +43,11 @@ module.exports = {
 
 
         try {
-            interaction.reply(' ', 2);
             msg.delete();
-            chan.send(statembed);
+            interaction.replyWithMessageAndDeleteAfterAWhile(statembed);
         } catch (e) {
-            client.logger.debug(e)
-            interaction.embed.error('An error occured, please try again.')
+            client.logger.debug(e);
+            interaction.errorDisplay('An error occured, please try again.');
         }
     }
 

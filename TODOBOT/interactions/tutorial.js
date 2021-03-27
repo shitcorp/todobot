@@ -26,7 +26,8 @@ module.exports = {
         description: raw.description
     },
     run: async (client, interaction) => {
-        interaction.reply(' ', 2);
+        interaction.reply(' ', 5);
+       
 
         // Define the arrays of the commands separed by category
         const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Advanced Custom Commands', 'Other Commands'];
@@ -53,6 +54,7 @@ module.exports = {
             )
             .setFooter(`Page ${page} of ${pages.length}`);
         interaction.channel.send(tutorialEmbed).then(async msg => {
+            interaction.delete();
             const nextEmoji = '➡';
             const stopEmoji = '❌';
             const beforeEmoji = '◀️';
