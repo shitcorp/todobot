@@ -12,7 +12,8 @@ const configschema = new Schema({
     blacklist_channels: Array,
     blacklist_users: Array,
     vars: Map,
-    lang: String
+    lang: String,
+    autopurge: Boolean
 })
 
 exports.configmodel = new model("todoconfig", configschema)

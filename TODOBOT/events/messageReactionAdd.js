@@ -1,4 +1,4 @@
-const { todomodel } = require("../modules/models/todomodel")
+const { todomodel } = require("../modules/models/todomodel");
 const todo = require('../classes/todo');
 const messages = require('../localization/messages');
 
@@ -9,7 +9,6 @@ module.exports = async (client, messageReaction, user) => {
         try {
             await messageReaction.fetch();
         } catch (error) {
-            console.error(error)
             client.logger.debug('Something went wrong when fetching a partial message')
             // Return as `reaction.message.author` may be undefined/undefined
             client.logger.debug(error);
@@ -25,6 +24,7 @@ module.exports = async (client, messageReaction, user) => {
 
     const whitelisted_emojis = [
         'share',
+        'edit',
         'assign_yourself',
         'expand',
         'collapse',
@@ -171,16 +171,15 @@ module.exports = async (client, messageReaction, user) => {
             break;
         case 'edit':
             // edit the task and edit the todo msg when finished
-            //!TODO remove reaction when finished and send success msg
 
             let as = []
             if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await client.clearReactions(messageReaction.message, userinio)
             if (todoobj.assigend !== []) {
                 Object.keys(todoobj.assigned).forEach(key => as.push(todoobj.assigned[key]))
             }
-            if (as.length > 0 && as.includes(userinio) === false && todoobj.submittedby !== userinio) return await client.clearReactions(messageReaction.message, userinio)
+            if (as.length > 0 && as.includes(userinio) === false && todoobj.submittedby !== userinio) return await messageReaction.users.remove(user.id)
 
-            await client.clearReactions(messageReaction.message, userinio)
+            await messageReaction.users.remove(user.id)
             edit(messageReaction.message, userinio)
             break;
         case 'expand':
@@ -202,14 +201,14 @@ module.exports = async (client, messageReaction, user) => {
         case '🔟':
             // function to mark task as finished
             let parse = [];
-            Object.keys(todoobj.assigned).forEach(key => parse.push(todoobj.assigned[key]))
-            if (parse.includes(userinio) !== true) return client.clearReactions(messageReaction.message, userinio);
-            if (todoobj.tasks[client.Mapemoji[react] - 1].includes('finished_')) todoobj.tasks[client.Mapemoji[react] - 1] = todoobj.tasks[client.Mapemoji[react] - 1].replace('finished_', '')
+            Object.keys(todoobj.assigned).forEach(key => parse.push(todoobj.assigned[key]));
+            if (parse.includes(userinio) !== true) return messageReaction.users.remove(user.id);
+            if (todoobj.tasks[client.Mapemoji[react] - 1].includes('finished_')) todoobj.tasks[client.Mapemoji[react] - 1] = todoobj.tasks[client.Mapemoji[react] - 1].replace('finished_', '');
             else todoobj.tasks[client.Mapemoji[react] - 1] = `finished_ ` + todoobj.tasks[client.Mapemoji[react] - 1];
             client.emit('todochanged', todoobj, client);
             await todomodel.updateOne({ _id: todoobj._id }, todoobj);
-            await messageReaction.message.edit(client.todo(todoobj))
-            await client.clearReactions(messageReaction.message, userinio);
+            await messageReaction.message.edit(client.todo(todoobj));
+            await messageReaction.users.remove(user.id);
             break;
     }
 
@@ -237,7 +236,6 @@ module.exports = async (client, messageReaction, user) => {
                     switch (args[0]) {
                         case "title":
                         case "loop":
-                        case "state":
                         case "tasks":
                         case "content":
                         case "category":

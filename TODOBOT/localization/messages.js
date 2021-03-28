@@ -86,8 +86,6 @@ module.exports = {
 
         > loop, true
 
-        > state, open *(Allowed: open, assigned, closed)*
-
         > category, important
         `,
         "de": `
@@ -104,8 +102,6 @@ module.exports = {
         > content, Das ist mein neuer Content
 
         > loop, true
-
-        > state, open *(Erlaubt: open, assigned, closed)*
 
         > category, WICHTIG
         `

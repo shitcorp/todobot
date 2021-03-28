@@ -71,31 +71,31 @@ module.exports = (client) => {
     client.todo = (todoobj, detailbool) => {
 
         const embed = new MessageEmbed()
-            .setDescription(`**${todoobj.title}**`)
+            .setAuthor(`${todoobj.title}`)
 
         const attacher = () => {
             if (todoobj.attachlink.startsWith("https://cdn.discordapp.com/attachments/") || todoobj.attachlink.startsWith("https://img.todo-bot.xyz/")) {
                 embed.setImage(todoobj.attachlink)
             } else {
-                embed.addField("Attachments", todoobj.attachlink)
+                embed.addField('Attachment**', '```' + todoobj.attachlink + '```')
             }
         }
 
         if (todoobj.tasks && todoobj.tasks.length > 0) {
             let output = '';
             let count = 0;
-            let prograssBar = [];
+            let progressBar = [];
             for (let i = 0; i < todoobj.tasks.length; i++) {
                 output += `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]} \n`
                 if (todoobj.tasks[i].includes('finished_')) {
                     count++
-                    prograssBar.push(client.emojiMap['+']);
+                    progressBar.push(client.emojiMap['+']);
                 } else {
-                    prograssBar.push(client.emojiMap['-']);
+                    progressBar.push(client.emojiMap['-']);
                 };
             }
 
-            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${prograssBar.join('')}`, `${output}`)
+            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${progressBar.join('')}`, `${output}`)
         }
 
         if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);
@@ -116,31 +116,17 @@ module.exports = (client) => {
 
 
 
-
-        switch (todoobj.state) {
-            case "open":
-                embed.setColor("RED")
-                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
-                break;
-            case "assigned":
-                embed.setColor("YELLOW")
-                if (todoobj.readonly !== '.') embed.setFooter(`${todoobj._id}`)
-                break;
-            case "closed":
-                embed.setColor("GREEN")
-
-                break;
-            case "detail":
-                embed.setColor("GREEN")
-                break;
-            case "readonly":
-                embed.setColor("BLUE")
-                break;
-            default:
-                embed.setColor("YELLOW")
+        const colorMap = {
+            open: "RED",
+            assigned: "YELLOW",
+            closed: "GREEN",
+            detail: "GREEN",
+            readonly: "GREEN",
         }
-
-       
+        
+        embed.setColor(colorMap[todoobj.state]);
+        
+        if (todoobj.readonly !== '.' && todoobj.state === "open" || todoobj.readonly !== '.' && todoobj.state === "assigned") embed.setFooter(`${todoobj._id}`)
         
         
         if (detailbool) {
@@ -158,6 +144,7 @@ module.exports = (client) => {
             embed.addField("Severity", todoobj.severity, true)
             embed.addField("Loop", todoobj.loop, true)
             embed.addField("ID", `> ${todoobj._id}`, true)
+
 
         }
         

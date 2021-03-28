@@ -19,6 +19,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
+        premium: false,
         permLevel: 'USER',
     },
     help: {
@@ -26,7 +27,8 @@ module.exports = {
         description: raw.description
     },
     run: async (client, interaction) => {
-        interaction.reply(' ', 2);
+        interaction.reply(' ', 5);
+       
 
         // Define the arrays of the commands separed by category
         const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Advanced Custom Commands', 'Other Commands'];
@@ -53,6 +55,7 @@ module.exports = {
             )
             .setFooter(`Page ${page} of ${pages.length}`);
         interaction.channel.send(tutorialEmbed).then(async msg => {
+            interaction.delete();
             const nextEmoji = '➡';
             const stopEmoji = '❌';
             const beforeEmoji = '◀️';
@@ -125,7 +128,7 @@ module.exports = {
                             **•** \`readonlychannel\` => the channel where shared tods will be posted. The shared messages will be updated as you progress with the todo.
                             **•** \`staffrole\` => members with this role can edit bot settings and create custom commands.
                             **•** \`userrole\` => members with this role can interact with the bot and create todos.
-                            **•** \`lanugage\` => the language in which the bot will talk to you.
+                            **•** \`language\` => the language in which the bot will talk to you.
                             `);
                     tutorialEmbed.image = undefined;
                     tutorialEmbed.thumbnail = undefined;

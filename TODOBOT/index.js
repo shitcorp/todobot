@@ -4,24 +4,32 @@ const apm = require('elastic-apm-node')
 apm.start({
   serverUrl: process.env.DEBUG_URL_APM_SERVER,
   serviceName: process.env.BOT_NAME,
-  environment: 'production',
+  environment: process.env.DEV !== true ? 'production' : 'development',
+  // uncmment this for troubleshooting the apm agent
   // logLevel: 'trace',
-  active: process.env.DEV !== false,
   logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
 })
 
+const interactionRecently = new Set()
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
 const Agenda = require('agenda');
-const express = require('express');
-const healthapp = express();
+const API = require('./classes/api');
 const Interaction = require('./classes/interaction');
-const agenda = new Agenda({ db: { address: process.env.MONGO_CONNECTION } });
+const agenda = new Agenda({
+  db: {
+    address: process.env.MONGO_CONNECTION ?? 'mongodb://localhost:27017/todobot',
+    options: {
+      useUnifiedTopology: true
+    }
+  }
+});
 
-const Discord = require("discord.js-light");
+const { Client } = require("discord.js-light");
 const messages = require('./localization/messages');
-const client = new Discord.Client({
+
+const client = new Client({
   partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
   disableMentions: "everyone",
   disableMentions: "here",
@@ -35,7 +43,9 @@ const client = new Discord.Client({
   ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
-client.apm = apm;
+//client.apm = apm;
+client.cooldown = parseInt(process.env.CMD_COOLDOWN) ?? 30000;
+client.logger = require("./modules/util/Logger");
 
 
 client.cache = redis.createClient({
@@ -43,17 +53,18 @@ client.cache = redis.createClient({
   port: process.env.REDIS_PORT
 });
 
-client.config = require("./config.js");
-client.logger = require("./modules/util/Logger");
+const getAsync = require('util').promisify(client.cache.get).bind(client.cache);
+
 
 client.logger.debug = (err) => {
-  client.apm.captureError(err);
   client.logger.Error(err);
+  client.apm.captureError(err);
 }
 client.logger.error = (err) => client.logger.debug(err)
 
 
 
+require("./modules/util/botlistupdater.js")(client);
 require("./modules/util/functions.js")(client);
 require("./modules/util/embeds.js")(client);
 
@@ -171,16 +182,13 @@ const loadAndInjectClient = async (path) => {
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
 
-  healthapp.get('/health', (req, res) => {
-    return res.json({ healthy: true });
-  });
-
-  healthapp.listen(process.env.HEALTH_ENDPOINT_PORT, () => {
-    client.logger.log('[HEALTH API] App is listening on port ' + process.env.HEALTH_ENDPOINT_PORT)
-  });
 
 
 
+  // start the API
+  new API(client, process.env.HEALTH_ENDPOINT_PORT);
+
+  // login the bot
   process.env.DEV === 'true' ? client.login(process.env.DEV_TOKEN) : client.login(process.env.TOKEN);
 
 
@@ -198,49 +206,71 @@ const loadAndInjectClient = async (path) => {
 
   // interaction"handler"
   client.ws.on("INTERACTION_CREATE", async (raw_interaction) => {
-    raw_interaction.level = 0;
     const interaction = new Interaction(client, raw_interaction)
-    client.logger.cmd(`Received the interaction ${interaction.data.name}`)
-    try {
-      const trans = apm.startTransaction('Interaction Handler', 'handler', {
-        startTime: Date.now()
-      })
-      apm.setUserContext({
-        id: interaction.member.user.id,
-        username: interaction.member.user.username
-      })
-      const span = trans.startSpan(interaction.data.name, 'discord_interaction', {
-        startTime: Date.now()
-      })
-      let conf = await client.getconfig(interaction.guild_id)
-      // if the user or channel are blacklisted we return an error
-      if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
-      if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
-      // user is a normal bot user
-      if (conf && findCommonElements(conf.userroles, interaction.member.roles)) interaction.level = 1;
-      // user is a staff member and can change bot settings
-      if (conf && findCommonElements(conf.staffroles, interaction.member.roles)) interaction.level = 2;
-      interaction.lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
-      interaction.conf = conf;
-      // this is important for the initial setup where the user has to set
-      // a staff role so we need something to detemrmine they are permitted
-      if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
-      const cmd = client.interactions.get(interaction.data.name)
+    if (interactionRecently.has(raw_interaction.member.user.id)) {
+      return interaction.errorDisplay(`You are being ratelimited. Please wait ${client.cooldown / 1000}s before trying again.`)
+    } else {
+      raw_interaction.level = 0;
 
-      if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay(messages.permissionleveltoolow[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
+      const isThere = await getAsync(interaction.member.user.id);
+      const iscmd = await client.interactions.get(interaction.data.name)
 
-      cmd.run(client, interaction);
-      span.end()
-      apm.endTransaction('success', Date.now())
-    } catch (e) {
-      console.error(e);
-      client.logger.debug(e);
-      interaction.errorDisplay(messages.generalerror[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
-      if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
+      if (iscmd && iscmd.conf.premium !== false && isThere === null) return interaction.errorDisplay(`
+      This command requires you to vote on [top.gg](https://top.gg/bot/709541772295929909/vote). 
+      
+      > Once voted you can use the command for the next 24 hours (or as long as your user id is in the bots cache so if an error occures lucky you :D)
+      `)
+
+      client.logger.cmd(`Received the interaction ${interaction.data.name} from ${interaction.member.user.username}#${interaction.member.user.discriminator}`)
+      try {
+        const trans = apm.startTransaction('Interaction Handler', 'handler', {
+          startTime: Date.now()
+        })
+        apm.setUserContext({
+          id: interaction.member.user.id,
+          username: interaction.member.user.username
+        })
+        const span = trans.startSpan(interaction.data.name, 'discord_interaction', {
+          startTime: Date.now()
+        })
+        let conf = await client.getconfig(interaction.guild_id)
+        // if the user or channel are blacklisted we return an error
+        if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
+        if (conf && Object.values(conf.blacklist_channels).includes(interaction.channel_id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
+        // user is a normal bot user
+        if (conf && findCommonElements(conf.userroles, interaction.member.roles)) interaction.level = 1;
+        // user is a staff member and can change bot settings
+        if (conf && findCommonElements(conf.staffroles, interaction.member.roles)) interaction.level = 2;
+        interaction.lang = conf ? conf.lang ? conf.lang : 'en' : 'en';
+        interaction.conf = conf;
+        // this is important for the initial setup where the user has to set
+        // a staff role so we need something to detemrmine they are permitted
+        if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
+        const cmd = client.interactions.get(interaction.data.name)
+
+        if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay(messages.permissionleveltoolow[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
+
+        cmd.run(client, interaction);
+        span.end()
+        apm.endTransaction('success', Date.now())
+
+        // interaction cooldown
+        interactionRecently.add(raw_interaction.member.user.id)
+        setTimeout(() => { interactionRecently.delete(raw_interaction.member.user.id) }, client.cooldown)
+
+      } catch (e) {
+        console.error(e);
+        client.logger.debug(e);
+        interaction.errorDisplay(messages.generalerror[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
+        if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
+      }
     }
   });
 
 
+
 })();
+
+
 
 

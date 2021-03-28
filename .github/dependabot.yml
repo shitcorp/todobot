@@ -10,5 +10,5 @@ update_configs:
     default_assignees:
       - "MeerBiene"
     commit_message:
-      prefix: 📦
+      prefix: chore
       include_scope: true

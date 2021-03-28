@@ -1,6 +1,6 @@
 {
   "name": "todo-bot",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "Todo bot for mick, maybe going to make this somewhat advanced",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,9 @@
     "upgrade": "ncu -u && npm install",
     "commit": "cz",
     "release": "standard-version",
+    "release:pre": "npm run release -- --prerelease",
+    "release:alpha": "npm run release -- --prerelease alpha",
+    "release:beta": "npm run release -- --prerelease beta",
     "register": "node TODOBOT/modules/util/register.js"
   },
   "config": {

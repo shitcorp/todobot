@@ -27,6 +27,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
+        premium: false,
         permLevel: 'STAFF',
     },
     help: {
@@ -35,7 +36,6 @@ module.exports = {
     },
     run: async (client, interaction) => {
         // acknowledge the interaction
-        interaction.reply(' ', 2)
 
         if (!interaction.conf) return interaction.errorDisplay(messages.addbottoguild['en'])
         let lang = interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en';
@@ -49,7 +49,7 @@ module.exports = {
         
         const check = await client.getonetodo(id);
 
-        if (!check) return interaction.channel.send(client.error(messages.tododoesntexist[lang]));
+        if (!check) return interaction.errorDisplay(messages.tododoesntexist[lang]);
 
         const todoClass = new todo(client, check);
 
@@ -65,6 +65,7 @@ module.exports = {
         let msg = await todochannel.messages.fetch(todoClass.todomsg);
 
         await msg.edit(client.todo(todoClass))
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.success('User assigned.'));
 
     }
 };
