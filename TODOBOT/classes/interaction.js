@@ -85,7 +85,7 @@ class interaction {
                                 {
                                     description: msg,
                                     color: Colors[color],
-                                    auhtor: {
+                                    author: {
                                         name: client.user.username
                                     },
                                     thumbnail: {

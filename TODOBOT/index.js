@@ -1,22 +1,21 @@
 (require('dotenv').config());
 
 const apm = require('elastic-apm-node')
-apm.start({
-  serverUrl: process.env.DEBUG_URL_APM_SERVER,
-  serviceName: process.env.BOT_NAME,
-  environment: 'production',
-  // uncmment this for troubleshooting the apm agent
-  // logLevel: 'trace',
-  logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
-})
+//apm.start({
+//  serverUrl: process.env.DEBUG_URL_APM_SERVER,
+//  serviceName: process.env.BOT_NAME,
+//  environment: 'production',
+//  // uncmment this for troubleshooting the apm agent
+//  // logLevel: 'trace',
+//  logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
+//})
 
 const interactionRecently = new Set()
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
 const Agenda = require('agenda');
-const express = require('express');
-const healthapp = express();
+const API = require('./classes/api');
 const Interaction = require('./classes/interaction');
 const agenda = new Agenda({
   db: {
@@ -44,7 +43,7 @@ const client = new Client({
   ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
-client.apm = apm;
+//client.apm = apm;
 client.cooldown = parseInt(process.env.CMD_COOLDOWN) ?? 30000;
 client.logger = require("./modules/util/Logger");
 
@@ -56,8 +55,8 @@ client.cache = redis.createClient({
 
 
 client.logger.debug = (err) => {
-  client.apm.captureError(err);
   client.logger.Error(err);
+  client.apm.captureError(err);
 }
 client.logger.error = (err) => client.logger.debug(err)
 
@@ -181,16 +180,13 @@ const loadAndInjectClient = async (path) => {
     client.interactions.set(interactionName, (require(__dirname + '/interactions/' + file)));
   })
 
-  healthapp.get('/health', (req, res) => {
-    return res.json({ healthy: true });
-  });
-
-  healthapp.listen(process.env.HEALTH_ENDPOINT_PORT, () => {
-    client.logger.log('[HEALTH API] App is listening on port ' + process.env.HEALTH_ENDPOINT_PORT)
-  });
 
 
 
+  // start the API
+  const healthApp = new API(client, process.env.HEALTH_ENDPOINT_PORT);
+
+  // login the bot
   process.env.DEV === 'true' ? client.login(process.env.DEV_TOKEN) : client.login(process.env.TOKEN);
 
 

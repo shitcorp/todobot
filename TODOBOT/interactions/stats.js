@@ -24,11 +24,11 @@ module.exports = {
         const load = os.loadavg();
 
         const chan = await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id);
-        const msg = await chan.send('loading . . . ');
+        const msg = await chan.send('ping.');
 
         const statembed = new MessageEmbed()
             .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
-            .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB / ${(os.totalmem() / 1000 / 1000 / 1000).toFixed(2)} GB`, true)
+            .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB`, true)
             .addField("• Load Avg (Unix)", `> ${load.join(', ')}`, true)
             .addField("• Uptime", `> ${Math.round(client.uptime / 3600000)}h`, true)
             .addField("• Users ", `> ${client.users.cache.size}`, true)

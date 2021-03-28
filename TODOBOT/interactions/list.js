@@ -49,7 +49,7 @@ module.exports = {
             .setFunctionEmojis({
                 '🔄': (user, instance) => {
                     //TODO: repost todomessage, delete old message and set new channel + msg id to db
-
+                    //TODO: important: repost todomessage in todo channel, not current channel
                     const dcbase = "https://discordapp.com/channels/"
                     const URL = dcbase + interaction.guild_id + "/" + guildTodos[instance.page - 1].todochannel + "/" + guildTodos[instance.page - 1].todomsg
                     interaction.channel.send(client.todo(guildTodos[instance.page - 1]));
