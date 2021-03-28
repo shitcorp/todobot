@@ -40,10 +40,10 @@ const client = new Client({
   cacheEmojis: true,
   cachePresences: false,
   cacheMembers: false,
-  ws: { intents: ['GUILD_MEMBERS', 'GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
+  ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] }
 });
 
-//client.apm = apm;
+client.apm = apm;
 client.cooldown = parseInt(process.env.CMD_COOLDOWN) ?? 30000;
 client.logger = require("./modules/util/Logger");
 
