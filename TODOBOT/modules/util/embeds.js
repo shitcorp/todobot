@@ -71,14 +71,13 @@ module.exports = (client) => {
     client.todo = (todoobj, detailbool) => {
 
         const embed = new MessageEmbed()
-            .setAuthor(`**${todoobj.title}**`)
+            .setAuthor(`${todoobj.title}`)
 
         const attacher = () => {
-            console.log(todoobj.attachlink);
             if (todoobj.attachlink.startsWith("https://cdn.discordapp.com/attachments/") || todoobj.attachlink.startsWith("https://img.todo-bot.xyz/")) {
                 embed.setImage(todoobj.attachlink)
             } else {
-                embed.setURL(todoobj.attachlink)
+                embed.addField('Attachment**', '```' + todoobj.attachlink + '```')
             }
         }
 

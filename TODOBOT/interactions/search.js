@@ -63,6 +63,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
+        premium: false,
         // USER - BOT_USER - STAFF
         permLevel: 'USER',
     },

@@ -11,6 +11,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
+        premium: false,
         // USER - BOT_USER - STAFF
         permLevel: 'USER',
     },
@@ -20,14 +21,18 @@ module.exports = {
     },
     run: async (client, interaction) => {
 
-        interaction.reply(' ', 2);
+        interaction.reply(`${client.user.username} is thinking ...`);
+        interaction.delete();
 
         const guildTodos = await client.getguildtodos(interaction.guild_id);
 
         const embeds = [];
         for (const doc of guildTodos) {
+            if (doc.state === 'closed') continue;
             let em = client.todo(doc, true);
-            em.footer = null;
+            em.footer = `
+            🔄 - Repost the current todo
+            `;
             if (doc.todochannel && doc.todomsg) {
                 const dcbase = "https://discordapp.com/channels/";
                 const URL = dcbase + doc.guildid + "/" + doc.todochannel + "/" + doc.todomsg;

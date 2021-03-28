@@ -19,6 +19,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
+        premium: false,
         permLevel: 'USER',
     },
     help: {
