@@ -52,18 +52,22 @@ module.exports = {
             .setPageIndicator(true)
 
             .setFunctionEmojis({
-                '🔄': (user, instance) => {
-                    //TODO: repost todomessage, delete old message and set new channel + msg id to db
-                    //TODO: important: repost todomessage in todo channel, not current channel
-                    const dcbase = "https://discordapp.com/channels/"
-                    const URL = dcbase + interaction.guild_id + "/" + guildTodos[instance.page - 1].todochannel + "/" + guildTodos[instance.page - 1].todomsg
-                    interaction.channel.send(client.todo(guildTodos[instance.page - 1]));
-                    interaction.channel.send(client.embed(`[Original Message](${URL})`));
-                    console.log(guildTodos[instance.page - 1])
-                },
-                "❌": async (user, i) => {
+                '🔄': async (user, instance) => {
+                   
+                    const newTodoMsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.conf.todochannel).send(client.todo(guildTodos[instance.page - 1]));
+                    await newTodoMsg.react(client.emojiMap['edit'])
+                    await newTodoMsg.react(client.emojiMap['accept'])
+
+                    guildTodos[instance.page - 1].todomsg = newTodoMsg.id;
+                    guildTodos[instance.page - 1].todochannel = interaction.conf.todochannel;
+
+                    await client.updatetodo(guildTodos[instance.page - 1]._id, guildTodos[instance.page - 1]);
 
                 }
+                // "❌": async (user, i) => {
+                //     // TODO: delete todo in db and original message on discord
+
+                // }
             })
 
 

@@ -72,7 +72,7 @@ module.exports = {
     name: raw.name,
     conf: {
         enabled: true,
-        premium: false,
+        premium: true,
         permLevel: 'STAFF',
     },
     help: {

@@ -53,6 +53,8 @@ client.cache = redis.createClient({
   port: process.env.REDIS_PORT
 });
 
+const getAsync = require('util').promisify(client.cache.get).bind(client.cache);
+
 
 client.logger.debug = (err) => {
   client.logger.Error(err);
@@ -184,7 +186,7 @@ const loadAndInjectClient = async (path) => {
 
 
   // start the API
-  const healthApp = new API(client, process.env.HEALTH_ENDPOINT_PORT);
+  new API(client, process.env.HEALTH_ENDPOINT_PORT);
 
   // login the bot
   process.env.DEV === 'true' ? client.login(process.env.DEV_TOKEN) : client.login(process.env.TOKEN);
@@ -209,6 +211,15 @@ const loadAndInjectClient = async (path) => {
       return interaction.errorDisplay(`You are being ratelimited. Please wait ${client.cooldown / 1000}s before trying again.`)
     } else {
       raw_interaction.level = 0;
+
+      const isThere = await getAsync(interaction.member.user.id);
+      const iscmd = await client.interactions.get(interaction.data.name)
+
+      if (iscmd && iscmd.conf.premium !== false && isThere === null) return interaction.errorDisplay(`
+      This command requires you to vote on [top.gg](https://top.gg/bot/709541772295929909/vote). 
+      
+      > Once voted you can use the command for the next 24 hours (or as long as your user id is in the bots cache so if an error occures lucky you :D)
+      `)
 
       client.logger.cmd(`Received the interaction ${interaction.data.name} from ${interaction.member.user.username}#${interaction.member.user.discriminator}`)
       try {
