@@ -30,7 +30,7 @@ exports.run = async (client, message, args) => {
             };
             writeFileSync(`update.json-${Date.now()}`, JSON.stringify(update));
             msg.edit(client.embed(`Restarting . . . `))
-            exec("pm2 restart TODO2", (err, out, stderr) => {
+            exec(`pm2 restart ${process.env.PM2_NAME}`, (err, out, stderr) => {
                 if(err && stderr !== "") {
                     message.channel.send(client.error(`${err} \n ${stderr}`))
                 }
