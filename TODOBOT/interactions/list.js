@@ -21,8 +21,8 @@ module.exports = {
     },
     run: async (client, interaction) => {
 
-        interaction.reply(`${client.user.username} is thinking ...`);
-        interaction.delete();
+        await interaction.reply(`${client.user.username} is thinking ...`);
+        await interaction.delete();
 
         const guildTodos = await client.getguildtodos(interaction.guild_id);
 
