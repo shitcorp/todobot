@@ -151,8 +151,8 @@ module.exports = {
     },
 
     "unabletoposttodo": {
-        "en": "I was unable to post your todo. Please make sure I have the permission to read and write in your desired todo channel. Also make sure you have set a channel where I should post the tasks. If not run the //setup command",
-        "de": "Ich konnte deine Aufgabe leider nicht posten. Stelle bitte sicher, dass ich die benötigten Berechtigungen habe, um in deinem TODO-Channel Nachrichten zu lesen und zu schreiben. Hast du vielleicht vergessen, einen Channel festzulegen, in dem ich deine Aufgaben posten soll? Falls ja, lege ihn jetzt mit dem //setup command fest."
+        "en": "I was unable to post your todo. Please make sure I have required permissions in your todo channel. Also make sure you have set a channel where I should post the tasks. If not run the `/settings set`  command \n\nI need the following permissions: 'SEND MESSAGES', 'READ MESSAGES', 'MANAGE MESSAGES', 'ATTACH LINKS', 'USE EXTERNAL EMOJIS'",
+        "de": "Ich konnte deine Aufgabe leider nicht posten. Stelle bitte sicher, dass ich die benötigten Berechtigungen habe, um in deinem TODO-Channel Nachrichten zu lesen und zu schreiben. Hast du vielleicht vergessen, einen Channel festzulegen, in dem ich deine Aufgaben posten soll? Falls ja, lege ihn jetzt mit dem `/settings set` command fest. \n\nIch benötige die folgenden Permissions: 'SEND MESSAGES', 'READ MESSAGES', 'MANAGE MESSAGES', 'ATTACH LINKS', 'USE EXTERNAL EMOJIS'"
     },
 
     "only10tasksallowed": {
