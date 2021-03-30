@@ -132,15 +132,27 @@ module.exports = {
         if (!action) return;
         switch (action) {
             case 'set':
-                let staffrole, userrole
+                let staffrole, userrole, todochannel;
                 for (i in commandopts) {
                     if (commandopts[i].name === 'prefix') conf.prefix = commandopts[i].value;
-                    if (commandopts[i].name === 'todochannel') conf.todochannel = commandopts[i].value;
+                    if (commandopts[i].name === 'todochannel') todochannel = commandopts[i].value;
                     if (commandopts[i].name === 'readonlychannel') conf.readonlychannel = commandopts[i].value;
                     if (commandopts[i].name === 'staffrole') staffrole = commandopts[i].value;
                     if (commandopts[i].name === 'userrole') userrole = commandopts[i].value;
                     if (commandopts[i].name === 'language') conf.lang = commandopts[i].value;
                     if (commandopts[i].name === 'autopurge') conf.autopurge = commandopts[i].value;
+                }
+                if (todochannel) {
+                    try {
+                        let chann = await client.guilds.cache.get(interaction.guild_id).channels.fetch(todochannel);
+                        let testmsg = await chann.send(client.embed('This is a test message.'));
+                        await testmsg.react(client.emojiMap['edit']);
+                        await testmsg.react(client.emojiMap['accept']);
+                        await testmsg.delete();
+                    } catch (e) {
+                        client.logger.debug(e);
+                        interaction.errorDisplay(messages.unabletoposttodo[lang]);
+                    }
                 }
                 if (staffrole) {
                     let staffroles = []

@@ -22,7 +22,8 @@ module.exports = {
     run: async (client, interaction) => {
 
         await interaction.reply(`${client.user.username} is thinking ...`);
-        await interaction.delete();
+        
+        interaction.delete();
 
         const guildTodos = await client.getguildtodos(interaction.guild_id);
 
@@ -39,6 +40,11 @@ module.exports = {
                 em.addField('\u200b', `[Original Message](${URL})`);
             }
             embeds.push(em);
+        }
+
+        if (embeds.length === 0) {
+            await interaction.delete();
+            await interaction.errorDisplay('There are currently no open todos on your guild.');
         }
 
         const FieldsEmbed = new Pagination.Embeds()
@@ -72,7 +78,6 @@ module.exports = {
 
 
         await FieldsEmbed.build();
-
 
 
     }

@@ -125,7 +125,7 @@ module.exports = {
         
         if (!todomsg) return interaction.errorDisplay(messages.unabletoposttodo[lang]);
         
-        interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.todoposted[lang]))
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.todoposted[lang]));
         
 
 
@@ -135,9 +135,15 @@ module.exports = {
         todoobject.todomsg = todomsg.id;
         todoobject.todochannel = conf.todochannel;
         todoobject.shared = false;
-        await todomsg.react(client.emojiMap['edit'])
-        await todomsg.react(client.emojiMap['accept'])
-        await client.settodo(todoobject)
+        
+        try {
+            await todomsg.react(client.emojiMap['edit']);
+            await todomsg.react(client.emojiMap['accept']);
+        } catch(e) {
+            interaction.errorDisplay(messages.unabletoposttodo[lang]);
+        }
+        // save the todo to database
+        await client.settodo(todoobject);
 
     }
 };
