@@ -149,6 +149,7 @@ module.exports = {
                         await testmsg.react(client.emojiMap['edit']);
                         await testmsg.react(client.emojiMap['accept']);
                         await testmsg.delete();
+                        coond.todochannel = todochannel;
                     } catch (e) {
                         client.logger.debug(e);
                         interaction.errorDisplay(messages.unabletoposttodo[lang]);
