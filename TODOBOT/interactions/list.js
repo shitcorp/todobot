@@ -22,8 +22,8 @@ module.exports = {
     run: async (client, interaction) => {
 
         await interaction.reply(`${client.user.username} is thinking ...`);
-        
-        interaction.delete();
+
+
 
         const guildTodos = await client.getguildtodos(interaction.guild_id);
 
@@ -42,10 +42,6 @@ module.exports = {
             embeds.push(em);
         }
 
-        if (embeds.length === 0) {
-            await interaction.delete();
-            await interaction.errorDisplay('There are currently no open todos on your guild.');
-        }
 
         const FieldsEmbed = new Pagination.Embeds()
             .setArray(embeds)
@@ -59,7 +55,7 @@ module.exports = {
 
             .setFunctionEmojis({
                 '🔄': async (user, instance) => {
-                   
+                    //TODO FIXME Delete old message in channel
                     const newTodoMsg = await client.guilds.cache.get(interaction.guild_id).channels.cache.get(interaction.conf.todochannel).send(client.todo(guildTodos[instance.page - 1]));
                     await newTodoMsg.react(client.emojiMap['edit'])
                     await newTodoMsg.react(client.emojiMap['accept'])
@@ -77,7 +73,15 @@ module.exports = {
             })
 
 
-        await FieldsEmbed.build();
+        try { 
+            await FieldsEmbed.build();
+        } catch (e) {
+            await interaction.errorDisplay('There are currently no open todos on your guild.');
+            setTimeout(() => {
+                interaction.delete();
+            }, process.env.EMBED_DELETE);
+
+        }
 
 
     }
