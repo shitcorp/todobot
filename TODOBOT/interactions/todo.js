@@ -47,6 +47,7 @@ module.exports = {
     conf: {
         enabled: true,
         premium: false,
+        production: true,
         permLevel: 'BOT_USER',
     },
     help: {
