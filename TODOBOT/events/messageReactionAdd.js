@@ -152,11 +152,9 @@ module.exports = async (client, messageReaction, user) => {
                 todoobj.errordisplay(messageReaction.message, userinio, messages.noreadonlychannel[lang])
             }
             break;
-        // TODO: fix this to use another reaction
         case 'assign_yourself':
             //add the reacting user to the assigned array
             // and edit the todo msg/embed 
-
             if ((Object.values(todoobj.assigned).includes(userinio)) === true) {
                 todoobj.errordisplay(messageReaction.message, userinio, messages.alreadyassigned[lang]);
                 await client.clearReactions(messageReaction.message, userinio);
@@ -166,8 +164,6 @@ module.exports = async (client, messageReaction, user) => {
                 await client.clearReactions(messageReaction.message, userinio);
                 client.emit('todochanged', todoobj, client);
             }
-
-
             break;
         case 'edit':
             // edit the task and edit the todo msg when finished

@@ -57,6 +57,7 @@ module.exports = {
     conf: {
         enabled: true,
         premium: false,
+        production: true,
         permLevel: 'STAFF',
     },
     help: {

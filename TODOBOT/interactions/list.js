@@ -12,6 +12,7 @@ module.exports = {
     conf: {
         enabled: true,
         premium: false,
+        production: true,
         // USER - BOT_USER - STAFF
         permLevel: 'USER',
     },

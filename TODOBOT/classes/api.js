@@ -34,7 +34,7 @@ class API {
                 const votedEmbed = new MessageEmbed()
                     .setColor('RANDOM')
                     .setDescription(`
-                    🥳 **${votingUser}** just voted on **[top.gg](https://top.gg/bot/709541772295929909/vote)** 🎉
+                    🥳 **${votingUser.username}#${votingUser.discriminator}** just voted on **[top.gg](https://top.gg/bot/709541772295929909/vote)** 🎉
                     `)
                 
                 client.guilds.cache.get(process.env.MOTHER_GUILD).channels.cache.get(process.env.VOTING_WEBHOOK_CHANNEL).send(votedEmbed)
