@@ -35,6 +35,8 @@ class todo {
             }, 10000)
         }
 
+        this.assign = (user) => this.assigned.push(user);
+
     }
 }
 
