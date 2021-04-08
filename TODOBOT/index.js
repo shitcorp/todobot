@@ -139,8 +139,8 @@ const loadAndInjectClient = async (path) => {
   agenda.define("reminderjob", async (job) => client.reminderjob());
 
   await agenda.start();
-  // Alternatively, you could also do: (every 2 minutes)
-  await agenda.every("*/1 * * * *", "reminderjob");
+  // Alternatively, you could also do: (every 1 minute)
+  await agenda.every("*/2 * * * *", "reminderjob");
 
   // this is for development reasons so the data for my dev server is always fresh
   client.invalidateCache('709541114633519177')

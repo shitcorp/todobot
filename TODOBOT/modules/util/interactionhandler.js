@@ -45,6 +45,7 @@ module.exports = async (client, raw_interaction) => {
       // this is important for the initial setup where the user has to set
       // a staff role so we need something to detemrmine they are permitted
       if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2;
+      
       const cmd = client.interactions.get(interaction.data.name)
 
       if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay(messages.permissionleveltoolow[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
@@ -58,7 +59,6 @@ module.exports = async (client, raw_interaction) => {
       setTimeout(() => { interactionRecently.delete(raw_interaction.member.user.id) }, client.cooldown)
 
     } catch (e) {
-      console.error(e);
       client.logger.debug(e);
       interaction.errorDisplay(messages.generalerror[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
       if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
