@@ -28,6 +28,7 @@
     "@aero/centra": "^1.0.6",
     "@elastic/ecs-pino-format": "^1.1.1",
     "agenda": "^4.1.0",
+    "blapi": "^2.1.0",
     "bufferutil": "^4.0.3",
     "date-fns": "^2.19.0",
     "discord-paginationembed": "^2.1.0",

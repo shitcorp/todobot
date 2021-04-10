@@ -67,7 +67,6 @@ client.cache.on("error", (err) => client.logger.debug(err))
 client.cache.on("ready", () => client.logger.redis(`Redis client is ready.`))
 
 
-require('./modules/util/botlistupdater.js')(client);
 require('./modules/util/functions.js')(client);
 require('./modules/util/permissions')(client);
 require('./modules/util/embeds.js')(client);
@@ -140,10 +139,11 @@ const loadAndInjectClient = async (path) => {
 
   await agenda.start();
   // Alternatively, you could also do: (every 1 minute)
-  await agenda.every("*/2 * * * *", "reminderjob");
+  await agenda.every("*/1 * * * *", "reminderjob");
 
   // this is for development reasons so the data for my dev server is always fresh
   client.invalidateCache('709541114633519177')
+  client.cache.set('686669011601326281')
 
   // interaction"handler"
   client.ws.on("INTERACTION_CREATE", async (raw_interaction) => await handle(client, raw_interaction));
