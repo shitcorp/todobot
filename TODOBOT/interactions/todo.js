@@ -105,7 +105,7 @@ module.exports = {
                     // split the string containing the tasks at the semicolon and filter out all empty
                     // tasks as well as task strings that are too long. If theres more than 10, were just 
                     // capping the array by setting the length to 10
-                    let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && task.length < 110);
+                    let temp = interaction.data.options[index].value.split(';').filter(task => task !== '' && task.length < 1020);
                     if (temp.length > 10) temp.length = 10;
                     todoobject.tasks = temp
                 } else {

@@ -135,6 +135,7 @@ module.exports = (client) => {
    */
 
   client.reminderjob = async () => {
+    const reminderTrans = client.apm.startTransaction('ReminderJob', 'reminderhandler')
     for await (const doc of remindermodel.find()) {
       if (doc.expires <= new Date()) {
         // mention the user that submitted the reminder
@@ -146,13 +147,26 @@ module.exports = (client) => {
         // tryto get the guild where the reminder was created, then the channel, then send the reminder message in that channel
         try {
           let chann = await client.guilds.cache.get(doc.guild.id).channels.fetch(doc.guild.channel)
-          await chann.send(output, client.reminder(doc))
+          try { 
+            await chann.send(output, client.reminder(doc)) 
+          } catch (e) {
+            // sending to channel went wrong, we should try to dm the user
+            try {
+              let submittingUser = await client.users.fetch(doc.user);
+              let dmchannel = await submittingUser.createDM(true);
+              await dmchannel.send(output, client.reminder(doc))
+            } catch (e) {
+              client.logger.debug(e)
+              remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+              client.apm.endTransaction('fail_reminder_handled');
+            }
+          }
           // if the message cant be sent, or the guild cant be fetched or theres some other 
           // error, we have to catch the error and delete the reminder(doc) from the database
         } catch (e) {
-          console.log(e);
           client.logger.debug(e)
           remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
+          client.apm.endTransaction('fail_reminder_handled');
         }
         // if the reminderproperty "loop" is set to false delete the reminder
         doc.loop === false ? remindermodel.deleteOne({ _id: doc._id }, (err) => { if (err) client.logger.debug(err) })
@@ -160,6 +174,7 @@ module.exports = (client) => {
           : remindermodel.updateOne({ _id: doc.id }, { systime: new Date(), expires: doc.expires - doc.systime }, (err, aff, resp) => { if (err) client.logger.debug(err) })
       };
     };
+    client.apm.endTransaction('success_reminder_handled');
   };
 
 

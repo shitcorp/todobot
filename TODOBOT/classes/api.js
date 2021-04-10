@@ -3,6 +3,7 @@ const
     { MessageEmbed } = require('discord.js-light');
 
 
+
 class API {
     constructor(client, PORT) {
 
@@ -12,10 +13,17 @@ class API {
 
         this.app.use(express.json());
 
-        this.app.get('/health', (req, res) => res.json({ healthy: true }));
+        this.app.get('/', (req, res) => {
+            res.redirect('/health');
+            client.logger.http({ req, res })
+        })
+
+        this.app.get('/health', (req, res) => {
+            res.json({ healthy: true }) 
+            client.logger.http({ req, res })
+        });
 
         this.app.post('/webhook', async (req, res) => {
-
             // making sure only topgg posts to this endpoint
             if (!req.headers.authorization) return;
             if (req.headers.authorization !== process.env.TOPGG_WEBHOOK_SECRET) return res.sendStatus(403);
@@ -43,6 +51,7 @@ class API {
                 client.logger.debug(e);
                 res.sendStatus(500);
             }
+            client.logger.http({ req, res })
         })
 
         this.app.listen(PORT, () => {

@@ -4,6 +4,12 @@ const messages = require('../localization/messages');
 
 module.exports = async (client, messageReaction, user) => {
 
+    const reactionTrans = client.apm.startTransaction('MessageReactionAddEvent', 'eventhandler');
+    client.apm.setUserContext({
+        id: user.id,
+        username: `${user.username}#${user.discriminator}`
+    })
+
     if (messageReaction.partial) {
         // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
         try {
@@ -75,6 +81,7 @@ module.exports = async (client, messageReaction, user) => {
 
     switch (react) {
         case 'accept_todo':
+            let acceptSpan = reactionTrans.startSpan('accept_todo_reaction');
             // add the reacting user to the assigned array,
             // mark the todo as assigned and edit the todo
             // message, then react with the white checkmark
@@ -99,9 +106,10 @@ module.exports = async (client, messageReaction, user) => {
                     }
                 }
             })
-
+            if (acceptSpan) acceptSpan.end();
             break;
         case 'finish':
+            let finishSpan = reactionTrans.startSpan('finish_todo_reaction');
             // mark the todo as finished (closed), or
             // restart/repost the todo when its repeating           
             if (Object.values(todoobj.assigned).includes(userinio) !== true) return messageReaction.users.remove(userinio);
@@ -129,8 +137,10 @@ module.exports = async (client, messageReaction, user) => {
                     if (todoobj.shared && todoobj.shared !== true) await messageReaction.message.react(client.emojiMap['share'])
                 })
             }
+            if (finishSpan) finishSpan.end();
             break;
         case "share":
+            let shareSpan = reactionTrans.startSpan('share_todo_reaction');
             // send todo to read only channel
             if (settings.readonlychannel) {
                 try {
@@ -145,14 +155,15 @@ module.exports = async (client, messageReaction, user) => {
                     // remove the reaction so users cant share again
                     messageReaction.remove();
                 } catch (e) {
-                    console.error(e)
-                    // return and log error (sentry?)
+                    client.logger.debug(e);
                 }
+                if (shareSpan) shareSpan.end();
             } else {
                 todoobj.errordisplay(messageReaction.message, userinio, messages.noreadonlychannel[lang])
             }
             break;
         case 'assign_yourself':
+            let assignSpan = reactionTrans.startSpan('assign_yourself_reaction');
             //add the reacting user to the assigned array
             // and edit the todo msg/embed 
             if ((Object.values(todoobj.assigned).includes(userinio)) === true) {
@@ -164,8 +175,10 @@ module.exports = async (client, messageReaction, user) => {
                 await client.clearReactions(messageReaction.message, userinio);
                 client.emit('todochanged', todoobj, client);
             }
+            if (assignSpan) assignSpan.end();
             break;
         case 'edit':
+            let editSpan = client.apm.startSpan('edit_todo_reaction');
             // edit the task and edit the todo msg when finished
 
             let as = []
@@ -177,6 +190,7 @@ module.exports = async (client, messageReaction, user) => {
 
             await messageReaction.users.remove(user.id)
             edit(messageReaction.message, userinio)
+            if (editSpan) editSpan.end();
             break;
         case 'expand':
             // Show more details
@@ -195,6 +209,7 @@ module.exports = async (client, messageReaction, user) => {
         case '8️⃣':
         case '9️⃣':
         case '🔟':
+            let taskSpan = reactionTrans.startSpan('mark_task_finished_reaction');
             // function to mark task as finished
             let parse = [];
             Object.keys(todoobj.assigned).forEach(key => parse.push(todoobj.assigned[key]));
@@ -205,6 +220,7 @@ module.exports = async (client, messageReaction, user) => {
             await todomodel.updateOne({ _id: todoobj._id }, todoobj);
             await messageReaction.message.edit(client.todo(todoobj));
             await messageReaction.users.remove(user.id);
+            if (taskSpan) taskSpan.end();
             break;
     }
 
@@ -283,5 +299,6 @@ module.exports = async (client, messageReaction, user) => {
         await messageReaction.message.react(client.emojiMap['expand'])
     }
 
+    client.apm.endTransaction('reaction_event_handled', Date.now());
 
 };

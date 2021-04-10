@@ -3,6 +3,14 @@ const cmdRecently = new Set();
 module.exports = async (client, message) => {
   const timeout = process.env.MSG_DELETE || 90000;
 
+  const messageTrans = client.apm.startTransaction('MessageEvent', 'eventhandler');
+  client.apm.setUserContext({
+    id: message.author.id,
+    username: `${message.author.username}#${message.author.discriminator}`
+  })
+
+  let cmdSpan = messageTrans.startSpan('cmd');
+
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
 
@@ -112,7 +120,7 @@ module.exports = async (client, message) => {
       .reply(
         client.warning(
           `Please wait  \`${client.cooldown /
-            1000}\`  seconds before doing this command again!`
+          1000}\`  seconds before doing this command again!`
         )
       )
       .then((msg) => {
@@ -134,4 +142,6 @@ module.exports = async (client, message) => {
       client.logger.debug(e);
     }
   }
+  if (cmdSpan) cmdSpan.end();
+  client.apm.endTransaction('message_event_handled', Date.now());
 };
