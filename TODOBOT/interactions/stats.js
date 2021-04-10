@@ -1,5 +1,6 @@
-const { MessageEmbed } = require('discord.js-light');
 const os = require('os');
+const { MessageEmbed } = require('discord.js-light');
+const { todomodel }= require('../modules/models/todomodel');
 
 const raw = {
     name: 'stats',
@@ -22,6 +23,8 @@ module.exports = {
     },
     run: async (client, interaction) => {
 
+        const all = await todomodel.find({});
+
         const pkg = require('../../package.json');
         const load = os.loadavg();
 
@@ -33,7 +36,7 @@ module.exports = {
             .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB`, true)
             .addField("• Load Avg (Unix)", `> ${load.join(', ')}`, true)
             .addField("• Uptime", `> ${Math.round(client.uptime / 3600000)}h`, true)
-            .addField("• Users ", `> ${client.users.cache.size}`, true)
+            .addField("• TODOs ", `> ${all.length}`, true)
             .addField("• Guilds", `> ${client.guilds.cache.size}`, true)
             .addField("• Version", `> v${pkg.version}`, true)
             .addField("• Ping", `> ${msg.createdTimestamp - interaction.timestamp}ms.`, true)

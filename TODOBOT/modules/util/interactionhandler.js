@@ -22,16 +22,16 @@ module.exports = async (client, raw_interaction) => {
 
     client.logger.cmd(`Received the interaction ${interaction.data.name} from ${interaction.member.user.username}#${interaction.member.user.discriminator}`)
     try {
-      const trans = client.apm.startTransaction('Interaction Handler', 'handler', {
+      const trans = client.apm.startTransaction(interaction.data.name, 'interactionhandler', {
         startTime: Date.now()
       })
       client.apm.setUserContext({
         id: interaction.member.user.id,
-        username: interaction.member.user.username
+        username: `${interaction.member.user.username}#${interaction.member.user.discriminator}`
       })
-      const span = trans.startSpan(interaction.data.name, 'discord_interaction', {
-        startTime: Date.now()
-      })
+     
+      const permSpan = trans.startSpan('permission_checks', 'permission_checks')
+      
       let conf = await client.getconfig(interaction.guild_id)
       // if the user or channel are blacklisted we return an error
       if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id)) return interaction.errorDisplay(messages.blacklisted[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
@@ -50,9 +50,10 @@ module.exports = async (client, raw_interaction) => {
 
       if (interaction.level < client.permMap[cmd.conf.permLevel]) return interaction.errorDisplay(messages.permissionleveltoolow[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en'])
 
+      if (permSpan) permSpan.end();
+
       cmd.run(client, interaction);
-      span.end()
-      client.apm.endTransaction('success', Date.now())
+      client.apm.endTransaction(`success_interaction_${interaction.data.name}_handled`);
 
       // interaction cooldown
       interactionRecently.add(raw_interaction.member.user.id)
@@ -62,6 +63,7 @@ module.exports = async (client, raw_interaction) => {
       client.logger.debug(e);
       interaction.errorDisplay(messages.generalerror[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
       if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e);
+      client.apm.endTransaction(`fail_interaction_${interaction.data.name}_handled`)
     }
   }
 }

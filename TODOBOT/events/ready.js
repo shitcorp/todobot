@@ -1,5 +1,5 @@
 const { stati } = require('../data/stati.json');
-const Agenda = require('agenda');
+const { Agenda } = require('agenda');
 const blapi = require("blapi");
 const agenda = new Agenda({
   db: {

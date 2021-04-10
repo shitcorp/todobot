@@ -1,20 +1,20 @@
 (require('dotenv').config());
 
 const apm = require('elastic-apm-node')
+
 apm.start({
   serverUrl: process.env.DEBUG_URL_APM_SERVER,
   serviceName: process.env.BOT_NAME,
   environment: 'development',
   // uncomment this for troubleshooting the apm agent
   // logLevel: 'trace',
-  // logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
 })
 
 
 const readdir = require('util').promisify(require("fs").readdir);
 const Enmap = require("enmap");
 const redis = require("redis");
-const Agenda = require('agenda');
+const { Agenda } = require('agenda');
 const API = require('./classes/api');
 const handle = require('./modules/util/interactionhandler');
 const agenda = new Agenda({
