@@ -173,7 +173,14 @@ module.exports = {
                             conf.autopurge = commandopts[i].value;
                         break;
                         case 'todomode':
-                            conf.todomode = commandopts[i].value;
+                            if (commandopts[i].value === 'advanced') {
+                                let isThere = client.cache.get(interaction.member.user.id);
+                                if (!isThere) return interaction.errorDisplay(`
+                                This command requires you to vote on [top.gg](https://top.gg/bot/709541772295929909/vote). 
+                                
+                                > Once voted you can use the command for the next 24 hours (or as long as your user id is in the bots cache so if an error occures lucky you :D)
+                                `)
+                            } else conf.todomode = commandopts[i].value;
                         break;
                     }
                 }
