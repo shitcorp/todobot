@@ -183,6 +183,7 @@ module.exports = {
                     readonlychannel: conf.readonlychannel,
                     userroles: conf.userroles,
                     staffroles: conf.staffroles,
+                    autopurge: conf.autopurge,
                     language: conf.lang
                 };
 

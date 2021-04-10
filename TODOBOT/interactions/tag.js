@@ -104,10 +104,13 @@ module.exports = {
         switch (action) {
             case 'list':
                 //FIXME this is probably still erroring, needs some big brain time to find a fix
+                // temporary fix: just slice the output if it gets too long
                 let output = '';
                 Object.keys(conf.tags).forEach(key => {
-                    output += `• \`${key}\` =>  ${conf.tags[key].slice(0, 69)} \n`;
+                    output += `• \`${key}\` =>  ${ conf.tags[key].length > 69 ? conf.tags[key].slice(0, 69) : conf.tags[key] } \n`;
+                    if (output.length > 2000) return;
                 })
+                if (output.length > 2000)  output.slice(0, 2000) + '...'
                 interaction.embed.default(`**` + messages.availabletags[lang] + `**` + `\n\n${output}`);
                 break;
             case 'learn':
