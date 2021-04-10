@@ -62,6 +62,21 @@ const raw = {
                     // BOOLEAN
                     type: 5,
                     required: false,
+                },
+                {
+                    name: 'todomode',
+                    description: 'Toggle between simple (one channel) and advanced (multiple channels) mode',
+                    type: 3,
+                    choices: [
+                        {
+                            name: 'simple',
+                            value: 'simple'
+                        },
+                        {
+                            name: 'advanced',
+                            value: 'advanced'
+                        }
+                    ]
                 }
             ]
         },
@@ -135,43 +150,58 @@ module.exports = {
             case 'set':
                 let staffrole, userrole, todochannel;
                 for (i in commandopts) {
-                    if (commandopts[i].name === 'prefix') conf.prefix = commandopts[i].value;
-                    if (commandopts[i].name === 'todochannel') todochannel = commandopts[i].value;
-                    if (commandopts[i].name === 'readonlychannel') conf.readonlychannel = commandopts[i].value;
-                    if (commandopts[i].name === 'staffrole') staffrole = commandopts[i].value;
-                    if (commandopts[i].name === 'userrole') userrole = commandopts[i].value;
-                    if (commandopts[i].name === 'language') conf.lang = commandopts[i].value;
-                    if (commandopts[i].name === 'autopurge') conf.autopurge = commandopts[i].value;
+                    switch(commandopts[i].name) {
+                        case 'prefix':
+                            conf.prefix = commandopts[i].value;
+                        break;
+                        case 'todochannel':
+                            todochannel = commandopts[i].value;
+                        break;
+                        case 'readonlychannel':
+                            conf.readonlychannel = commandopts[i].value;
+                        break;
+                        case 'staffrole':
+                            staffrole = commandopts[i].value;
+                        break;
+                        case 'userrole':
+                            userrole = commandopts[i].value;
+                        break;
+                        case 'language':
+                            conf.lang = commandopts[i].value;
+                        break;
+                        case 'autopurge':
+                            conf.autopurge = commandopts[i].value;
+                        break;
+                        case 'todomode':
+                            conf.todomode = commandopts[i].value;
+                        break;
+                    }
                 }
                 if (todochannel) {
                     try {
-                        let chann = await client.guilds.cache.get(interaction.guild_id).channels.fetch(todochannel);
-                        let testmsg = await chann.send(client.embed('This is a test message.'));
+                        let guild = await client.guilds.fetch(interaction.guild_id)
+                        let chann = await guild.channels.fetch(todochannel);
+                        let testmsg = await chann.send(client.embed('This is a test message to ensure I have all the permissions I need.'));
                         await testmsg.react(client.emojiMap['edit']);
                         await testmsg.react(client.emojiMap['accept']);
                         await testmsg.delete();
                         conf.todochannel = todochannel;
                     } catch (e) {
-                        client.logger.debug(e);
                         interaction.errorDisplay(messages.unabletoposttodo[lang]);
                     }
                 }
-                if (staffrole) {
-                    let staffroles = []
-                    Object.values(conf.staffroles).forEach(value => staffroles.push(value));
-                    staffroles.push(staffrole)
-                    conf.staffroles = staffroles;
-                }
-                if (userrole) {
-                    let userroles = []
-                    Object.values(conf.userroles).forEach(value => userroles.push(value));
-                    userroles.push(userrole)
-                    conf.userroles = userroles;
-                }
+                
+                if (staffrole) conf.staffroles.push(staffrole)
+                if (userrole) conf.userroles.push(userrole)
+                
                 try {
                     await client.setconfig(conf);
                 } catch (e) {
-                    await client.updateconfig(interaction.guild_id, conf);
+                    try {
+                        await client.updateconfig(interaction.guild_id, conf);
+                    } catch (e) {
+                        client.logger.debug(e);
+                    }
                 }
                 interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedsettings[lang]))
                 break;
@@ -183,6 +213,7 @@ module.exports = {
                     readonlychannel: conf.readonlychannel,
                     userroles: conf.userroles,
                     staffroles: conf.staffroles,
+                    todomode: conf.todomode,
                     autopurge: conf.autopurge,
                     language: conf.lang
                 };

@@ -62,7 +62,11 @@ module.exports = async (client, messageReaction, user) => {
     if (settings === undefined) return;
 
 
-    if (messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
+    if (settings.todomode && settings.todomode === 'advanced') {
+        // advanced mode is turned on, so we can let the reaction pass
+    } 
+    if (settings.todomode && settings.todomode === 'simple' && messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
+    if (!settings.todomode && messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
 
     let level = 0;
     if (findCommonElements(member._roles, settings.userroles)) level = 1;

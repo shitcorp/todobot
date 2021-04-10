@@ -13,7 +13,8 @@ const configschema = new Schema({
     blacklist_users: Array,
     vars: Map,
     lang: String,
-    autopurge: Boolean
+    autopurge: Boolean,
+    todomode: String
 })
 
 exports.configmodel = new model("todoconfig", configschema)
