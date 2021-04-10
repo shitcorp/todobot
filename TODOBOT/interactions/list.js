@@ -23,6 +23,7 @@ module.exports = {
     run: async (client, interaction) => {
 
         await interaction.reply(`${client.user.username} is thinking ...`);
+        await interaction.delete(10);
 
 
 
