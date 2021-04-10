@@ -103,6 +103,7 @@ module.exports = {
         }
         switch (action) {
             case 'list':
+                //FIXME this is probably still erroring, needs some big brain time to find a fix
                 let output = '';
                 Object.keys(conf.tags).forEach(key => {
                     output += `• \`${key}\` =>  ${conf.tags[key].slice(0, 69)} \n`;
