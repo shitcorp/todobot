@@ -116,11 +116,10 @@ module.exports = {
         }
         let todomsg;
         try {
-            let todochannel = await client.guilds.cache.get(interaction.guild_id).channels.fetch(conf.todochannel)
+            let todochannel = await client.guilds.cache.get(interaction.guild_id).channels.fetch( conf.todomode ? conf.todomode === 'advanced' ? interaction.channel_id : conf.todochannel : conf.todochannel )
             todomsg = await todochannel.send(await client.todo(todoobject))
         } catch (e) {
             client.logger.debug(e);
-            console.error(e);
             return interaction.errorDisplay(messages.unabletoposttodo[lang])
         }
         
@@ -134,7 +133,7 @@ module.exports = {
         // and we repost a task/todo and put the link to the original message. Dont know
         // how to handle deletion of the todo channel but it is what it is
         todoobject.todomsg = todomsg.id;
-        todoobject.todochannel = conf.todochannel;
+        todoobject.todochannel = conf.todomode ? conf.todomode === 'advanced' ? interaction.channel_id : conf.todochannel : conf.todochannel
         todoobject.shared = false;
         
         try {

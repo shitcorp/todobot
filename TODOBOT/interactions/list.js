@@ -2,7 +2,7 @@ const Pagination = require('discord-paginationembed');
 
 const raw = {
     name: 'list',
-    description: 'List todos for your server.'
+    description: 'List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.'
 };
 
 module.exports = {
@@ -23,6 +23,7 @@ module.exports = {
     run: async (client, interaction) => {
 
         await interaction.reply(`${client.user.username} is thinking ...`);
+        await interaction.delete(10);
 
 
 
