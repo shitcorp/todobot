@@ -5,7 +5,7 @@ const apm = require('elastic-apm-node')
 apm.start({
   serverUrl: process.env.DEBUG_URL_APM_SERVER,
   serviceName: process.env.BOT_NAME,
-  environment: 'development',
+  environment: process.env.ELASTIC_ENV
   // uncomment this for troubleshooting the apm agent
   // logLevel: 'trace',
 })

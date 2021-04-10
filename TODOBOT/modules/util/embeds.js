@@ -84,9 +84,12 @@ module.exports = (client) => {
         if (todoobj.tasks && todoobj.tasks.length > 0) {
             let output = '';
             let count = 0;
+            let tasks = [];
             let progressBar = [];
+
             for (let i = 0; i < todoobj.tasks.length; i++) {
-                output += `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]} \n`
+                output = `${todoobj.tasks[i].includes('finished_') ? '<:checksquareregular:820384679562838046> ' + todoobj.tasks[i].replace('finished_', '') : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]}`
+                tasks.push(output);
                 if (todoobj.tasks[i].includes('finished_')) {
                     count++
                     progressBar.push(client.emojiMap['+']);
@@ -94,11 +97,15 @@ module.exports = (client) => {
                     progressBar.push(client.emojiMap['-']);
                 };
             }
-
-            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}): \n ${progressBar.join('')}`, `${output}`)
+            
+            embed.addField(`Tasks (${count} / ${todoobj.tasks.length}):`, `${progressBar.join('')}`)
+            
+            for (let j = 0; j < tasks.length; j++) embed.addField('\u200b', tasks[j]);
+            
+            
         }
 
-        if (todoobj.content) embed.addField("Content", `> ${todoobj.content}`);
+        if (todoobj.content) embed.addField("Content", `> ${ todoobj.content.length >= 1024 ? todoobj.content.slice(0, 1020) + '...' : todoobj.content }`);
         if (todoobj.category) embed.addField("Category", todoobj.category, true);
         if (todoobj.attachlink) attacher();
 
