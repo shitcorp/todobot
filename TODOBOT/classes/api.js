@@ -3,6 +3,7 @@ const
     { MessageEmbed } = require('discord.js-light');
 
 
+
 class API {
     constructor(client, PORT) {
 
@@ -12,7 +13,10 @@ class API {
 
         this.app.use(express.json());
 
-        this.app.get('/health', (req, res) => res.json({ healthy: true }));
+        this.app.get('/health', (req, res) => {
+            res.json({ healthy: true }) 
+            client.logger.http({ req, res })
+        });
 
         this.app.post('/webhook', async (req, res) => {
 

@@ -1,44 +1,33 @@
-const path = require('path');
-const bunyan = require('bunyan');
-const streams_prod = {
-  path: path.join(__dirname + '../../../logs/' + process.env.BOT_NAME + '.log')
-}
-const streams_dev = {
-  stream: process.stderr
-}
-const streams = [];
+const ecsFormat = require('@elastic/ecs-pino-format');
+const pino = require('pino');
 
-process.env.DEV === 'true' ? streams.push(streams_dev) : streams.push(streams_prod)
-
-const log = bunyan.createLogger({
-  name: process.env.BOT_NAME,
-  level: 'debug',
-  streams
-});
-
+const Log = pino(ecsFormat({ convertReqRes: true }));
 
 exports.log = (content, type = "log") => {
   switch (type) {
     case "log": {
-      return log.info(content)
+      return Log.info(content)
     }
     case "warn": {
-      return log.warn(content);
+      return Log.warn(content);
     }
     case "cmd": {
-      return log.info(content);
+      return Log.info(content);
     }
     case "ready": {
-      return log.info('[READY] ' + content);
+      return Log.info('[READY] ' + content);
     }
     case "mongo": {
-      return log.info('[MONGO] ' + content);
+      return (Log.child({ module: 'mongo' })).info(content);
     }
     case "redis": {
-      return log.info('[REDIS] ' + content);
+      return (Log.child({ module: 'redis' })).info(content);
     }
     case 'error': {
-      return log.error(content)
+      return Log.error(content)
+    }
+    case 'http': {
+      return (Log.child({ module: 'http' })).info(content);
     }
 
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd, dba or error.");
@@ -53,3 +42,4 @@ exports.cmd = (...args) => this.log(...args, "cmd");
 exports.dba = (...args) => this.log(...args, "dba");
 exports.mongo = (...args) => this.log(...args, "mongo");
 exports.redis = (...args) => this.log(...args, "redis");
+exports.http = (...args) => this.log(...args, "http");

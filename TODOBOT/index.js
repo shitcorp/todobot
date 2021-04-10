@@ -4,10 +4,10 @@ const apm = require('elastic-apm-node')
 apm.start({
   serverUrl: process.env.DEBUG_URL_APM_SERVER,
   serviceName: process.env.BOT_NAME,
-  environment: process.env.DEV !== true ? 'production' : 'development',
+  environment: 'development',
   // uncomment this for troubleshooting the apm agent
   // logLevel: 'trace',
-  logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
+  // logger: require('bunyan')({ name: 'APM_AGENT', level: 'info' })
 })
 
 

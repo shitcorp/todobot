@@ -26,9 +26,9 @@
   "license": "WTFPL",
   "dependencies": {
     "@aero/centra": "^1.0.6",
+    "@elastic/ecs-pino-format": "^1.1.1",
     "agenda": "^4.1.0",
     "bufferutil": "^4.0.3",
-    "bunyan": "^1.8.15",
     "date-fns": "^2.19.0",
     "discord-paginationembed": "^2.1.0",
     "discord.js-light": "^3.5.4",
@@ -40,6 +40,7 @@
     "file-type": "^16.3.0",
     "fs": "0.0.1-security",
     "mongoose": "^5.12.1",
+    "pino": "^6.11.2",
     "prompts": "^2.4.0",
     "redis": "^3.0.2",
     "slash-commands": "^1.4.0",
