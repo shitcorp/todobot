@@ -98,7 +98,7 @@ const loadAndInjectClient = async (path) => {
     cmdFilesFun.forEach(f => {
       if (!f.endsWith(".js")) return;
       const response = client.loadCommand(category, f);
-      if (response) client.logger.log(response)
+      if (response) throw new Error(response);
     });
   }
 
