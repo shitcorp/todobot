@@ -239,13 +239,13 @@ module.exports = async (client, messageReaction, user) => {
         const timeout = 10000
         const filter = m => m.author.id === user;
         const editUsageMessage = await message.channel.send(client.embed(messages.editReactionUsage[lang]))
-        message.channel.awaitMessages(filter, { max: 1, time: 10000, errors: ['time'] })
+        message.channel.awaitMessages(filter, { max: 1, time: 90000, errors: ['time'] })
             .then(collected => {
 
                 try {
                     editUsageMessage.delete();
                 } catch (e) {
-                    console.error('message sent by bot', e);
+                    client.logger.debug('message sent by bot' + e);
                 }
 
                 const args = collected.first().content.split(",")
