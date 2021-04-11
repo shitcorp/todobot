@@ -48,6 +48,7 @@ client.cooldown = parseInt(process.env.CMD_COOLDOWN) ?? 30000;
 client.logger = require("./modules/util/Logger");
 
 client.logger.debug = (err) => {
+  if (err.message === 'Unknown Message') return;
   console.error(err);
   client.logger.Error(err);
   client.apm.captureError(err);

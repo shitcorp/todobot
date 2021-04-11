@@ -181,8 +181,8 @@ module.exports = (client) => {
 
 
   client.clearReactions = async (message, userID) => {
-    const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
     try {
+      const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
       for (const reaction of userReactions.values()) {
         await reaction.users.remove(userID);
       };

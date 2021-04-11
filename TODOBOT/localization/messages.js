@@ -55,7 +55,7 @@ module.exports = {
 
     'blacklisted': {
         'en': 'Either you or the channel you are in, are blacklisted fro bot usage.',
-        'de': ''
+        'de': 'Entweder du, oder der channel in dem du bist wurden geblacklisted und du kannst den bot hier nicht benutzen.'
     },
 
 
@@ -75,36 +75,53 @@ module.exports = {
         __**Usage:**__
 
         Enter the key you want to edit followed by the new value seperated by a comma and a space. **The space after the comma is important and not optional!**
+        If you just want to add to the already exiting value, just prefix your new content with a **+**
+
 
         __**Examples:**__
 
         > title, this is the new title
 
-        > tasks, Task One; Task Two; Task Three
-
         > content, this is my new content
+
+        > content, +oh shit i forgot ...
+
+        > attachment, Forgot to add this earlier: https://dummy.com/projects/work/task/1
 
         > loop, true
 
         > category, important
+
+        > category, MyCustomCategory
         `,
         "de": `
         __**Tutorial**__
 
-        Gib den key ein, den du bearbeiten willst, gefolgt von einem Komma, gefolgt vom neuen Value. Denk dran ein Leerzeichen hinter dem Komma zu setzen
+        Gib den key ein, den du bearbeiten willst, gefolgt von einem Komma, gefolgt vom neuen Value. Denk dran ein Leerzeichen hinter dem Komma zu setzen!
+
+        Wenn du nur neuen Conent hinzufügen möchtest, setze ein **+** vor deinen neuen content.
 
         __**Beispiele:**__
 
         > title, Das ist mein neuer Titel
 
-        > tasks, Aufgabe eins; Augabe zwei; Aufgabe drei
-
         > content, Das ist mein neuer Content
+
+        > content, +ganz vergessen ...
+
+        > attachment, Vorhin vergessen anzuhängen: https://dummy.com/projects/work/task/1
 
         > loop, true
 
         > category, WICHTIG
+
+        > category, Custom Category
         `
+    },
+
+    "timeisuperror": {
+        "en": "You failed to respond in time!",
+        "de": "Du hast nich rechtzeitig reagiert!"
     },
 
 
@@ -136,8 +153,8 @@ module.exports = {
     },
 
     'novalidkey': {
-        'en': 'This is not a valid key to edit. Valid keys are: title, tasks, loop, state, content and category.',
-        'de': 'Diese Einstellung kann nicht bearbeitet werden. Verfügbare Einstellungen sind: title, tasks, loop, state, content und category.'
+        'en': 'This is not a valid key to edit. Valid keys are: title, attachment loop, state, content and category.',
+        'de': 'Diese Einstellung kann nicht bearbeitet werden. Verfügbare Einstellungen sind: title, attachment, loop, state, content und category.'
     },
 
     'noreadonlychannel': {
@@ -157,7 +174,7 @@ module.exports = {
 
     "only10tasksallowed": {
         "en": "Only 10 tasks are allowed, so i capped your task list at 10.",
-        "de": "Es sind maximal 10 Aufgaben erlaubt, deshalb wurde deine TODO-Liste bei 10 Elementen gecappt."
+        "de": "Es sind maximal 10 Aufgaben erlaubt, deshalb wurde deine TODO-Liste bei 10 Elementen abgeschnitten."
     },
 
 
