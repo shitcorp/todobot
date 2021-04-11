@@ -5,25 +5,32 @@ const messages = require('../localization/messages');
 module.exports = async (client, messageReaction, user) => {
 
     const reactionTrans = client.apm.startTransaction('MessageReactionAddEvent', 'eventhandler');
+    
     client.apm.setUserContext({
         id: user.id,
         username: `${user.username}#${user.discriminator}`
     })
 
+    
+    
     if (messageReaction.partial) {
+        let messageFetchSpan = reactionTrans.startSpan('fetch_partial_message');
         // If the message this reaction belongs to was removed the fetching might result in an API error, which we need to handle
         try {
             await messageReaction.fetch();
+            if (messageFetchSpan) messageFetchSpan.end();
         } catch (error) {
-            client.logger.debug('Something went wrong when fetching a partial message')
-            // Return as `reaction.message.author` may be undefined/undefined
-            client.logger.debug(error);
+            // Returns as `reaction.message.author` may be undefined/undefined
+            if (messageFetchSpan) messageFetchSpan.end();
             return;
         }
     }
 
+    let permSpan = reactionTrans.startSpan('permission_and_whitelist_checks');
+
 
     if (messageReaction.message.channel.type === "dm") return;
+
 
     const react = messageReaction.emoji.name
     const userinio = user.id
@@ -62,9 +69,9 @@ module.exports = async (client, messageReaction, user) => {
     if (settings === undefined) return;
 
 
-    if (settings.todomode && settings.todomode === 'advanced') {
-        // advanced mode is turned on, so we can let the reaction pass
-    } 
+    // if (settings.todomode && settings.todomode === 'advanced') {
+    //     // advanced mode is turned on, so we can let the reaction pass
+    // } 
     if (settings.todomode && settings.todomode === 'simple' && messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
     if (!settings.todomode && messageReaction.message.channel.id !== settings.todochannel) return messageReaction.users.remove(userinio);
 
@@ -82,6 +89,7 @@ module.exports = async (client, messageReaction, user) => {
     if (!todoobj) return;
     todoobj = new todo(client, todoobj);
 
+    if (permSpan) permSpan.end();
 
     switch (react) {
         case 'accept_todo':
@@ -158,13 +166,16 @@ module.exports = async (client, messageReaction, user) => {
                     await client.updatetodo(todoobj._id, todoobj);
                     // remove the reaction so users cant share again
                     messageReaction.remove();
+                    if (shareSpan) shareSpan.end();
                 } catch (e) {
                     client.logger.debug(e);
+                    if (shareSpan) shareSpan.end();
                 }
-                if (shareSpan) shareSpan.end();
             } else {
                 todoobj.errordisplay(messageReaction.message, userinio, messages.noreadonlychannel[lang])
+                if (shareSpan) shareSpan.end();
             }
+            if (shareSpan) shareSpan.end();
             break;
         case 'assign_yourself':
             let assignSpan = reactionTrans.startSpan('assign_yourself_reaction');
@@ -184,16 +195,10 @@ module.exports = async (client, messageReaction, user) => {
         case 'edit':
             let editSpan = client.apm.startSpan('edit_todo_reaction');
             // edit the task and edit the todo msg when finished
-
-            let as = []
-            if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await client.clearReactions(messageReaction.message, userinio)
-            if (todoobj.assigend !== []) {
-                Object.keys(todoobj.assigned).forEach(key => as.push(todoobj.assigned[key]))
-            }
-            if (as.length > 0 && as.includes(userinio) === false && todoobj.submittedby !== userinio) return await messageReaction.users.remove(user.id)
-
+            if (todoobj.assigned === [] && userinio !== todoobj.submittedby) return await messageReaction.users.remove(user.id)
+            if (Object.values(todoobj.assigned).length > 0 && Object.values(todoobj.assigned).includes(userinio) === false && todoobj.submittedby !== userinio) return await messageReaction.users.remove(user.id)
             await messageReaction.users.remove(user.id)
-            edit(messageReaction.message, userinio)
+            await edit(messageReaction.message, userinio)
             if (editSpan) editSpan.end();
             break;
         case 'expand':
@@ -215,9 +220,7 @@ module.exports = async (client, messageReaction, user) => {
         case '🔟':
             let taskSpan = reactionTrans.startSpan('mark_task_finished_reaction');
             // function to mark task as finished
-            let parse = [];
-            Object.keys(todoobj.assigned).forEach(key => parse.push(todoobj.assigned[key]));
-            if (parse.includes(userinio) !== true) return messageReaction.users.remove(user.id);
+            if (!todoobj.assigned.includes(userinio)) return messageReaction.users.remove(user.id);
             if (todoobj.tasks[client.Mapemoji[react] - 1].includes('finished_')) todoobj.tasks[client.Mapemoji[react] - 1] = todoobj.tasks[client.Mapemoji[react] - 1].replace('finished_', '');
             else todoobj.tasks[client.Mapemoji[react] - 1] = `finished_ ` + todoobj.tasks[client.Mapemoji[react] - 1];
             client.emit('todochanged', todoobj, client);
@@ -235,71 +238,64 @@ module.exports = async (client, messageReaction, user) => {
 
         const timeout = 10000
         const filter = m => m.author.id === user;
-        message.channel.send(client.embed(messages.editReactionUsage[lang])).then((msg) => {
-            message.channel.awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
-                .then(collected => {
+        const editUsageMessage = await message.channel.send(client.embed(messages.editReactionUsage[lang]))
+        message.channel.awaitMessages(filter, { max: 1, time: 10000, errors: ['time'] })
+            .then(collected => {
 
-                    if (msg.deletable) msg.delete()
-                    if (collected.first().deletable) collected.first().delete()
+                try {
+                    editUsageMessage.delete();
+                } catch (e) {
+                    console.error('message sent by bot', e);
+                }
 
-                    let args = []
-                    let editargs = collected.first().content.split(", ")
-                    editargs.forEach(arg => {
-                        args.push(arg)
-                    })
+                const args = collected.first().content.split(",")
 
-                    // argument handler
-                    switch (args[0]) {
-                        case "title":
-                        case "loop":
-                        case "tasks":
-                        case "content":
-                        case "category":
-                            update(args)
-                            break;
-                        default:
-                            message.channel.send(client.error(messages.novalidkey[lang])).then(async (msg) => {
-                                if (msg.deletable) msg.delete({ timeout })
-                            })
-                    }
-
-                    function update(args) {
-                        let obj = {}
-                        obj[args[0]] = args[1]
-                        todoobj[args[0]] = args[1]
-                        todomodel.updateOne({ _id: todoobj._id }, obj, (err) => {
-                            if (err) client.logger.debug(err)
+                // argument handler
+                switch (args[0]) {
+                    case "title":
+                    case "loop":
+                    case "content":
+                    case "category":
+                    case "attachment":
+                        todoobj[args[0]] = args[1].startsWith('+') ? todoobj[args[0]] + args[1].replace('+', ' ') : args[1]
+                        todomodel.updateOne({ _id: todoobj._id }, todoobj, (err) => {
+                            if (err) return client.logger.debug(err)
                             messageReaction.message.edit(client.todo(todoobj))
                             if (todoobj.shared && todoobj.shared === true) client.emit('todochanged', todoobj, client);
                         })
-                    }
+                        break;
+                    default:
+                        todoobj.errordisplay(messageReaction.message, user, messages.novalidkey[lang]);
+                }
 
-                })
-                .catch(collected => {
-                    // Delete message here
-                    client.logger.debug(collected)
-                });
-        })
+            })
+            .catch(collected => {
+                // Delete message here
+                // maybe dont log this to debug/elastic
+                try {
+                    todoobj.errordisplay(messageReaction.message, user, messages.timeisuperror[lang]);
+                    editUsageMessage.delete();
+                } catch (e) {
+                    
+                }
+            });
+
     };
 
 
 
 
     async function showmore() {
-        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-        if (todoobj === undefined || typeof todoobj !== "object") return;
         todoobj.state = "detail";
         messageReaction.message.edit(client.todo(todoobj, "yes"))
-        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
+        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
         await messageReaction.message.react(client.emojiMap['collapse'])
     }
 
     async function showless() {
-        todoobj = await client.gettodobymsg(messageReaction.message.id, messageReaction.message.guild.id)
-        if (typeof todoobj !== "object") return;
         todoobj.state = "closed";
         messageReaction.message.edit(client.todo(todoobj))
-        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error.toString()))
+        await messageReaction.message.reactions.removeAll().catch(error => client.logger.debug(error))
         await messageReaction.message.react(client.emojiMap['expand'])
     }
 
