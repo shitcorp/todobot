@@ -112,7 +112,7 @@ const loadAndInjectClient = async (path) => {
 
   (await readdir(__dirname + "/events/")).forEach(file => {
     const eventName = file.split(".")[0];
-    client.logger.log({ module:`EVENTLOADER`, message: `Loading Event: ${eventName}` });
+    client.logger.log({ module:`EVENTLOADER`, message: `Loading: ${eventName}` });
     const event = require(`./events/${file}`);
     client.on(eventName, event.bind(null, client));
   });

@@ -257,7 +257,7 @@ module.exports = async (client, messageReaction, user) => {
                     case "content":
                     case "category":
                     case "attachment":
-                        todoobj[args[0]] = args[1].startsWith('+') ? todoobj[args[0]] + args[1].replace('+', ' ') : args[1]
+                        todoobj[args[0]] = args[1].includes('+') ? todoobj[args[0]] + args[1].replace('+', ' ') : args[1]
                         todomodel.updateOne({ _id: todoobj._id }, todoobj, (err) => {
                             if (err) return client.logger.debug(err)
                             messageReaction.message.edit(client.todo(todoobj))
