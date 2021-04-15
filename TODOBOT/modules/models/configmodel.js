@@ -6,6 +6,10 @@ const configschema = new Schema({
     color: String,
     todochannel: String,
     readonlychannel: String,
+    blackboard: {
+        channel: String,
+        message: String,
+    },
     userroles: Array,
     staffroles: Array,
     tags: Map,

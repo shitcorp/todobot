@@ -21,7 +21,7 @@
 
 <h3 align="center">
 
-<img src="./assets/todo_cmd_demo.gif" />
+<img src="https://raw.githubusercontent.com/shitcorp/TODOBOT/master/assets/todo_cmd_demo.gif" />
 </h3>
 
 

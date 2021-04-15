@@ -42,7 +42,7 @@ module.exports = async (client, guild) => {
     .setColor("#2C2F33")
   channel.send(embed)
 
-  let motherGuild = client.guilds.cache.get(process.env.MOTHER_GUILD).channels.cache.get("710020770369110038")
+  let motherGuild = client.guilds.cache.get(process.env.MOTHER_GUILD).channels.cache.get("724022857767583805")
   let newserv = new MessageEmbed()
     .setTitle(`New guild has been joined.`)
     .setThumbnail(guild.iconURL)

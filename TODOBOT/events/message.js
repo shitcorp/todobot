@@ -26,8 +26,10 @@ module.exports = async (client, message) => {
     settings &&
     settings.autopurge === true &&
     message.channel.id === settings.todochannel
-  )
+  ) {
+    client.apm.endTransaction('message_deleted_event_handled', Date.now());
     return message.delete().catch((e) => client.logger.debug(e));
+  }
 
   const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
   if (message.content.match(prefixMention)) {
