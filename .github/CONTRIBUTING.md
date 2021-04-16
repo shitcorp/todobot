@@ -1,5 +1,11 @@
 # Contributing
 
+## Project Structure:
+
+- /DOCKER -> Docker files for elastic apm server
+- /docs -> Web frontend thingy, called docs in order for gh pages to work
+- /TODOBOT -> the actual bot itself
+
 ## Dev Setup
 
 I think the fastest way to get going, is by runnin `npm run dc:up` or `docker-compose up -d`. This starts a mongodb and redis container so you can use them for bot development. 

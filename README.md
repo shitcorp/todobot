@@ -15,6 +15,7 @@
 </a>
 
 <img src="https://img.shields.io/github/license/MeerBiene/TODOBOT?style=for-the-badge"/>
+<img src="https://img.shields.io/endpoint?url=https://wakapi.stlf.me/api/compat/shields/v1/meerbiene/interval:any/project:TODOBOT&color=green&label=TODOBOT&style=for-the-badge">
 
 
 </h4>
