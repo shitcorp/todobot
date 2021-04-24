@@ -49,25 +49,31 @@ After inviting the Bot to your server, run the command `/settings set todochanne
 
 To view all the commands the bot supports, run the `/help` command. If you want to get more specific information about a command run the command `/help` with the command that you want information about as frist argument. So if you wanted to get information about the todo command, you would want to run the command like so: `/help todo`.
 
+
 **Available Commands:**
 
-- `assign` *[STAFF]* Force assign someone to a task
+<!--STARTCMDSECTION-->
 
-- `blacklist` *[STAFF]*  Blacklist user(s) or channel(s) from bot usage.
+ - [assign](./docs/assign.md "Assign someone to a task no matter if they want or not.") 
+ - [blacklist](./docs/blacklist.md "Blacklist user(s) and/or channel(s)") 
+ - [help](./docs/help.md "Show all available commands and their usage.") 
+ - [invite](./docs/invite.md "Invite the bot to your server.") 
+ - [list](./docs/list.md "List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.") 
+ - [reminder](./docs/reminder.md "Create, edit and view reminders") 
+ - [settings](./docs/settings.md "View and edit bot settings.") 
+ - [shorten](./docs/shorten.md "Shorten a link.") 
+ - [stats](./docs/stats.md "Show some bot statistics like memory or CPU Usage.") 
+ - [suggest](./docs/suggest.md "Suggest new features to be added into the bot") 
+ - [support](./docs/support.md "Get information on how to contact the developer(s).") 
+ - [tag](./docs/tag.md "Bild your own commands like a pro.") 
+ - [todo](./docs/todo.md "Create a new TODO object") 
+ - [tutorial](./docs/tutorial.md "Get a short tutorial on how to use the bot.") 
+ - [var](./docs/var.md "Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo'") 
+ - [vote](./docs/vote.md "If you like the bot vote for it!") 
 
-- `reminder` *[STAFF]*  Create reminders and get notified
 
-- `settings` *[STAFF]*  Viewand change the bot settings
+<!--ENDCMDSECTION-->
 
-- `shorten`  Shorten Links
-
-- `suggest`  Suggest new features to be added into the bot
-
-- `tag` *[STAFF]*  Create custom commands
-
-- `todo` *[USER]*  Central todo command to create a new TODO or task
-
-- `tutorial` => Get a quick tutorial on how to use the bot
 
 <br>
 

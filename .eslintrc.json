@@ -1,0 +1,13 @@
+{
+    "env": {
+      "browser": true,
+      "node": true,
+      "es2021": true
+    },
+    "rules": {
+      "import/prefer-default-export": "off",
+      "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+    },
+    "extends": ["airbnb-base", "prettier"],
+    "plugins": ["prettier"]
+  }
