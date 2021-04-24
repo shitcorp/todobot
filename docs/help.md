@@ -5,7 +5,7 @@
 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
-| command | The command you want specific infomation about. | String (Text) | ❌ 
+| command | The command you want specific infomation about. | String (Text) | ❌ | 
 
 
 <br>

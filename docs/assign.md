@@ -5,8 +5,8 @@
 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
-| user | The user you want to assign. | User | ✔️ 
-| id | ID of the task that you want to assing the user to. | String (Text) | ✔️ 
+| user | The user you want to assign. | User | ✔️ | 
+| id | ID of the task that you want to assing the user to. | String (Text) | ✔️ | 
 
 
 <br>
