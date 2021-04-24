@@ -2,6 +2,7 @@
 > Bild your own commands like a pro. 
 
 # Subcommands
+
 ## /tag learn 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
@@ -21,5 +22,5 @@ No arguments required. Description:
 > List available tags. 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

@@ -2,6 +2,7 @@
 > View and edit bot settings. 
 
 # Subcommands
+
 ## /settings set 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
@@ -23,5 +24,5 @@ No arguments required. Description:
 | staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users. | Role | ❌ 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

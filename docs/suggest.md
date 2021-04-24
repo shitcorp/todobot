@@ -2,6 +2,7 @@
 > Suggest new features to be added into the bot 
 
 # Arguments
+
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | text | Your suggestion | String (Text) | ✔️ 
@@ -9,5 +10,5 @@
 | hidden | Hide the server where this suggestion was sent | Boolean (true or false) | ❌ 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

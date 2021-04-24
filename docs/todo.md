@@ -2,6 +2,7 @@
 > Create a new TODO object 
 
 # Arguments
+
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | title | Title of the TODO object | String (Text) | ✔️ 
@@ -12,5 +13,5 @@
 | loop | Create repeating tasks | Boolean (true or false) | ❌ 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

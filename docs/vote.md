@@ -1,4 +1,4 @@
 # /vote
 > If you like the bot vote for it!
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

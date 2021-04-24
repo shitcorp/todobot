@@ -1,4 +1,4 @@
 # /tutorial
 > Get a short tutorial on how to use the bot.
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

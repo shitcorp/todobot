@@ -2,6 +2,7 @@
 > Create, edit and view reminders 
 
 # Subcommands
+
 ## /reminder create 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
@@ -15,5 +16,5 @@ No arguments required. Description:
 > View your reminder(s). 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

@@ -2,6 +2,7 @@
 > Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo' 
 
 # Subcommands
+
 ## /var create 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
@@ -21,5 +22,5 @@ No arguments required. Description:
 | name | Name of the variable you want to delete | String (Text) | ✔️ 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

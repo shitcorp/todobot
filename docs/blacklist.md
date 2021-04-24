@@ -2,6 +2,7 @@
 > Blacklist user(s) and/or channel(s) 
 
 # Subcommands
+
 ## /blacklist add 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
@@ -17,5 +18,5 @@ No arguments required. Description:
 > Show your current blacklists. 
 
 
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)
