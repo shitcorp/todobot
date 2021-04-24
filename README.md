@@ -8,14 +8,14 @@
 
 <h4 align="center">
 
-<img src="https://img.shields.io/maintenance/yes/2021?style=for-the-badge" />
+<img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=for-the-badge" />
 
 <a href="https://discord.gg/RuEdX5T">
 <img src="https://img.shields.io/discord/710022036252262485?style=for-the-badge"/>
 </a>
 
 <img src="https://img.shields.io/github/license/MeerBiene/TODOBOT?style=for-the-badge"/>
-<img src="https://img.shields.io/endpoint?url=https://wakapi.stlf.me/api/compat/shields/v1/meerbiene/interval:any/project:TODOBOT&color=green&label=TODOBOT&style=for-the-badge">
+<img src="https://img.shields.io/endpoint?url=https://wakapi.stlf.me/api/compat/shields/v1/meerbiene/interval:any/project:TODOBOT&color=green&style=for-the-badge">
 
 
 </h4>
