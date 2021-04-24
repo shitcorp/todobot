@@ -13,5 +13,3 @@ data
 *.urls.json
 *.url.json
 apm-server.yml
-teaser.json
-DOCGEN
