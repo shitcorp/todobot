@@ -39,14 +39,14 @@ files
                         argTable += parseOption(option)
                         break
                     case 1:
-                        output += `## /${cmdName} ${option.name} \n`
+                        output += `## /${cmdName} ${option.name} \n\n`
                         if (option.options) {
                             output += tableHeader
                             option.options.forEach((o) => {
                                 output += parseOption(o)
                             })
                         } else {
-                            output += `No arguments required. Description: \n> ${option.description} \n`
+                            output += `No arguments required. Description: \n> ${option.description} \n <br>`
                         }
                         break
                 }

@@ -4,6 +4,7 @@
 # Subcommands
 
 ## /settings set 
+
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | prefix | The prefix the bot will use for your custom commands or tags. | String (Text) | ❌ | 
@@ -15,9 +16,11 @@
 | autopurge | Toggle messages being auto purged in the todochannel. | Boolean (true or false) | ❌ | 
 | todomode | Toggle between simple (one channel) and advanced (multiple channels) mode | String (Text) | ❌ | 
 ## /settings view 
+
 No arguments required. Description: 
 > View your current settings. 
-## /settings remove 
+ <br>## /settings remove 
+
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | userrole | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌ | 
