@@ -14,3 +14,4 @@ data
 *.url.json
 apm-server.yml
 teaser.json
+DOCGEN
