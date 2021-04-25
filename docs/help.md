@@ -7,6 +7,7 @@
 | :-- | :-- | :-- | :-- | 
 | command | The command you want specific infomation about. | String (Text) | ❌ | 
 
+    
 
 <br>
  [🔙 Go back](../README.md#%EF%B8%8F-commands)

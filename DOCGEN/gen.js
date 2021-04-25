@@ -15,7 +15,8 @@ const typeMap = {
 }
 
 function parseOption({ name, description, type, required = false }) {
-    return `| ${name} | ${description} | ${typeMap[type]} | ${required === false ? '❌' : '✔️'} | \n`
+    return `| ${name} | ${description} | ${typeMap[type]} | ${required === false ? '❌' : '✔️'} | \n
+    `
 }
 
 const files = readdirSync(join(__dirname, '../TODOBOT/interactions'))
@@ -46,7 +47,8 @@ files
                                 output += parseOption(o)
                             })
                         } else {
-                            output += `No arguments required. Description: \n> ${option.description} \n <br>`
+                            output += `No arguments required. Description: \n> ${option.description} \n <br>
+                            `
                         }
                         break
                 }

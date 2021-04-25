@@ -8,23 +8,29 @@
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | name | The name of your new command/tag. | String (Text) | ✔️ | 
-| content | This is the content that will be sent when your custom command is run. | String (Text) | ✔️ | 
-## /tag unlearn 
+
+    | content | This is the content that will be sent when your custom command is run. | String (Text) | ✔️ | 
+
+    ## /tag unlearn 
 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | name | The command you want to delete. | String (Text) | ✔️ | 
-## /tag edit 
+
+    ## /tag edit 
 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | name | Name of the command you want to edit. | String (Text) | ✔️ | 
-| content | The content that you want to save as the new tag | String (Text) | ✔️ | 
-## /tag list 
+
+    | content | The content that you want to save as the new tag | String (Text) | ✔️ | 
+
+    ## /tag list 
 
 No arguments required. Description: 
 > List available tags. 
  <br>
+                            
 
 <br>
  [🔙 Go back](../README.md#%EF%B8%8F-commands)
