@@ -27,7 +27,7 @@
 
 No arguments required. Description: 
 > View your current settings. 
- <br>
+
                             ## /settings remove 
 
 | Name | Description | Type | Required? | 

@@ -47,7 +47,7 @@ files
                                 output += parseOption(o)
                             })
                         } else {
-                            output += `No arguments required. Description: \n> ${option.description} \n <br>
+                            output += `No arguments required. Description: \n> ${option.description} \n
                             `
                         }
                         break

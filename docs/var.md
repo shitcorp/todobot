@@ -15,7 +15,7 @@
 
 No arguments required. Description: 
 > Show your already registered variables 
- <br>
+
                             ## /var edit 
 
 | Name | Description | Type | Required? | 
