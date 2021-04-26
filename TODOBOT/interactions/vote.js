@@ -39,5 +39,4 @@ module.exports = {
 
         interaction.replyWithMessageAndDeleteAfterAWhile(voteEmbed);
     }
-
 };

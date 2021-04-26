@@ -41,15 +41,13 @@ module.exports = {
         category: 'Utility',
         description: raw.description
     },
-    run: async (client, interaction) => {
-        
+    run: async (client, interaction) => {        
         let text, image, hidden;
         for (let i= 0; i < interaction.data.options.length; i++) {
             if (interaction.data.options[i].name === 'text') text = interaction.data.options[i].value;
             if (interaction.data.options[i].name === 'image') image = interaction.data.options[i].value;
             if (interaction.data.options[i].name === 'hidden') hidden = interaction.data.options[i].value;
         }
-
         const embed = new MessageEmbed()
         .setTitle(`New Suggestion:`)
         .setColor('BLUE')
@@ -58,18 +56,15 @@ module.exports = {
         if (interaction.guild_id !== process.env.MOTHER_GUILD && !hidden) {
             footer += `; Sent in server: ${client.guilds.cache.get(interaction.guild_id).name}`;
         }
-    
         if (image && image.startsWith(`https://`)) {
             embed.setImage(image)        
         }
-    
         //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
         embed.setThumbnail('https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.png')
         embed.setDescription(`> ${text}`)
         embed.setFooter(footer);
     
         let G = client.guilds.cache.get(process.env.MOTHER_GUILD).channels.cache.get(process.env.SUGGESTIONS_CHANNEL)
-    
         try {
             G.send(embed).then(async msg => {
                 await msg.react(client.emojiMap['upvote']);
@@ -79,7 +74,5 @@ module.exports = {
         } catch(e) {
             interaction.errorDisplay(messages.errorposting[interaction.conf ? interaction.conf.lang ? interaction.conf.lang : 'en' : 'en']);
         }
-
     }
-
 };

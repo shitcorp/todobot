@@ -4,8 +4,6 @@ const
 
 module.exports = (client) => {
 
-
-
   client.loadCommand = (category, commandName) => {
     try {
       let name = category.toUpperCase()
@@ -26,8 +24,6 @@ module.exports = (client) => {
   };
 
   client.discordlog = () => {
-
-
     // DEBUG=false
     // DEBUG_GUILD=709541114633519177
     // DEBUG_CHANNEL=
@@ -55,18 +51,11 @@ module.exports = (client) => {
     }
   };
 
-
-
-
-
-
-
   client.awaitreply = async (message, question, time = 60000) => {
     message.channel.send(question)
     const filter = m => m.author.id === message.author.id;
     return collector = message.channel.createMessageCollector(filter, { limit: 1, time: 15000 });
   }
-
 
   /**
    * 
@@ -88,8 +77,6 @@ module.exports = (client) => {
     })
   };
 
-
-
   /**
    * Client.mapBuilder
    * @param {Object} obj 
@@ -97,6 +84,7 @@ module.exports = (client) => {
    * 
    * Takes in an object and returns a map.
    */
+
   client.mapBuilder = async (obj) => {
     let map = new Map();
     Object.keys(obj).forEach(key => {
@@ -104,8 +92,6 @@ module.exports = (client) => {
     });
     return map;
   };
-
-
 
   global.mapBuilder = async (obj) => {
     let map = new Map();
@@ -115,13 +101,9 @@ module.exports = (client) => {
     return map;
   };
 
-
   global.findCommonElements = (arr1, arr2) => {
     return arr1.some(item => arr2.includes(item))
   }
-
-
-
 
   /**
    * Client.reminderjob
@@ -177,9 +159,6 @@ module.exports = (client) => {
     client.apm.endTransaction('success_reminder_handled');
   };
 
-
-
-
   client.clearReactions = async (message, userID) => {
     try {
       const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
@@ -191,8 +170,6 @@ module.exports = (client) => {
       client.logger.debug('Failed to remove reactions.', error.toString());
     };
   };
-
-
 
   process.on("unhandledRejection", (err, promise) => {
     client.logger.debug(err)
@@ -207,9 +184,5 @@ module.exports = (client) => {
     client.discordlog({ error: err })
     // client.apm.captureError(err)
   });
-
-
-
-
 
 };

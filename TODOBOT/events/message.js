@@ -2,7 +2,6 @@ const cmdRecently = new Set();
 
 module.exports = async (client, message) => {
   const timeout = process.env.MSG_DELETE || 90000;
-
   const messageTrans = client.apm.startTransaction('MessageEvent', 'eventhandler');
   client.apm.setUserContext({
     id: message.author.id,
@@ -10,15 +9,11 @@ module.exports = async (client, message) => {
   })
 
   let cmdSpan = messageTrans.startSpan('cmd');
-
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
-
   let Prefix;
   let settings;
-
   message.guild ? (settings = await client.getconfig(message.guild.id)) : null;
-
   settings ? (Prefix = settings.prefix) : (Prefix = "//");
 
   // autopurge
@@ -54,7 +49,6 @@ module.exports = async (client, message) => {
    */
 
   // convert settings.tag object into map
-
   if (settings) {
     // Check for blacklisted users here
     if (

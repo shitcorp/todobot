@@ -3,11 +3,9 @@ const { writeFileSync } = require("fs");
 const { format } = require('date-fns');
 
 exports.run = async (client, message, args) => {
-
     if (!process.env.OWNER) return;
     // making sure only bot owner can run the command
     if (message.author.id !== process.env.OWNER) return;
-
     client.user.setActivity(`Applying an update!`, { type: 2, browser: "DISCORD IOS"  });
 
     exec("git pull", async (err, out, stderr) => {
@@ -39,11 +37,8 @@ exports.run = async (client, message, args) => {
         } else {
             message.channel.send(client.embed(`${out} \n\n ${stderr}`))
         }
-
     })
-
 };
-
 
 exports.conf = {
     enabled: true,
@@ -52,7 +47,6 @@ exports.conf = {
     aliases: [],
     permLevel: "root"
 };
-
 exports.help = {
     name: "update",
     category: "System",

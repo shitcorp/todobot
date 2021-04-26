@@ -1,6 +1,5 @@
 const ecsFormat = require('@elastic/ecs-pino-format');
 const pino = require('pino');
-
 const Log = pino(ecsFormat({ convertReqRes: true }));
 
 exports.log = (content, type = "log") => {
@@ -33,7 +32,6 @@ exports.log = (content, type = "log") => {
     default: throw new TypeError("Logger type must be either warn, debug, log, ready, cmd, dba or error.");
   }
 }; 
-
 
 exports.Error = (... args) => this.log(...args, 'error');
 exports.warn = (...args) => this.log(...args, "warn");

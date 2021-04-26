@@ -27,12 +27,9 @@ module.exports = async (client, messageReaction, user) => {
   }
 
   let permSpan = reactionTrans.startSpan("permission_and_whitelist_checks");
-
   if (messageReaction.message.channel.type === "dm") return;
-
   const react = messageReaction.emoji.name;
   const userinio = user.id;
-
   const whitelisted_emojis = [
     "share",
     "edit",
@@ -105,10 +102,8 @@ module.exports = async (client, messageReaction, user) => {
       // message, then react with the white checkmark
 
       if (!todoobj.assigned.includes(userinio)) todoobj.assigned.push(userinio);
-
       todoobj.state = "assigned";
       todoobj.time_started = `${Date.now()}`;
-
       await client.updatetodo(todoobj._id, todoobj);
 
       messageReaction.message.edit(client.todo(todoobj)).then(async () => {
@@ -291,9 +286,7 @@ module.exports = async (client, messageReaction, user) => {
         } catch (e) {
           client.logger.debug("message sent by bot" + e);
         }
-
         const args = collected.first().content.split(",");
-
         // argument handler
         switch (args[0]) {
           case "title":
@@ -341,7 +334,6 @@ module.exports = async (client, messageReaction, user) => {
       .catch((error) => client.logger.debug(error));
     await messageReaction.message.react(client.emojiMap["collapse"]);
   }
-
   async function showless() {
     todoobj.state = "closed";
     messageReaction.message.edit(client.todo(todoobj));
@@ -350,6 +342,5 @@ module.exports = async (client, messageReaction, user) => {
       .catch((error) => client.logger.debug(error));
     await messageReaction.message.react(client.emojiMap["expand"]);
   }
-
   client.apm.endTransaction("reaction_event_handled", Date.now());
 };
