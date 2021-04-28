@@ -99,12 +99,11 @@ module.exports = async (client, messageReaction, user) => {
             // mark the todo as assigned and edit the todo
             // message, then react with the white checkmark
 
-            if (!todoobj.assigned.includes(userinio)) todoobj.assigned.push(userinio)
 
-            todoobj.state = 'assigned'
-            todoobj.time_started = `${Date.now()}`
-
-            await client.updatetodo(todoobj._id, todoobj)
+      if (!todoobj.assigned.includes(userinio)) todoobj.assigned.push(userinio);
+      todoobj.state = "assigned";
+      todoobj.time_started = `${Date.now()}`;
+      await client.updatetodo(todoobj._id, todoobj);
 
             messageReaction.message.edit(client.todo(todoobj)).then(async () => {
                 if (todoobj.shared && todoobj.shared === true) client.emit('todochanged', todoobj, client)
@@ -259,64 +258,77 @@ module.exports = async (client, messageReaction, user) => {
             break
     }
 
-    async function edit(message, user) {
-        const filter = (m) => m.author.id === user
-        const editUsageMessage = await message.channel.send(client.embed(messages.editReactionUsage[lang]))
-        message.channel
-            .awaitMessages(filter, { max: 1, time: 90000, errors: ['time'] })
-            .then((collected) => {
-                try {
-                    editUsageMessage.delete()
-                } catch (e) {
-                    client.logger.debug(`message sent by bot${e}`)
-                }
 
-                const args = collected.first().content.split(',')
+  async function edit(message, user) {
+    const timeout = 10000;
+    const filter = (m) => m.author.id === user;
+    const editUsageMessage = await message.channel.send(
+      client.embed(messages.editReactionUsage[lang])
+    );
+    message.channel
+      .awaitMessages(filter, { max: 1, time: 90000, errors: ["time"] })
+      .then((collected) => {
+        try {
+          editUsageMessage.delete();
+        } catch (e) {
+          client.logger.debug("message sent by bot" + e);
+        }
+        const args = collected.first().content.split(",");
+        // argument handler
+        switch (args[0]) {
+          case "title":
+          case "loop":
+          case "content":
+          case "category":
+          case "attachment":
+            todoobj[args[0]] = args[1].includes("+")
+              ? todoobj[args[0]] + args[1].replace("+", " ")
+              : args[1];
+            todomodel.updateOne({ _id: todoobj._id }, todoobj, (err) => {
+              if (err) return client.logger.debug(err);
+              messageReaction.message.edit(client.todo(todoobj));
+              if (todoobj.shared && todoobj.shared === true)
+                client.emit("todochanged", todoobj, client);
+            });
+            break;
+          default:
+            todoobj.errordisplay(
+              messageReaction.message,
+              user,
+              messages.novalidkey[lang]
+            );
+        }
+      })
+      .catch((collected) => {
+        // Delete message here
+        // maybe dont log this to debug/elastic
+        try {
+          todoobj.errordisplay(
+            messageReaction.message,
+            user,
+            messages.timeisuperror[lang]
+          );
+          editUsageMessage.delete();
+        } catch (e) {}
+      });
+  }
 
-                // argument handler
-                switch (args[0]) {
-                    case 'title':
-                    case 'loop':
-                    case 'content':
-                    case 'category':
-                    case 'attachment':
-                        todoobj[args[0]] = args[1].includes('+')
-                            ? todoobj[args[0]] + args[1].replace('+', ' ')
-                            : args[1]
-                        todomodel.updateOne({ _id: todoobj._id }, todoobj, (err) => {
-                            if (err) return client.logger.debug(err)
-                            messageReaction.message.edit(client.todo(todoobj))
-                            if (todoobj.shared && todoobj.shared === true)
-                                client.emit('todochanged', todoobj, client)
-                        })
-                        break
-                    default:
-                        todoobj.errordisplay(messageReaction.message, user, messages.novalidkey[lang])
-                }
-            })
-            .catch((collected) => {
-                // Delete message here
-                // maybe dont log this to debug/elastic
-                try {
-                    todoobj.errordisplay(messageReaction.message, user, messages.timeisuperror[lang])
-                    editUsageMessage.delete()
-                } catch (e) {}
-            })
-    }
+  async function showmore() {
+    todoobj.state = "detail";
+    messageReaction.message.edit(client.todo(todoobj, "yes"));
+    await messageReaction.message.reactions
+      .removeAll()
+      .catch((error) => client.logger.debug(error));
+    await messageReaction.message.react(client.emojiMap["collapse"]);
+  }
+  async function showless() {
+    todoobj.state = "closed";
+    messageReaction.message.edit(client.todo(todoobj));
+    await messageReaction.message.reactions
+      .removeAll()
+      .catch((error) => client.logger.debug(error));
+    await messageReaction.message.react(client.emojiMap["expand"]);
+  }
+  client.apm.endTransaction("reaction_event_handled", Date.now());
+};
 
-    async function showmore() {
-        todoobj.state = 'detail'
-        messageReaction.message.edit(client.todo(todoobj, 'yes'))
-        await messageReaction.message.reactions.removeAll().catch((error) => client.logger.debug(error))
-        await messageReaction.message.react(client.emojiMap.collapse)
-    }
-
-    async function showless() {
-        todoobj.state = 'closed'
-        messageReaction.message.edit(client.todo(todoobj))
-        await messageReaction.message.reactions.removeAll().catch((error) => client.logger.debug(error))
-        await messageReaction.message.react(client.emojiMap.expand)
-    }
-
-    client.apm.endTransaction('reaction_event_handled', Date.now())
-}

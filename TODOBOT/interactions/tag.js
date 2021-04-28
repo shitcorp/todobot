@@ -67,7 +67,6 @@ const raw = {
     ]
 }
 
-
 module.exports = {
     raw,
     id: "",

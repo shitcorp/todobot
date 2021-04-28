@@ -1,7 +1,6 @@
 const messages = require('../localization/messages');
 const http = require('../modules/util/http');
 
-
 const raw = {
     name: "shorten",
     description: "Shorten a link.",

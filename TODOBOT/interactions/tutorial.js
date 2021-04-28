@@ -2,17 +2,13 @@
  * @fileoverview 
  * Kindly stolen from https://github.com/Giuliopime/HelpDesk/blob/master/commands/Utility/tutorial.js
  */
-
-const
-    { MessageEmbed } = require('discord.js-light'),
+const { MessageEmbed } = require('discord.js-light'),
     pkg = require('../../package.json');
 
 const raw = {
     name: 'tutorial',
     description: 'Get a short tutorial on how to use the bot.'
 }
-
-
 module.exports = {
     raw,
     id: "",
@@ -29,12 +25,9 @@ module.exports = {
     },
     run: async (client, interaction) => {
         interaction.reply(' ', 5);
-       
-
         // Define the arrays of the commands separed by category
         const pages = [' ', 'Set up the bot', 'Create your first todo', 'Create your first custom command', 'Advanced Custom Commands', 'Other Commands'];
         let page = 1;
-
         const tutorialEmbed = new MessageEmbed()
             .setColor('BLUE')
             .setTitle('Welcome to the Tutorial!')
@@ -65,19 +58,15 @@ module.exports = {
             await msg.react(nextEmoji);
             const Filter = (reaction, user) => (reaction.emoji.name === beforeEmoji || reaction.emoji.name === nextEmoji || reaction.emoji.name === stopEmoji) && user.id === interaction.member.user.id && user.id !== client.user.id;
             const otherFilter = (reaction, user) => (reaction.emoji.name !== beforeEmoji && reaction.emoji.name !== nextEmoji && reaction.emoji.name !== stopEmoji) || (user.id !== interaction.member.id && user.id !== client.user.id);
-
             const update = msg.createReactionCollector(Filter, { time: 600000 });
             const other = msg.createReactionCollector(otherFilter, { time: 600000 });
-
             let time = Date.now();
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
-
             other.on('collect', (r, u) => {
                 r.users.remove(u);
             });
-
             update.on('collect', async (r, u) => {
                 time = Date.now();
                 if (r.emoji.name === stopEmoji) {
@@ -95,7 +84,6 @@ module.exports = {
                     await r.users.remove(u);
                     tutorialEmbed.setFooter(`Page ${page} of ${pages.length}`);
                 }
-
                 if (page === 1) {
                     tutorialEmbed
                         .setTitle('Welcome to the Tutorial!')

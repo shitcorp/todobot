@@ -86,20 +86,17 @@ module.exports = {
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
         if (!conf.vars) conf.vars = { example: 'This is an example variable' }
         const variableMap = await client.mapBuilder(conf.vars)
+        let action, commandopts, name, value
 
-        let action, commandopts
         for (index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
                 commandopts = interaction.data.options[index].options
         }
-
-        let name, value
         for (i in commandopts) {
             if (commandopts[i].name === 'name') name = commandopts[i].value
             if (commandopts[i].name === 'value') value = commandopts[i].value
         }
-
         //use args for command
         switch (action) {
             // set a new key value pair

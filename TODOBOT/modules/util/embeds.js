@@ -3,8 +3,6 @@ const { format } = require("date-fns");
 
 module.exports = (client) => {
 
-
-
     client.noPerms = (perms) => {
         const noPerm = new MessageEmbed()
             .setAuthor('❌ No Permissions')
@@ -12,9 +10,6 @@ module.exports = (client) => {
             .setColor("RED")
         return noPerm;
     }
-
-
-
     client.embed = (desc, obj) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
@@ -23,49 +18,35 @@ module.exports = (client) => {
         if (obj && obj.img && obj.img.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.img && obj.img.startsWith("https://img.todo-bot.xyz/")) embed.setImage(obj.img)
         if (obj && obj.thumb && obj.thumb.startsWith("https://cdn.discordapp.com/attachments/") || obj && obj.thumb && obj.thumb.startsWith("https://img.todo-bot.xyz/")) embed.setThumbnail(obj.thumb)
         return embed;
-
     }
-
     client.coloredEmbed = (desc, color) => {
         const embed = new MessageEmbed()
             .setDescription(`${desc}`)
             .setColor(color)
         return embed;
     }
-
-
     client.error = (desc) => {
-
         const errorEmbed = new MessageEmbed()
             .setAuthor('❌ Error', client.user.avatarURL)
             .setDescription(`${desc}`)
             .setColor("RED")
         return errorEmbed;
-
     }
-
-
     client.warning = (desc) => {
-
         const warne = new MessageEmbed()
             .setAuthor(`⚠️ Warning`)
             .setDescription(`${desc}`)
             .setColor("#fffb0a")
         return warne
-
     }
 
     client.success = (desc) => {
-
         const successe = new MessageEmbed()
             .setAuthor(`✅ Success!`)
             .setDescription(`${desc}`)
             .setColor("GREEN")
         return successe
-
     }
-
-
     // TODO: make a field for assigned users
     // TODO: put manual in footer (different manuals based on todos state!)
     client.todo = (todoobj, detailbool) => {
@@ -97,18 +78,13 @@ module.exports = (client) => {
                     progressBar.push(client.emojiMap['-']);
                 };
             }
-            
             embed.addField(`Tasks (${count} / ${todoobj.tasks.length}):`, `${progressBar.join('')}`)
-            
             for (let j = 0; j < tasks.length; j++) embed.addField('\u200b', tasks[j]);
-            
-            
         }
 
         if (todoobj.content) embed.addField("Content", `> ${ todoobj.content.length >= 1024 ? todoobj.content.slice(0, 1020) + '...' : todoobj.content }`);
         if (todoobj.category) embed.addField("Category", todoobj.category, true);
         if (todoobj.attachlink) attacher();
-
         if (todoobj.assigned) {
             let output = '';
             if (todoobj.assigned !== []) {
@@ -119,10 +95,6 @@ module.exports = (client) => {
             }
         }
 
-
-
-
-
         const colorMap = {
             open: "RED",
             assigned: "YELLOW",
@@ -132,10 +104,7 @@ module.exports = (client) => {
         }
         
         embed.setColor(colorMap[todoobj.state]);
-        
         if (todoobj.readonly !== '.' && todoobj.state === "open" || todoobj.readonly !== '.' && todoobj.state === "assigned") embed.setFooter(`${todoobj._id}`)
-        
-        
         if (detailbool) {
             let output = "";
 
@@ -145,14 +114,11 @@ module.exports = (client) => {
                 })
                 output !== "" ? embed.addField("Processed", output, true) : null;
             }
-
             embed.addField("Submitted By", `<@${todoobj.submittedby}>`, true)
             embed.addField("Submitting Time", `> ${format(parseInt(todoobj.timestamp), "PPpp")}`, true)
             embed.addField("Severity", todoobj.severity, true)
             embed.addField("Loop", todoobj.loop, true)
             embed.addField("ID", `> ${todoobj._id}`, true)
-
-
         }
         
         if (todoobj.error && todoobj.error !== '') {
@@ -160,10 +126,7 @@ module.exports = (client) => {
             embed.setColor('RED')
         }
         return embed;
-
     };
-
-
 
     client.reminder = (reminderobj) => {
         let embed = new MessageEmbed()
@@ -174,7 +137,5 @@ module.exports = (client) => {
             .setColor("YELLOW")
         return embed
     }
-
-
 
 }

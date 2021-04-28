@@ -5,7 +5,6 @@ const { formatDistanceToNow } = require('date-fns');
 const Pagination = require('discord-paginationembed');
 const { remindermodel } = require('../modules/models/remindermodel');
 
-
 const raw = {
     name: 'reminder',
     description: 'Create, edit and view reminders',
@@ -69,7 +68,6 @@ const raw = {
         }
     ]
 }
-
 
 module.exports = {
     raw,
@@ -157,14 +155,11 @@ module.exports = {
     }
 };
 
-
 const newviewer = async (client, interaction, arr) => {
-
     // in order for discord to show the interaction we have to reply
     // with something. even a space will do :D its just to acknowledge
     // the interaction/slash command, so the user gets instant feedback
     interactionhandler.reply(interaction, ' ', 2);
-
     const FieldsEmbed = new Pagination.FieldsEmbed()
         .setArray(arr)
         .setAuthorizedUsers([interaction.member.user.id])
@@ -176,7 +171,6 @@ const newviewer = async (client, interaction, arr) => {
         .formatField('Created', i => `\`\`\`${formatDistanceToNow(parseInt(i.systime))} ago.\`\`\``, false)
         .formatField("Expires", i => `\`\`\`in ${formatDistanceToNow(parseInt(i.expires))}.\`\`\``, false)
         .formatField('Content', i => `> ${i.content}`, false)
-
         // Deletes the embed upon awaiting timeout
         .setDeleteOnTimeout(true)
         // Disable built-in navigation emojis, in this case: 🗑 (Delete Embed)
@@ -221,5 +215,4 @@ const newviewer = async (client, interaction, arr) => {
 ❌          Delete the reminder
 🗑️          Destroy this embed`);
     await FieldsEmbed.build();
-
 }

@@ -1,7 +1,7 @@
-const ecsFormat = require('@elastic/ecs-pino-format')
-const pino = require('pino')
+const ecsFormat = require('@elastic/ecs-pino-format');
+const pino = require('pino');
+const Log = pino(ecsFormat({ convertReqRes: true }));
 
-const Log = pino(ecsFormat({ convertReqRes: true }))
 
 exports.log = (content, type = 'log') => {
     switch (type) {
@@ -46,3 +46,4 @@ exports.dba = (...args) => this.log(...args, 'dba')
 exports.mongo = (...args) => this.log(...args, 'mongo')
 exports.redis = (...args) => this.log(...args, 'redis')
 exports.http = (...args) => this.log(...args, 'http')
+

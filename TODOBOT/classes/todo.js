@@ -22,10 +22,8 @@ class todo {
         this.readonlychannel = raw_todo.readonlychannel;
         this.assigned = raw_todo.assigned;
         this.category = raw_todo.category;
-
         // if this is given, we show an error inside of the todo embed;
         this.error = '';
-
         this.errordisplay = (message, user, error) => {
             this.error = error;
             client.clearReactions(message, user);
@@ -36,9 +34,7 @@ class todo {
                 message.edit(client.todo(this));
             }, 10000)
         }
-
         this.assign = (user) => this.assigned.push(user);
-
     }
 }
 

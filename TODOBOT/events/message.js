@@ -2,6 +2,7 @@
 const cmdRecently = new Set()
 
 module.exports = async (client, message) => {
+
     const timeout = process.env.MSG_DELETE || 90000
 
     const messageTrans = client.apm.startTransaction('MessageEvent', 'eventhandler')
@@ -51,6 +52,7 @@ module.exports = async (client, message) => {
 
     if (message.guild) settings = await client.getconfig(message.guild.id)
 
+
     const Prefix = settings.prefix || '//'
 
     // autopurge
@@ -78,11 +80,7 @@ module.exports = async (client, message) => {
 
     const command = args.shift().toLowerCase()
 
-    /**
-     *  Begin Taghandler
-     */
 
-    // convert settings.tag object into map
 
     if (settings) {
         // Check for blacklisted users here

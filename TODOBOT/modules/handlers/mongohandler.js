@@ -7,18 +7,14 @@ const mongoose = require('mongoose'),
 
 
 module.exports = (client) => {
-
     const getAsync = promisify(client.cache.get).bind(client.cache)
-
+    
     client.dbinit = async () => {
         mongoose.connect(MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
-
         const db = mongoose.connection;
-
         db.on("error", error => {
             client.logger.debug(error)
         })
-
         db.once("open", async () => {
             client.logger.mongo("Database connection was established.")
             await client.guilds.cache.forEach(async guild => {
@@ -64,7 +60,6 @@ module.exports = (client) => {
      */
 
     client.setconfig = async (configobj) => {
-
         const newconf = new configmodel(configobj)
         const cache = getAsync(configobj._id)
 
@@ -77,10 +72,8 @@ module.exports = (client) => {
                 }
             })
         }
-
         return await newconf.save()
     };
-
 
     /**
      * 
@@ -101,7 +94,6 @@ module.exports = (client) => {
         }
     };
 
-
     /**
      * 
      * @param {String} _id 
@@ -114,24 +106,18 @@ module.exports = (client) => {
             client.invalidateCache(_id)
         })
     };
-
-
     client.getguildtodos = async (guildid) => {
         return await todomodel.find({ guildid })
     };
-
     client.querytodos = (queryobj) => {
         return todomodel.find({ queryobj }, (err, docs) => { if (err) return Sentry.captureException(err) })
     };
-
     client.getusertodos = (user) => {
         return todomodel.find({ submittedby: user }, (err, docs) => { if (err) return Sentry.captureException(err) })
     };
-
     client.getprocessedtodos = async (user) => {
         return await todomodel.find({ assigned: user }, (err, docs) => { if (err) return Sentry.captureException(err) });
     }
-
     client.getonetodo = async (_id) => {
         return await todomodel.findOne({ _id }, (err, doc) => { if (err) return client.logger.debug(err) });
     };
@@ -143,27 +129,21 @@ module.exports = (client) => {
      * 
      * returns the todo by message id and channel
      */
+
     client.gettodobymsg = (todomsg, guildid) => { return todomodel.findOne({ todomsg, guildid }) };
-
-
     client.updatetodo = (_id, todoobj) => {
         return todomodel.updateOne({ _id }, todoobj, (err) => { if (err) console.error(err) }); 
     };
-
-
     client.settodo = (todoobj) => {
         let newtodo = new todomodel(todoobj);
         return newtodo.save((err, doc) => { if (err) console.error(err) });
     };
-
     client.setreminder = (reminderobj) => {
         let newreminder = new remindermodel(reminderobj);
         return newreminder.save((err, doc) => { if (err) Sentry.captureException(err) });
     };
-
     client.getreminderbyuser = (user) => {
         return remindermodel.find({ user }, (err, docs) => { if (err) Sentry.captureException(err) });
     };
-
 
 };
