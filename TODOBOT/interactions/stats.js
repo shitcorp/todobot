@@ -22,15 +22,11 @@ module.exports = {
         description: raw.description
     },
     run: async (client, interaction) => {
-
         const all = await todomodel.find({});
-
         const pkg = require('../../package.json');
         const load = os.loadavg();
-
         const chan = await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id);
         const msg = await chan.send('ping.');
-
         const statembed = new MessageEmbed()
             .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
             .addField("• Mem Usage", `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB`, true)
@@ -45,8 +41,6 @@ module.exports = {
             //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
             .setFooter(`Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`, 'https://cdn.discordapp.com/avatars/' + interaction.member.user.id + '/' + interaction.member.user.avatar + '.png')
             .setColor("BLUE")
-
-
         try {
             msg.delete();
             interaction.replyWithMessageAndDeleteAfterAWhile(statembed);
@@ -55,5 +49,4 @@ module.exports = {
             interaction.errorDisplay('An error occured, please try again.');
         }
     }
-
 };

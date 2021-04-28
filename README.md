@@ -54,22 +54,22 @@ To view all the commands the bot supports, run the `/help` command. If you want 
 
 <!--STARTCMDSECTION-->
 
- - [assign](./docs/assign.md "Assign someone to a task no matter if they want or not.") 
- - [blacklist](./docs/blacklist.md "Blacklist user(s) and/or channel(s)") 
- - [help](./docs/help.md "Show all available commands and their usage.") 
- - [invite](./docs/invite.md "Invite the bot to your server.") 
- - [list](./docs/list.md "List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.") 
- - [reminder](./docs/reminder.md "Create, edit and view reminders") 
- - [settings](./docs/settings.md "View and edit bot settings.") 
- - [shorten](./docs/shorten.md "Shorten a link.") 
- - [stats](./docs/stats.md "Show some bot statistics like memory or CPU Usage.") 
- - [suggest](./docs/suggest.md "Suggest new features to be added into the bot") 
- - [support](./docs/support.md "Get information on how to contact the developer(s).") 
- - [tag](./docs/tag.md "Bild your own commands like a pro.") 
- - [todo](./docs/todo.md "Create a new TODO object") 
- - [tutorial](./docs/tutorial.md "Get a short tutorial on how to use the bot.") 
- - [var](./docs/var.md "Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo'") 
- - [vote](./docs/vote.md "If you like the bot vote for it!") 
+ - [assign](./docs/assign "Assign someone to a task no matter if they want or not.") 
+ - [blacklist](./docs/blacklist "Blacklist user(s) and/or channel(s)") 
+ - [help](./docs/help "Show all available commands and their usage.") 
+ - [invite](./docs/invite "Invite the bot to your server.") 
+ - [list](./docs/list "List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.") 
+ - [reminder](./docs/reminder "Create, edit and view reminders") 
+ - [settings](./docs/settings "View and edit bot settings.") 
+ - [shorten](./docs/shorten "Shorten a link.") 
+ - [stats](./docs/stats "Show some bot statistics like memory or CPU Usage.") 
+ - [suggest](./docs/suggest "Suggest new features to be added into the bot") 
+ - [support](./docs/support "Get information on how to contact the developer(s).") 
+ - [tag](./docs/tag "Bild your own commands like a pro.") 
+ - [todo](./docs/todo "Create a new TODO object") 
+ - [tutorial](./docs/tutorial "Get a short tutorial on how to use the bot.") 
+ - [var](./docs/var "Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo'") 
+ - [vote](./docs/vote "If you like the bot vote for it!") 
 
 
 <!--ENDCMDSECTION-->
@@ -170,7 +170,8 @@ I do this project in my freetime and I host the bot for free. If you like the Bo
 
 <br>
 
-# 👥 Contributing:
+# 👥 Contributors:
+
 
 All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. 
 
@@ -178,9 +179,11 @@ For information on the development setup, check out the [contributing guidelines
 
 All Contributors will be listed below:
 
-- Julian Puffler  [Github](https://github.com/puf17640) | *Code Contributor*
-- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+![Contributors Display](https://badges.pufler.dev/contributors/shitcorp/TODOBOT?size=50&padding=5&bots=false)
 
+- Julian Puffler [Github](https://github.com/puf17640) | *Code Contributor*
+- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+- Oldmagic [Github](https://github.com/oldmagic) | *Code Contributor, Translator 🇸🇪*
 
 **If you are reading this, I still need help with localization(language support), if you want to help, join the [Support Discord](https://discord.gg/RuEdX5T) and ping me.**
 

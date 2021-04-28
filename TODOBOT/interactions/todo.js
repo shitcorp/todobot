@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 const { v4: uuidv4 } = require('uuid')
 const messages = require('../localization/messages.js')
 
@@ -23,8 +24,13 @@ const raw = {
             type: 3,
         },
         {
-            name: 'attachment',
-            description: 'Attach something to the task',
+            name: 'url',
+            description: 'Attach a link to the todo',
+            type: 3,
+        },
+        {
+            name: 'image',
+            description: 'Attach an image to the todo. Has to be a discord attachment link.',
             type: 3,
         },
         {
@@ -54,6 +60,7 @@ module.exports = {
         category: 'todo',
         description: raw.description,
     },
+    // eslint-disable-next-line consistent-return
     run: async (client, interaction) => {
         const { conf } = interaction
         // eslint-disable-next-line no-nested-ternary
@@ -80,45 +87,51 @@ module.exports = {
             readonlymessage: '',
         }
 
-        for (const index in interaction.data.options) {
-            if (interaction.data.options[index].name === 'title') {
-                if (interaction.data.options[index].value === '')
-                    return interaction.errorDisplay(messages.emptytitle[lang])
-                todoobject.title = interaction.data.options[index].value
+        // eslint-disable-next-line array-callback-return
+        Object.entries(interaction.data.options).map(([key, value]) => {
+            console.log(key, value)
+            switch (value.name) {
+                case 'title':
+                    todoobject.title = value.value
+                    break
+                case 'content':
+                    todoobject.content = value.value
+                    break
+                case 'tasks':
+                    if (value.value === '') return
+                    if (value.value.includes(';')) {
+                        // split the string containing the tasks at the semicolon and filter out all empty
+                        // tasks as well as task strings that are too long. If theres more than 10, were just
+                        // capping the array by setting the length to 10
+                        const temp = value.value
+                            .split(';')
+                            .filter((task) => task !== '' && task.length < 1020)
+                        if (temp.length > 10) temp.length = 10
+                        todoobject.tasks = temp
+                    } else {
+                        todoobject.tasks = [value.value]
+                    }
+                    break
+                case 'loop':
+                    todoobject.loop = value.value
+                    break
+                case 'category':
+                    todoobject.category = value.value
+                    break
+                case 'url':
+                    todoobject.attachlink = `url_${value.value}`
+                    break
+                case 'image':
+                    client.cache.get(`${interaction.guild_id}${value.value}`, (res) => {
+                        console.log(res)
+                    })
+                    break
+                default:
+                    console.log('fuck eslint')
+                    break
             }
-            if (interaction.data.options[index].name === 'content') {
-                if (interaction.data.options[index].value === '') return
-                todoobject.content = interaction.data.options[index].value
-            }
-            if (interaction.data.options[index].name === 'attachment') {
-                if (interaction.data.options[index].value === '') return
-                todoobject.attachlink = interaction.data.options[index].value
-            }
-            if (interaction.data.options[index].name === 'loop') {
-                if (interaction.data.options[index].value === '') return
-                todoobject.loop = interaction.data.options[index].value
-            }
-            if (interaction.data.options[index].name === 'category') {
-                if (interaction.data.options[index].value === '') return
-                todoobject.category = interaction.data.options[index].value
-            }
-            if (interaction.data.options[index].name === 'tasks') {
-                if (interaction.data.options[index].value === '') return
-                if (interaction.data.options[index].value.includes(';')) {
-                    // split the string containing the tasks at the semicolon and filter out all empty
-                    // tasks as well as task strings that are too long. If theres more than 10, were just
-                    // capping the array by setting the length to 10
-                    const temp = interaction.data.options[index].value
-                        .split(';')
-                        .filter((task) => task !== '' && task.length < 1020)
-                    if (temp.length > 10) temp.length = 10
-                    todoobject.tasks = temp
-                } else {
-                    todoobject.tasks = [interaction.data.options[index].value]
-                }
-            }
-            // option for loop
-        }
+        })
+
         let todomsg
         try {
             const todochannel = await client.guilds.cache

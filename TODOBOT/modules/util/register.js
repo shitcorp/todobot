@@ -24,7 +24,6 @@ readdirSync(path.join(__dirname + '../../../interactions'))
     });
   });
 
-
 const questions = [
   {
     type: 'multiselect',
@@ -38,14 +37,11 @@ const questions = [
   const response = await prompts(questions);
 
   if (!response.commands) return;
-
   const interaction = new DiscordInteractions(config);
-
   for (const c of response.commands) {
     const { raw } = await import(
       path.join(__dirname + '../../../interactions/' + c)
     );
-
     await interaction
       .createApplicationCommand(raw)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -3,9 +3,7 @@ const
   { configmodel } = require('../modules/models/configmodel');
 
 module.exports = async (client, guild) => {
-
   client.logger.mongo(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot.`);
-
   // if we have the guildconfig already saved or cached we should
   // return so we get no errors
   let confcheck = await configmodel.findOne({ _id: guild.id })
@@ -28,10 +26,7 @@ module.exports = async (client, guild) => {
       vars: new Map(),
       lang: 'en'
   }
-
   await client.setconfig(configobject)
-
-
   const channel = guild.channels.cache.filter(c => c.type === 'text').find(x => x.name === "bot-commands") || guild.channels.cache.filter(c => c.type === 'text').find(x => x.name === "general") || guild.channels.cache.filter(c => c.type === 'text').find(x => x.position === 0)
   let embed = new MessageEmbed()
     .setAuthor("Hello!")

@@ -1,4 +1,4 @@
 # /support
 > Get information on how to contact the developer(s).
-
- [🔙 Go back](../README.md)
+<br>
+ [🔙 Go back](../README.md#%EF%B8%8F-commands)

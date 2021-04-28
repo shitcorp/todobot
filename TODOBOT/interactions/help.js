@@ -11,7 +11,6 @@ const raw = {
     ]
 }
 
-
 module.exports = {
     raw,
     id: '',
@@ -36,17 +35,11 @@ module.exports = {
         const toProperCase = function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         };
-
-
         let command;
         for (index in interaction.data.options) {
             if (interaction.data.options[index].name === 'command') command = interaction.data.options[index].value;
         }
-
-        
-        
         const showOnlyOneCommand = async () => {
-
             const clientCommand = client.interactions.get(command);
             if (!clientCommand) return interaction.embed.error(messages.commandnotfound[lang]);
             interaction.embed.default(`
@@ -58,21 +51,11 @@ module.exports = {
 
             **Description:** 
             > ${clientCommand.help.description}`)
-
         }
-
-        
-
-        
-
-
         const showAllCommands = async () => {
-
             let currentCategory = "";
             let output = '**' + messages.available_commands[lang] + '**\n';
-
             const sorted = myCommands.array().sort((p, c) => p.help.category > c.help.category ? 1 : p.name > c.name && p.help.category === c.help.category ? 1 : -1);
-            
             sorted.forEach(c => {
                 const cat = c.help.category
                 if (currentCategory !== cat) {
@@ -81,14 +64,9 @@ module.exports = {
                 }
                 output += "`" + `${c.name}` + "`" + `${" ".repeat(longest - c.name.length)} |`;
             });
-
             output += `\n\n> ${messages.moreinformation[lang]}`
-
             interaction.embed.default(output);
-
         }
-
-        
         // no command speciefied, user wants information about all commands
         if (command) showOnlyOneCommand()
             else showAllCommands()

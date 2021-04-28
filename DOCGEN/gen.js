@@ -15,7 +15,8 @@ const typeMap = {
 }
 
 function parseOption({ name, description, type, required = false }) {
-    return `| ${name} | ${description} | ${typeMap[type]} | ${required === false ? '❌' : '✔️'} \n`
+    return `| ${name} | ${description} | ${typeMap[type]} | ${required === false ? '❌' : '✔️'} | \n
+    `
 }
 
 const files = readdirSync(join(__dirname, '../TODOBOT/interactions'))
@@ -28,7 +29,7 @@ files
         docString += `# /${cmdName}`
         // eslint-disable-next-line import/no-dynamic-require
         const { raw } = require(join(__dirname, `../TODOBOT/interactions/${file}`))
-        TOCString += ` - [${cmdName}](./docs/${cmdName}.md "${raw.description}") \n`
+        TOCString += ` - [${cmdName}](./docs/${cmdName} "${raw.description}") \n`
 
         if (Object.keys(raw).includes('options')) {
             let output = ''
@@ -39,26 +40,27 @@ files
                         argTable += parseOption(option)
                         break
                     case 1:
-                        output += `## /${cmdName} ${option.name} \n`
+                        output += `## /${cmdName} ${option.name} \n\n`
                         if (option.options) {
                             output += tableHeader
                             option.options.forEach((o) => {
                                 output += parseOption(o)
                             })
                         } else {
-                            output += `No arguments required. Description: \n> ${option.description} \n`
+                            output += `No arguments required. Description: \n> ${option.description} \n
+                            `
                         }
                         break
                 }
             })
             docString += `\n> ${raw.description} \n`
-            if (argTable !== tableHeader) docString += `\n# Arguments\n${argTable}\n`
-            if (output !== '') docString += `\n# Subcommands\n${output}\n`
+            if (argTable !== tableHeader) docString += `\n# Arguments\n\n${argTable}\n`
+            if (output !== '') docString += `\n# Subcommands\n\n${output}\n`
         } else {
             docString += `\n> ${raw.description}`
         }
         // add back button
-        docString += `\n\n [🔙 Go back](../README.md)`
+        docString += `\n<br>\n [🔙 Go back](../README.md#%EF%B8%8F-commands)`
         writeFileSync(join(__dirname, `../docs/${cmdName}.md`), docString)
         console.log(`Finished generating docs for ${cmdName}.`)
     })
