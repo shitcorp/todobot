@@ -16,7 +16,8 @@
         "release:alpha": "npm run release -- --prerelease alpha",
         "release:beta": "npm run release -- --prerelease beta",
         "register": "node TODOBOT/modules/util/register.js",
-        "docs": "node DOCGEN/gen.js"
+        "docs": "node DOCGEN/gen.js",
+        "md2js": "node DOCGEN/md2js.js"
     },
     "config": {
         "commitizen": {
@@ -52,12 +53,15 @@
         "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
+        "changelog-parser": "^2.8.0",
         "commitizen": "^4.2.3",
         "eslint": "^7.25.0",
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-config-prettier": "^8.2.0",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-prettier": "^3.4.0",
+        "i": "^0.3.6",
+        "npm": "^7.11.1",
         "prettier": "^2.2.1",
         "standard-version": "^9.2.0"
     },

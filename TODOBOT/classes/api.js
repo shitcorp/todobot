@@ -26,8 +26,10 @@ class API {
                 try {
                     // set the voting user to cache
                     this.redisClient.set(req.body.user, JSON.stringify(req.body))
-                    // expire after user key after 24 hours
-                    this.redisClient.expire(req.body.user, 86400000)
+
+                    this.redisClient.expire(req.body.user, 86400)
+
+
                     res.sendStatus(200)
                     const votingUser = await client.users.fetch(req.body.user)
                     const votedEmbed = new MessageEmbed().setColor('RANDOM').setDescription(`

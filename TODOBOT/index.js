@@ -2,20 +2,20 @@ require('dotenv').config()
 
 const apm = require('elastic-apm-node')
 
-apm.start({
-    serverUrl: process.env.DEBUG_URL_APM_SERVER,
-    serviceName: process.env.BOT_NAME,
-    environment: process.env.ELASTIC_ENV,
-    // uncomment this for troubleshooting the apm agent
-    // logLevel: 'trace',
-})
+//apm.start({
+//    serverUrl: process.env.DEBUG_URL_APM_SERVER,
+//    serviceName: process.env.BOT_NAME,
+//    environment: process.env.ELASTIC_ENV,
+//    // uncomment this for troubleshooting the apm agent
+//    // logLevel: 'trace',
+//})
 
 const readdir = require('util').promisify(require('fs').readdir)
 const Enmap = require('enmap')
 const redis = require('redis')
 const { Agenda } = require('agenda')
 const { Client } = require('discord.js-light')
-const API = require('./classes/api')
+const { API } = require('./classes/api')
 const handle = require('./modules/util/interactionhandler')
 
 const agenda = new Agenda({
@@ -29,7 +29,7 @@ const agenda = new Agenda({
 
 const client = new Client({
     partials: ['GUILDS', 'MESSAGE', 'CHANNEL', 'REACTION', 'MEMBERS'],
-    disableMentions: ['everyone', 'here'],
+    disableMentions: 'everyone',
     cacheGuilds: true,
     cacheChannels: true,
     cacheOverwrites: false,
@@ -88,7 +88,7 @@ const loadAndInjectClient = async (path) => {
     await client.dbinit()
 
     async function loadCategory(category) {
-        const cmdFilesFun = await readdir(__dirname + `/commands/${category}/`)
+        const cmdFilesFun = await readdir(`${__dirname}/commands/${category}/`)
         cmdFilesFun.forEach((f) => {
             if (!f.endsWith('.js')) return
             const response = client.loadCommand(category, f)
@@ -100,8 +100,8 @@ const loadAndInjectClient = async (path) => {
      * The foldernames where the commands are placed in will
      *  be the categories they are shown in
      */
-    ;(await readdir(__dirname + '/commands/')).forEach((category) => loadCategory(category))
-    ;(await readdir(__dirname + '/events/')).forEach((file) => {
+    ;(await readdir(`${__dirname}/commands/`)).forEach((category) => loadCategory(category))
+    ;(await readdir(`${__dirname}/events/`)).forEach((file) => {
         const eventName = file.split('.')[0]
         client.logger.log({
             module: `EVENTLOADER`,
@@ -110,14 +110,14 @@ const loadAndInjectClient = async (path) => {
         const event = require(`./events/${file}`)
         client.on(eventName, event.bind(null, client))
     })
-    ;(await readdir(__dirname + '/interactions/')).forEach((file) => {
+    ;(await readdir(`${__dirname}/interactions/`)).forEach((file) => {
         const interactionName = file.split('.')[0]
         if (file.includes('.template')) return
         client.logger.log({
             module: `INTERACTION_LOADER`,
             message: `Loading: ${interactionName}`,
         })
-        client.interactions.set(interactionName, require(__dirname + '/interactions/' + file))
+        client.interactions.set(interactionName, require(`${__dirname}/interactions/${file}`))
     })
 
     // start the API
@@ -135,7 +135,6 @@ const loadAndInjectClient = async (path) => {
 
     // this is for development reasons so the data for my dev server is always fresh
     client.invalidateCache('709541114633519177')
-    client.cache.set('686669011601326281')
 
     // interaction"handler"
     client.ws.on('INTERACTION_CREATE', async (raw_interaction) => await handle(client, raw_interaction))
