@@ -2,7 +2,6 @@ const { configmodel } = require('../models/configmodel'),
     { remindermodel } = require('../models/remindermodel')
 
 module.exports = (client) => {
-
     client.loadCommand = (category, commandName) => {
         try {
             let name = category.toUpperCase()
@@ -21,7 +20,6 @@ module.exports = (client) => {
             return `Unable to load command ${commandName}: ${e}`
         }
     }
-
 
     client.discordlog = () => {
         // DEBUG=false
@@ -56,34 +54,30 @@ module.exports = (client) => {
         }
     }
 
-  };
+    client.awaitreply = async (message, question, time = 60000) => {
+        message.channel.send(question)
+        const filter = (m) => m.author.id === message.author.id
+        return (collector = message.channel.createMessageCollector(filter, { limit: 1, time: 15000 }))
+    }
 
-  client.awaitreply = async (message, question, time = 60000) => {
-    message.channel.send(question)
-    const filter = m => m.author.id === message.author.id;
-    return collector = message.channel.createMessageCollector(filter, { limit: 1, time: 15000 });
-  }
+    /**
+     *
+     * @param {String} _id Guildid
+     *
+     * Invalideates the cached object
+     * by id and pulls it back from the database
+     *
+     */
 
-  /**
-   * 
-   * @param {String} _id Guildid
-   * 
-   * Invalideates the cached object
-   * by id and pulls it back from the database
-   * 
-   */
-
-  client.invalidateCache = async (_id) => {
-    client.cache.del(_id, (err) => {
-      err ? console.error(err) :
-        configmodel.findOne({ _id }, (err, doc) => {
-          err ? console.error(err) :
-            client.cache.set(_id, JSON.stringify(doc))
-    })
-  };
-
-
-
+    client.invalidateCache = async (_id) => {
+        client.cache.del(_id, (err) => {
+            err
+                ? console.error(err)
+                : configmodel.findOne({ _id }, (err, doc) => {
+                      err ? console.error(err) : client.cache.set(_id, JSON.stringify(doc))
+                  })
+        })
+    }
 
     /**
      * Client.mapBuilder
@@ -181,21 +175,19 @@ module.exports = (client) => {
         client.apm.endTransaction('success_reminder_handled')
     }
 
-
-
-  client.clearReactions = async (message, userID) => {
-    try {
-      const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has(userID));
-      for (const reaction of userReactions.values()) {
-        await reaction.users.remove(userID);
-      };
-    } catch (error) {
-      console.error(error)
-      client.logger.debug('Failed to remove reactions.', error.toString());
-    };
-  };
-
-
+    client.clearReactions = async (message, userID) => {
+        try {
+            const userReactions = message.reactions.cache.filter((reaction) =>
+                reaction.users.cache.has(userID),
+            )
+            for (const reaction of userReactions.values()) {
+                await reaction.users.remove(userID)
+            }
+        } catch (error) {
+            console.error(error)
+            client.logger.debug('Failed to remove reactions.', error.toString())
+        }
+    }
 
     process.on('unhandledRejection', (err, promise) => {
         console.error(err, promise)
@@ -213,4 +205,3 @@ module.exports = (client) => {
         // client.apm.captureError(err)
     })
 }
-
