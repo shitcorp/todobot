@@ -170,7 +170,8 @@ I do this project in my freetime and I host the bot for free. If you like the Bo
 
 <br>
 
-# 👥 Contributing:
+# 👥 Contributors:
+
 
 All contributions are welcome! Wheter its just submitting bugs and/or requesting features, or contributing to the codebase directly via pull requests. 
 
@@ -178,9 +179,11 @@ For information on the development setup, check out the [contributing guidelines
 
 All Contributors will be listed below:
 
-- Julian Puffler  [Github](https://github.com/puf17640) | *Code Contributor*
-- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+![Contributors Display](https://badges.pufler.dev/contributors/shitcorp/TODOBOT?size=50&padding=5&bots=false)
 
+- Julian Puffler [Github](https://github.com/puf17640) | *Code Contributor*
+- Husky [Github](https://github.com/Huskydog9988) | *Code Contributor, Feedback giver*
+- Oldmagic [Github](https://github.com/oldmagic) | *Code Contributor, Translator 🇸🇪*
 
 **If you are reading this, I still need help with localization(language support), if you want to help, join the [Support Discord](https://discord.gg/RuEdX5T) and ping me.**
 

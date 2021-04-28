@@ -32,7 +32,7 @@ class API {
                     this.redisClient.set(req.body.user, JSON.stringify(req.body))
 
                     // expire after user key after 24 hours
-                    this.redisClient.expire(req.body.user, 86400000)
+                    this.redisClient.expire(req.body.user, 86400)
 
                     res.sendStatus(200)
 
