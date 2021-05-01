@@ -1,3 +1,6 @@
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
 const raw = {
     name: 'search',
     description: 'Search for specific todos.',
@@ -55,7 +58,7 @@ const raw = {
     ],
 }
 
-module.exports = {
+export default {
     raw,
     id: '',
     name: raw.name,
@@ -70,7 +73,7 @@ module.exports = {
         category: 'Utility',
         description: raw.description,
     },
-    run: async (client, interaction) => {
+    run: async (client: MyClient, interaction: Interaction) => {
         console.log(interaction.conf)
     },
 }

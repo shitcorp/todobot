@@ -1,4 +1,4 @@
-import { stati } from '../data/stati.json'
+import stati from '../data/stati'
 import { Agenda } from 'agenda'
 import { setLogging, handle } from 'blapi'
 

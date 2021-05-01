@@ -1,3 +1,6 @@
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
 const raw = {
     name: 'blackboard',
     description: 'Send a central blackboad message, where currently open and processed tasks are displayed',
@@ -7,9 +10,9 @@ const raw = {
             description: 'Reset the blackboard and repost it in the current channel.',
             required: false,
             type: 1,
-        }
-    ]
-};
+        },
+    ],
+}
 
 module.exports = {
     raw,
@@ -23,10 +26,7 @@ module.exports = {
     },
     help: {
         category: 'Utility',
-        description: raw.description
+        description: raw.description,
     },
-    run: async (client, interaction) => {
-
-    } 
-    
-};
+    run: async (client: MyClient, interaction: Interaction) => {},
+}

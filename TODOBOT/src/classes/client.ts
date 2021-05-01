@@ -54,11 +54,11 @@ class MyClient extends Client {
 
     getAsync = () => promisify(this.cache.get).bind(this.cache)
 
-    decorate(key, value) {
+    decorate(key: string, value: any) {
         this.util.set(key, value)
     }
 
-    getUtil(key) {
+    getUtil(key: string) {
         return this.util.get(key)
     }
 
