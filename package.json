@@ -53,6 +53,8 @@
         "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
+        "@types/express": "^4.17.11",
+        "@types/redis": "^2.8.28",
         "changelog-parser": "^2.8.0",
         "commitizen": "^4.2.3",
         "eslint": "^7.25.0",
