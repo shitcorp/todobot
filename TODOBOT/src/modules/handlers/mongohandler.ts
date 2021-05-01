@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-shadow */
 import mongoose from 'mongoose'
 import { promisify } from 'util'
@@ -19,6 +20,7 @@ export default (client) => {
         db.once('open', async () => {
             client.logger.mongo('Database connection was established.')
             await client.guilds.cache.forEach(async (guild) => {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 const _id = guild.id
                 const inCache = await getAsync(_id)
                 if (inCache === null) {
@@ -34,7 +36,7 @@ export default (client) => {
                 } else {
                     // delete from cache and pull from db then set to cache
                     client.cache.del(_id, (err) => {
-                        // eslint-disable-next-line no-unused-expressions
+                        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                         err
                             ? new Error(err)
                             : configmodel.findOne({ _id }, (err, doc) => {

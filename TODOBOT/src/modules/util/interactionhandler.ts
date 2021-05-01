@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
-const interactionRecently = new Set()
 import messages from '../../localization/messages'
 import Interaction from '../../classes/interaction'
 import findCommonElements from './findCommonElements'
+
+const interactionRecently = new Set()
 
 // eslint-disable-next-line consistent-return
 export default async (client, raw_interaction) => {
@@ -62,7 +63,7 @@ export default async (client, raw_interaction) => {
             // a staff role so we need something to detemrmine they are permitted
             if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2
             const cmd = client.interactions.get(interaction.data.name)
-            console.log(client.util.get('permMap')[cmd.conf.permLevel])
+
             if (interaction.level < client.util.get('permMap')[cmd.conf.permLevel])
                 return interaction.errorDisplay(
                     messages.permissionleveltoolow[

@@ -1,6 +1,6 @@
-import stati from '../data/stati'
 import { Agenda } from 'agenda'
 import { setLogging, handle } from 'blapi'
+import stati from '../data/stati'
 
 const agenda = new Agenda({
     db: {
@@ -21,13 +21,13 @@ export default async (client) => {
     )
     client.user.setActivity('you', { type: 'WATCHING' })
     let i = 0
-    agenda.define('botstatusjob', async (job) => {
+    agenda.define('botstatusjob', () => {
         client.user.setActivity(stati[i], { type: 'WATCHING' })
         client.updater.updateAll()
-        i++
+        i += 1
         if (i >= stati.length) i = 0
     })
-    ;(async function () {
+    ;(async function startClientStatiAgenda() {
         // IIFE to give access to async/await
         await agenda.start()
         // Alternatively, you could also do: (every 10 minutes)
@@ -36,7 +36,8 @@ export default async (client) => {
 
     /**
      * Botlist updater
-     **/
+     */
+
     setLogging({
         logger: client.logger,
     })

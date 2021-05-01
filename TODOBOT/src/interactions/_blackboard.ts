@@ -28,5 +28,8 @@ module.exports = {
         category: 'Utility',
         description: raw.description,
     },
-    run: async (client: MyClient, interaction: Interaction) => {},
+    run: async (client: MyClient, interaction: Interaction) => {
+        // eslint-disable-next-line no-console
+        console.log(client, interaction)
+    },
 }

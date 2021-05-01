@@ -4,8 +4,11 @@ import { MessageEmbed } from 'discord.js-light'
 
 class API {
     PORT: number
+
     app: Application
+
     redisClient: RedisClient
+
     constructor(client: any, PORT: number) {
         this.PORT = PORT
         this.app = express()

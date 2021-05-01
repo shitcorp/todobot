@@ -1,5 +1,8 @@
+/* eslint-disable global-require */
+/* eslint-disable no-nested-ternary */
 import MyClient from '../classes/client'
 import Interaction from '../classes/interaction'
+import properCase from '../modules/util/toProperCase'
 
 const raw = {
     name: 'help',
@@ -30,21 +33,18 @@ export default {
     },
     run: async (client: MyClient, interaction: Interaction) => {
         const messages = require('../localization/messages')
-        const conf = interaction.conf
-        let lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
+        const { conf } = interaction
+        const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
         const permMap = client.getUtil('permMap')
         const myCommands = client.interactions.filter(
             (cmd) => permMap[cmd.conf.permLevel] <= interaction.level,
         )
 
-        const toProperCase = function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-        }
         let command
-        for (const index in interaction.data.options) {
-            if (interaction.data.options[index].name === 'command')
-                command = interaction.data.options[index].value
+        for (let i = 0; i < interaction.data.options; i += 1) {
+            if (interaction.data.options[i].name === 'command') command = interaction.data.options[i].value
         }
+        // eslint-disable-next-line consistent-return
         const showOnlyOneCommand = async () => {
             const clientCommand = client.interactions.get(command)
             if (!clientCommand) return interaction.embed.error(messages.commandnotfound[lang])
@@ -60,7 +60,7 @@ export default {
         }
         const showAllCommands = async () => {
             let currentCategory = ''
-            let output = '**' + messages.available_commands[lang] + '**\n'
+            let output = `**${messages.available_commands[lang]}**\n`
             const sorted = myCommands
                 .array()
                 .sort((p, c) =>
@@ -73,10 +73,10 @@ export default {
             sorted.forEach((c) => {
                 const cat = c.help.category
                 if (currentCategory !== cat) {
-                    output += `\n __${toProperCase(cat.slice(0, 45))}:__ \n`
+                    output += `\n __${properCase(cat.slice(0, 45))}:__ \n`
                     currentCategory = cat
                 }
-                output += '`' + `${c.name}` + '`' + ` |`
+                output += `\` ${c.name} \` |`
             })
             output += `\n\n> ${messages.moreinformation[lang]}`
             interaction.embed.default(output)

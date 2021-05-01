@@ -1,3 +1,9 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable consistent-return */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable no-case-declarations */
 import MyClient from '../classes/client'
 import Interaction from '../classes/interaction'
 
@@ -129,8 +135,9 @@ export default {
         description: raw.description,
     },
     run: async (client: MyClient, interaction: Interaction) => {
-        let action, commandopts
-        for (const index in interaction.data.options) {
+        let action
+        let commandopts
+        for (let index = 0; index < interaction.data.options.length; index += 1) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
                 commandopts = interaction.data.options[index].options
@@ -153,12 +160,17 @@ export default {
                 vars: new Map(),
                 lang: 'en',
             }
+        // eslint-disable-next-line no-nested-ternary
         const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
         if (!action) return
+        // eslint-disable-next-line default-case
         switch (action) {
             case 'set':
-                let staffrole, userrole, todochannel
-                for (const i in commandopts) {
+                let staffrole
+                let userrole
+                let todochannel
+                for (let i = 0; i < commandopts.length; i += 1) {
+                    // eslint-disable-next-line default-case
                     switch (commandopts[i].name) {
                         case 'prefix':
                             conf.prefix = commandopts[i].value
@@ -188,10 +200,10 @@ export default {
                 }
                 if (todochannel) {
                     try {
-                        let guild = await client.guilds.fetch(interaction.guild_id)
-                        let chann = await guild.channels.fetch(todochannel)
+                        const guild = await client.guilds.fetch(interaction.guild_id)
+                        const chann = await guild.channels.fetch(todochannel)
                         // @ts-expect-error
-                        let testmsg = await chann.send(
+                        const testmsg = await chann.send(
                             client.embed.default(
                                 'This is a test message to ensure I have all the permissions I need.',
                                 null,
@@ -223,7 +235,7 @@ export default {
                 )
                 break
             case 'view':
-                let output = {
+                const output = {
                     prefix: conf.prefix,
                     todochannel: conf.todochannel,
                     readonlychannel: conf.readonlychannel,
@@ -236,6 +248,7 @@ export default {
 
                 let outputString = '**Current Settings** \n\n'
 
+                // eslint-disable-next-line guard-for-in
                 for (const i in output) {
                     switch (i) {
                         case 'readonlychannel':
@@ -255,7 +268,7 @@ export default {
                                     output[i] === undefined ? 'undefined' : output[i]
                                 }\` \n`
                             else {
-                                let temp = []
+                                const temp = []
                                 if (output[i]) output[i].forEach(async (role) => temp.push(`<@&${role}>`))
                                 outputString += `> ${i}  =>  ${
                                     output[i] === undefined ? 'undefined' : temp.join(', ')
@@ -271,7 +284,7 @@ export default {
 
                 const embedToSend = client.embed.default(outputString)
                 embedToSend.setThumbnail(client.user.avatarURL())
-                //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+                // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
                 embedToSend.setFooter(
                     `Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`,
                     `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`,
@@ -280,13 +293,14 @@ export default {
 
                 break
             case 'remove':
-                let staffrole_to_remove, userrole_to_remove
-                for (const i in commandopts) {
+                let staffrole_to_remove
+                let userrole_to_remove
+                for (let i = 0; i < commandopts.length; i += 1) {
                     if (commandopts[i].name === 'staffrole') staffrole_to_remove = commandopts[i].value
                     if (commandopts[i].name === 'userrole') userrole_to_remove = commandopts[i].value
                 }
                 if (staffrole_to_remove) {
-                    let staffroles = []
+                    const staffroles = []
                     Object.values(conf.staffroles).forEach((value) => staffroles.push(value))
                     if (!staffroles.includes(staffrole_to_remove))
                         return interaction.errorDisplay(messages.rolenotinarray[lang])
@@ -294,7 +308,7 @@ export default {
                     conf.staffroles = staffroles
                 }
                 if (userrole_to_remove) {
-                    let userroles = []
+                    const userroles = []
                     Object.values(conf.userroles).forEach((value) => userroles.push(value))
                     if (!conf.userroles.includes(userrole_to_remove))
                         return interaction.errorDisplay(messages.rolenotinarray[lang])

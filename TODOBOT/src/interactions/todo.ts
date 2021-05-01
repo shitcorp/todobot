@@ -99,52 +99,58 @@ export default {
         }
 
         // eslint-disable-next-line array-callback-return
-        Object.entries(interaction.data.options).map(function ([key, value]: [
-            key: any,
-            value: Record<any, any>,
-        ]) {
-            console.log(key, value)
-            switch (value.name) {
-                case 'title':
-                    todoobject.title = value.value
-                    break
-                case 'content':
-                    todoobject.content = value.value
-                    break
-                case 'tasks':
-                    if (value.value === '') return
-                    if (value.value.includes(';')) {
-                        // split the string containing the tasks at the semicolon and filter out all empty
-                        // tasks as well as task strings that are too long. If theres more than 10, were just
-                        // capping the array by setting the length to 10
-                        const temp = value.value
-                            .split(';')
-                            .filter((task) => task !== '' && task.length < 1020)
-                        if (temp.length > 10) temp.length = 10
-                        todoobject.tasks = temp
-                    } else {
-                        todoobject.tasks = [value.value]
-                    }
-                    break
-                case 'loop':
-                    todoobject.loop = value.value
-                    break
-                case 'category':
-                    todoobject.category = value.value
-                    break
-                case 'url':
-                    todoobject.attachlink = `url_${value.value}`
-                    break
-                case 'image':
-                    client.cache.get(`${interaction.guild_id}${value.value}`, (res) => {
-                        console.log(res)
-                    })
-                    break
-                default:
-                    console.log('fuck eslint')
-                    break
-            }
-        })
+        Object.entries(interaction.data.options).map(
+            ([key, value]: [
+                key: any,
+                value: Record<any, any>,
+                // eslint-disable-next-line array-callback-return
+            ]) => {
+                // eslint-disable-next-line no-console
+                console.log(key, value)
+                switch (value.name) {
+                    case 'title':
+                        todoobject.title = value.value
+                        break
+                    case 'content':
+                        todoobject.content = value.value
+                        break
+                    case 'tasks':
+                        if (value.value === '') return
+                        if (value.value.includes(';')) {
+                            // split the string containing the tasks at the semicolon and filter out all empty
+                            // tasks as well as task strings that are too long. If theres more than 10, were just
+                            // capping the array by setting the length to 10
+                            const temp = value.value
+                                .split(';')
+                                .filter((task) => task !== '' && task.length < 1020)
+                            if (temp.length > 10) temp.length = 10
+                            todoobject.tasks = temp
+                        } else {
+                            todoobject.tasks = [value.value]
+                        }
+                        break
+                    case 'loop':
+                        todoobject.loop = value.value
+                        break
+                    case 'category':
+                        todoobject.category = value.value
+                        break
+                    case 'url':
+                        todoobject.attachlink = `url_${value.value}`
+                        break
+                    case 'image':
+                        client.cache.get(`${interaction.guild_id}${value.value}`, (res) => {
+                            // eslint-disable-next-line no-console
+                            console.log(res)
+                        })
+                        break
+                    default:
+                        // eslint-disable-next-line no-console
+                        console.log('fuck eslint')
+                        break
+                }
+            },
+        )
 
         let todomsg
         try {

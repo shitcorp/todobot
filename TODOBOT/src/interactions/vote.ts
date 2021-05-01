@@ -1,7 +1,7 @@
+import { MessageEmbed } from 'discord.js-light'
+
 import MyClient from '../classes/client'
 import Interaction from '../classes/interaction'
-
-import { MessageEmbed } from 'discord.js-light'
 
 const raw = {
     name: 'vote',

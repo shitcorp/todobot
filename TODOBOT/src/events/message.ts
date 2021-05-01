@@ -37,6 +37,7 @@ export default async (client, message) => {
             message.content.indexOf('{{') + 2,
             message.content.indexOf('}}'),
         )}`
+        // eslint-disable-next-line no-console
         console.log(key)
         // using guildid together with the img title so
         // later on we only have to search for guildid+img

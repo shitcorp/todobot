@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import MyClient from '../classes/client'
 import Interaction from '../classes/interaction'
 
@@ -45,8 +46,10 @@ export default {
         description: raw.description,
     },
     run: async (client: MyClient, interaction: Interaction) => {
-        let text, image, hidden
-        for (let i = 0; i < interaction.data.options.length; i++) {
+        let text: string
+        let image: string
+        let hidden: boolean
+        for (let i = 0; i < interaction.data.options.length; i += 1) {
             if (interaction.data.options[i].name === 'text') text = interaction.data.options[i].value
             if (interaction.data.options[i].name === 'image') image = interaction.data.options[i].value
             if (interaction.data.options[i].name === 'hidden') hidden = interaction.data.options[i].value
@@ -60,18 +63,14 @@ export default {
         if (image && image.startsWith(`https://`)) {
             embed.setImage(image)
         }
-        //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+        // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
         embed.setThumbnail(
-            'https://cdn.discordapp.com/avatars/' +
-                interaction.member.user.id +
-                '/' +
-                interaction.member.user.avatar +
-                '.png',
+            `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`,
         )
         embed.setDescription(`> ${text}`)
         embed.setFooter(footer)
 
-        let G = client.guilds.cache
+        const G = client.guilds.cache
             .get(process.env.MOTHER_GUILD)
             .channels.cache.get(process.env.SUGGESTIONS_CHANNEL)
         try {

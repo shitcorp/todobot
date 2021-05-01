@@ -49,8 +49,8 @@ export default (client) =>
          *
          */
 
-        // eslint-disable-next-line no-shadow
-        const regexHandler = async (tag) => {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        const regexHandler = async (tag: any) => {
             if (tag.includes('<%')) {
                 for (let i = 0; i < conf.vars.length; i += 1) {
                     const variable = conf.vars[i]
@@ -78,7 +78,7 @@ export default (client) =>
             }
         }
 
-        // eslint-disable-next-line no-shadow
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const embedhandler = async (tag) => {
             let cont = tag.replace('<EMBED>', '').replace('</EMBED>', '')
             const obj: Record<string | number, unknown> = {}

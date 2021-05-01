@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import MyClient from '../classes/client'
 import Interaction from '../classes/interaction'
 

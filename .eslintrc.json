@@ -8,7 +8,7 @@
       "@typescript-eslint/semi": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "import/prefer-default-export": "off",
-      "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+      "no-underscore-dangle": ["error", { "allow": ["_id", "_client", "_token"] }]
     },
     "extends": ["airbnb-typescript/base", "prettier"],
     "parser": "@typescript-eslint/parser",
@@ -17,5 +17,6 @@
       "sourceType": "module",
       "project": "./tsconfig.json"
     },
-    "plugins": ["@typescript-eslint", "prettier"]
+    "plugins": ["@typescript-eslint", "prettier"],
+    "ignorePatterns": "**/*register.*"
   }

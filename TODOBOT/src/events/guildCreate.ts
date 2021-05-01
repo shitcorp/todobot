@@ -5,13 +5,13 @@ export default async (client, guild) => {
     client.logger.mongo(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot.`)
     // if we have the guildconfig already saved or cached we should
     // return so we get no errors
-    let confcheck = await configmodel.findOne({ _id: guild.id })
-    let cachecheck = await client.cache.get(guild.id)
+    const confcheck = await configmodel.findOne({ _id: guild.id })
+    const cachecheck = await client.cache.get(guild.id)
     if (confcheck) return
     if (cachecheck) return
 
-    //create the configobject and insert the default settings
-    let configobject = {
+    // create the configobject and insert the default settings
+    const configobject = {
         _id: guild.id,
         prefix: '//',
         color: 'BLUE',
@@ -30,7 +30,7 @@ export default async (client, guild) => {
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.name === 'bot-commands') ||
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.name === 'general') ||
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.position === 0)
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setAuthor('Hello!')
         .setFooter(client.user.username)
         .setTimestamp()
@@ -41,14 +41,14 @@ export default async (client, guild) => {
         .setColor('#2C2F33')
     channel.send(embed)
 
-    let motherGuild = client.guilds.cache
+    const motherGuild = client.guilds.cache
         .get(process.env.MOTHER_GUILD)
-        .channels.cache.get('724022857767583805')
-    let newserv = new MessageEmbed()
+        .channels.cache.get('724031336351793263')
+    const newserv = new MessageEmbed()
         .setTitle(`New guild has been joined.`)
         .setThumbnail(guild.iconURL)
         .setDescription(`${guild.name} (ID: ${guild.id})`)
-        //.addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
+        // .addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
         .addField(`Region:`, `> ${guild.region}`, true)
         .addField(`Membercount:`, `> ${guild.memberCount}`, true)
         .setColor('GREEN')

@@ -4,26 +4,43 @@ import http from '../modules/util/http'
 
 class Interaction {
     client: any
+
     application_id: any
+
     id: any
+
     token: any
+
     guild_id: any
+
     guild: any
+
     channel_id: any
+
     channel: any
+
     data: any
+
     member: any
+
     GuildMember: GuildMember
+
     type: any
+
     timestamp: number
+
     lang: any
+
     conf: any
+
     level: any
+
     embed: {
         default: (...args: any[]) => any
         success: (...args: any[]) => any
         error: (...args: any[]) => any
     }
+
     constructor(client, rawInteraction) {
         this.client = client
         this.application_id = rawInteraction.application_id
@@ -75,7 +92,7 @@ class Interaction {
         http.setToken(process.env.TOKEN)
         if (!timeout)
             // eslint-disable-next-line no-return-await
-            return await http.delete(
+            return http.delete(
                 `https://discord.com/api/v8/webhooks/${process.env.APPLICATION_ID}/${this.token}/messages/@original`,
             )
         setTimeout(async () => {

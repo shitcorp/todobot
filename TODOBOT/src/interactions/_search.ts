@@ -74,6 +74,7 @@ export default {
         description: raw.description,
     },
     run: async (client: MyClient, interaction: Interaction) => {
+        // eslint-disable-next-line no-console
         console.log(interaction.conf)
     },
 }

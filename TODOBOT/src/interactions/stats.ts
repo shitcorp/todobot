@@ -1,8 +1,8 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
-
 import os from 'os'
 import { MessageEmbed } from 'discord.js-light'
+import MyClient from '../classes/client'
+
+import Interaction from '../classes/interaction'
 import todomodel from '../modules/models/todomodel'
 
 const raw = {
@@ -26,6 +26,7 @@ export default {
     },
     run: async (client: MyClient, interaction: Interaction) => {
         const all = await todomodel.find({})
+        // eslint-disable-next-line global-require
         const pkg = require('../../package.json')
         const load = os.loadavg()
         const chan = await client.guilds.cache
@@ -34,7 +35,7 @@ export default {
         // @ts-expect-error
         const msg = await chan.send('ping.')
         const statembed = new MessageEmbed()
-            .setAuthor(client.user.username + ' Statistics', client.user.avatarURL())
+            .setAuthor(`${client.user.username} Statistics`, client.user.avatarURL())
             .addField(
                 '• Mem Usage',
                 `> ${(process.memoryUsage().heapUsed / 1000 / 1000).toFixed(2)} MB`,
@@ -48,14 +49,10 @@ export default {
             .addField('• Ping', `> ${msg.createdTimestamp - interaction.timestamp}ms.`, true)
             .addField('• API Latency', `> ${Math.round(client.ws.ping)}ms`, true)
             .addField('• Repo', `${client.util.get('emojiMap').github} [Github](${pkg.repository.url})`, true)
-            //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+            // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
             .setFooter(
                 `Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`,
-                'https://cdn.discordapp.com/avatars/' +
-                    interaction.member.user.id +
-                    '/' +
-                    interaction.member.user.avatar +
-                    '.png',
+                `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`,
             )
             .setColor('BLUE')
         try {

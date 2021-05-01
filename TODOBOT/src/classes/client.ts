@@ -1,21 +1,30 @@
-import { Client, ClientOptions } from 'discord.js-light'
+import { Client } from 'discord.js-light'
 import { promisify } from 'util'
 import Enmap from 'enmap'
 import redis from 'redis'
-import embedManager from './embedManager'
+import EmbedManager from './embedManager'
 
 class MyClient extends Client {
     cooldown: number
+
     commands: Enmap<string | number, any>
+
     aliases: Enmap<string | number, any>
+
     interactions: Enmap<string | number, any>
+
     apm: any
+
     util: Map<any, any>
+
     logger: any
+
     cache: redis.RedisClient
-    embed: embedManager
+
+    embed: EmbedManager
+
     private _token: string
-    private _client: Client
+
     // apm instance
     constructor(clientOpts: any, apm: any, token: string) {
         super(clientOpts)
@@ -49,7 +58,7 @@ class MyClient extends Client {
         this.cache.on('error', (err) => this.logger.debug(err))
         this.cache.on('ready', () => this.logger.redis(`Redis client is ready.`))
 
-        this.embed = new embedManager(this)
+        this.embed = new EmbedManager(this)
     }
 
     getAsync = () => promisify(this.cache.get).bind(this.cache)
