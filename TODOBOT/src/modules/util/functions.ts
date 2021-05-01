@@ -21,7 +21,7 @@ export default (client) => {
                 props.init(client)
             }
             props.help.category = category
-            client.setCommand(props.help.name, props)
+            client.setCommand(props.help.name, props.default)
             props.conf.aliases.forEach((alias) => {
                 client.setAlias(alias, props.help.name)
             })

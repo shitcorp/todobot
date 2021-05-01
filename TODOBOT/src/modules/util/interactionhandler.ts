@@ -38,7 +38,7 @@ export default async (client, raw_interaction) => {
                 username: `${interaction.member.user.username}#${interaction.member.user.discriminator}`,
             })
             const permSpan = trans.startSpan('permission_checks', 'permission_checks')
-            const conf = await client.getconfig(interaction.guild_id)
+            const conf = await client.util.get('getconfig')(interaction.guild_id)
             // if the user or channel are blacklisted we return an error
             if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id))
                 return interaction.errorDisplay(
@@ -62,7 +62,8 @@ export default async (client, raw_interaction) => {
             // a staff role so we need something to detemrmine they are permitted
             if (interaction.GuildMember.hasPermission('MANAGE_GUILD')) interaction.level = 2
             const cmd = client.interactions.get(interaction.data.name)
-            if (interaction.level < client.permMap[cmd.conf.permLevel])
+            console.log(client.util.get('permMap')[cmd.conf.permLevel])
+            if (interaction.level < client.util.get('permMap')[cmd.conf.permLevel])
                 return interaction.errorDisplay(
                     messages.permissionleveltoolow[
                         interaction.conf ? (interaction.conf.lang ? interaction.conf.lang : 'en') : 'en'
@@ -79,11 +80,13 @@ export default async (client, raw_interaction) => {
         } catch (e) {
             client.logger.debug(e)
             interaction.errorDisplay(
-                messages.generalerror[
-                    interaction.conf ? (interaction.conf.lang ? interaction.conf.lang : 'en') : 'en'
-                ],
+                interaction.member.user.id === process.env.OWNER
+                    ? e.toString()
+                    : messages.generalerror[
+                          interaction.conf ? (interaction.conf.lang ? interaction.conf.lang : 'en') : 'en'
+                      ],
             )
-            if (interaction.member.user.id === process.env.OWNER) interaction.errorDisplay(e)
+
             client.apm.endTransaction(`fail_interaction_${interaction.data.name}_handled`)
         }
     }

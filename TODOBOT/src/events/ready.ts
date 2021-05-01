@@ -1,6 +1,6 @@
 import { stati } from '../data/stati.json'
 import { Agenda } from 'agenda'
-import blapi from 'blapi'
+import { setLogging, handle } from 'blapi'
 
 const agenda = new Agenda({
     db: {
@@ -37,11 +37,11 @@ export default async (client) => {
     /**
      * Botlist updater
      **/
-    blapi.setLogging({
+    setLogging({
         logger: client.logger,
     })
     const apiKeys = {
         'top.gg': process.env.TOPGG_TOKEN,
     }
-    blapi.handle(client, apiKeys, 60)
+    handle(client, apiKeys, 60)
 }

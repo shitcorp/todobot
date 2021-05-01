@@ -5,5 +5,5 @@
     "env": {
         "NODE_ENV": "development"
     },
-    "exec": "ts-node -r dotenv/config src/index.ts dotenv_config_path=./.env.dev"
+    "exec": "ts-node -r dotenv/config src/index.ts dotenv_config_path=./.env"
 }

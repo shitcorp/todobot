@@ -102,7 +102,7 @@ class Interaction {
     }
 
     errorDisplay(msg: string) {
-        this.replyWithMessageAndDeleteAfterAWhile(this.client.error(msg))
+        this.replyWithMessageAndDeleteAfterAWhile(this.client.embed.error(msg))
     }
 
     defaultEmbed(msg: string, type = 4, color = 'BLUE') {

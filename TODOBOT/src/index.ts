@@ -6,11 +6,11 @@ require('dotenv').config()
 import apm from 'elastic-apm-node'
 
 // apm.start({
-//    serverUrl: process.env.DEBUG_URL_APM_SERVER,
-//    serviceName: process.env.BOT_NAME,
-//    environment: process.env.ELASTIC_ENV,
-//    // uncomment this for troubleshooting the apm agent
-//    // logLevel: 'trace',
+//     serverUrl: process.env.DEBUG_URL_APM_SERVER,
+//     serviceName: process.env.BOT_NAME,
+//     environment: process.env.ELASTIC_ENV,
+//     // uncomment this for troubleshooting the apm agent
+//     // logLevel: 'trace',
 // })
 
 import { Agenda } from 'agenda'
@@ -29,33 +29,42 @@ const agenda = new Agenda({
     },
 })
 
-const client = new MyClient(apm)
+const clientOpts = {
+    partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+    disableMentions: 'everyone',
+    cacheGuilds: true,
+    cacheChannels: true,
+    cacheOverwrites: false,
+    cacheRoles: true,
+    cacheEmojis: true,
+    cachePresences: false,
+    ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] },
+}
 
-require('./modules/util/functions.js')(client)
-require('./modules/util/permissions')(client)
-require('./modules/util/emojis')(client)
-require('./modules/handlers/mongohandler')(client)
+const client = new MyClient(
+    clientOpts,
+    apm,
+    process.env.DEV === 'true' ? process.env.DEV_TOKEN : process.env.TOKEN,
+)
 
-// const loadAndInjectClient = async (path) => {
-//     ;(await readdir(path)).forEach((handlerFile) => {
-//         // eslint-disable-next-line import/no-dynamic-require
-//         // eslint-disable-next-line global-require
-//         if (handlerFile.endsWith('.js')) require(`${path}/${handlerFile}`)(client)
-//     })
-// }
+const handlers = [
+    './modules/handlers/mongohandler',
+    './modules/handlers/taghandler',
+    './modules/util/functions.js',
+    './modules/util/permissions',
+    './modules/util/emojis',
+].forEach((f) => require(f).default(client))
 
 // eslint-disable-next-line import/newline-after-import
 ;(async function init() {
     // connect to mongodb and pull guild configs into cache
-    const dbinit = client.getUtil('dbinit')
-    dbinit()
+    await client.util.get('dbinit')()
 
-    async function loadCategory(category) {
+    async function loadCategory(category: string) {
         const cmdFilesFun = await readdir(`${__dirname}/commands/${category}/`)
         cmdFilesFun.forEach((f) => {
             if (!f.endsWith('.js')) return
-            const load = client.getUtil('loadCommand')
-            const response = load(category, f)
+            const response = client.util.get('loadCommand')(category, f)
             if (response) throw new Error(response)
         })
     }
@@ -72,24 +81,21 @@ require('./modules/handlers/mongohandler')(client)
             message: `Loading: ${eventName}`,
         })
         const event = require(`./events/${file}`)
-        client.on(eventName, event.bind(null, client))
+        client.on(eventName, event.default.bind(null, client))
     })
     ;(await readdir(`${__dirname}/interactions/`)).forEach((file) => {
         if (!file.includes('.template'))
-            client.setInteraction(file.split('.')[0], require(`${__dirname}/interactions/${file}`))
+            client.setInteraction(file.split('.')[0], require(`${__dirname}/interactions/${file}`).default)
     })
 
     // start the API
-    // eslint-disable-next-line no-unused-vars
-    const web = new API(client, Number(process.env.HEALTH_ENDPOINT_PORT))
+    // eslint-disable-next-line no-new
+    new API(client, Number(process.env.HEALTH_ENDPOINT_PORT))
 
-    // login the bot
-    client.login(process.env.DEV === 'true' ? process.env.DEV_TOKEN : process.env.TOKEN)
+    // start the bot
+    client.start()
     // take care of scheduling
-    agenda.define('reminderjob', async () => {
-        const job = client.getUtil('reminderjob')
-        job()
-    })
+    agenda.define('reminderjob', async () => client.util.get('reminderjob')())
 
     await agenda.start()
     // Alternatively, you could also do: (every 1 minute)

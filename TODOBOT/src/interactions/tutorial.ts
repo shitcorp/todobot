@@ -7,7 +7,7 @@ import Interaction from '../classes/interaction'
  * Kindly stolen from https://github.com/Giuliopime/HelpDesk/blob/master/commands/Utility/tutorial.js
  */
 const { MessageEmbed } = require('discord.js-light')
-const pkg = require('../../package.json')
+const pkg = require('../../../package.json')
 
 const raw = {
     name: 'tutorial',

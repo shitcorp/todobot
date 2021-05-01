@@ -78,21 +78,31 @@ export default {
         const todoobject = {
             _id: uuidv4().slice(0, 13),
             title: '',
+            content: '',
+            category: null,
             guildid: interaction.guild_id,
             state: 'open',
             submittedby: interaction.member.user.id,
             timestamp: Date.now(),
             time_started: '',
             time_finished: '',
+            tasks: null,
             assigned: [],
             severity: 5,
             loop: false,
+            attachlink: null,
             readonlychannel: '',
             readonlymessage: '',
+            shared: false,
+            todomsg: null,
+            todochannel: null,
         }
 
         // eslint-disable-next-line array-callback-return
-        Object.entries(interaction.data.options).map(([key, value]) => {
+        Object.entries(interaction.data.options).map(function ([key, value]: [
+            key: any,
+            value: Record<any, any>,
+        ]) {
             console.log(key, value)
             switch (value.name) {
                 case 'title':
@@ -147,7 +157,8 @@ export default {
                             : conf.todochannel
                         : conf.todochannel,
                 )
-            todomsg = await todochannel.send(await client.todo(todoobject))
+            // @ts-expect-error
+            todomsg = await todochannel.send(await client.embed.todo(todoobject))
         } catch (e) {
             client.logger.debug(e)
             return interaction.errorDisplay(messages.unabletoposttodo[lang])
@@ -155,7 +166,7 @@ export default {
 
         if (!todomsg) return interaction.errorDisplay(messages.unabletoposttodo[lang])
 
-        interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.todoposted[lang]))
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.embed.success(messages.todoposted[lang]))
 
         // were saving the channel for future reference, if the todo channel gets changed
         // and we repost a task/todo and put the link to the original message. Dont know
@@ -169,12 +180,12 @@ export default {
         todoobject.shared = false
 
         try {
-            await todomsg.react(client.emojiMap.edit)
-            await todomsg.react(client.emojiMap.accept)
+            await todomsg.react(client.util.get('emojiMap').edit)
+            await todomsg.react(client.util.get('emojiMap').accept)
         } catch (e) {
             interaction.errorDisplay(messages.unabletoposttodo[lang])
         }
         // save the todo to database
-        await client.settodo(todoobject)
+        await client.util.get('settodo')(todoobject)
     },
 }

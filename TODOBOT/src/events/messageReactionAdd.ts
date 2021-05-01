@@ -6,7 +6,7 @@ import todo from '../classes/todo'
 import messages from '../localization/messages'
 import findCommonElements from '../modules/util/findCommonElements'
 
-module.exports = async (client, messageReaction, user) => {
+export default async (client, messageReaction, user) => {
     const reactionTrans = client.apm.startTransaction('MessageReactionAddEvent', 'eventhandler')
 
     client.apm.setUserContext({

@@ -1,4 +1,4 @@
-import { Client } from 'discord.js-light'
+import { Client, ClientOptions } from 'discord.js-light'
 import { promisify } from 'util'
 import Enmap from 'enmap'
 import redis from 'redis'
@@ -14,19 +14,13 @@ class MyClient extends Client {
     logger: any
     cache: redis.RedisClient
     embed: embedManager
+    private _token: string
+    private _client: Client
     // apm instance
-    constructor(apm: any) {
-        super({
-            partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
-            disableMentions: 'everyone',
-            cacheGuilds: true,
-            cacheChannels: true,
-            cacheOverwrites: false,
-            cacheRoles: true,
-            cacheEmojis: true,
-            cachePresences: false,
-            ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] },
-        })
+    constructor(clientOpts: any, apm: any, token: string) {
+        super(clientOpts)
+
+        this._token = token
 
         this.cooldown = Number(process.env.CMD_COOLDOWN)
 
@@ -102,6 +96,10 @@ class MyClient extends Client {
 
     getInteraction(name) {
         return this.interactions.get(name)
+    }
+
+    start() {
+        this.login(this._token)
     }
 }
 
