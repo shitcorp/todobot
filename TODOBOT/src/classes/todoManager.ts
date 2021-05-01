@@ -2,23 +2,30 @@
 import Todomodel from '../modules/models/todomodel'
 
 export default class TodoManager {
-    // eslint-disable-next-line class-methods-use-this
-    getOneTodo(_id: string) {
+    getOne(_id: string) {
         return Todomodel.findOne({ _id })
     }
 
+    /**
+     * @method getByMsg
+     * @param {String} todomsg todomsg(id)
+     * @param {String} guildid guildid(id)
+     *
+     * returns the todo by message id and channel
+     */
     getByMsg(todomsg: string, guildid: string) {
         return Todomodel.findOne({ todomsg, guildid })
     }
 
-    /**
-     *  client.decorate('getguildtodos', async (guildid) => todomodel.find({ guildid }))
+    getGuild(guildid: string) {
+        return Todomodel.find({ guildid })
+    }
 
-        client.decorate('querytodos', (queryobj) => todomodel.find({ queryobj }))
+    getUser(user: string) {
+        return Todomodel.find({ submittedby: user })
+    }
 
-        client.decorate('getusertodos', (user) => todomodel.find({ submittedby: user }))
-
-        client.decorate('getprocessedtodos', (user) => todomodel.find({ assigned: user }))
-
-    */
+    getProcessed(user: string) {
+        return Todomodel.find({ assigned: user })
+    }
 }

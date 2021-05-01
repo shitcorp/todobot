@@ -3,6 +3,9 @@ import { promisify } from 'util'
 import Enmap from 'enmap'
 import redis from 'redis'
 import EmbedManager from './embedManager'
+import TodoManager from './todoManager'
+import ConfigManager from './configManager'
+import ReminderManager from './reminderManager'
 
 class MyClient extends Client {
     cooldown: number
@@ -22,6 +25,12 @@ class MyClient extends Client {
     cache: redis.RedisClient
 
     embed: EmbedManager
+
+    todos: TodoManager
+
+    config: ConfigManager
+
+    reminder: ReminderManager
 
     private _token: string
 
@@ -59,6 +68,9 @@ class MyClient extends Client {
         this.cache.on('ready', () => this.logger.redis(`Redis client is ready.`))
 
         this.embed = new EmbedManager(this)
+        this.config = new ConfigManager(this)
+        this.todos = new TodoManager()
+        this.reminder = new ReminderManager()
     }
 
     getAsync = () => promisify(this.cache.get).bind(this.cache)

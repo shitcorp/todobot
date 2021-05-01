@@ -1,8 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable import/no-dynamic-require */
-require('dotenv').config()
-
 import apm from 'elastic-apm-node'
 
 // apm.start({
@@ -17,6 +15,8 @@ import { Agenda } from 'agenda'
 import MyClient from './classes/client'
 import API from './classes/api'
 import handle from './modules/util/interactionhandler'
+
+require('dotenv').config()
 
 const readdir = require('util').promisify(require('fs').readdir)
 
@@ -47,6 +47,7 @@ const client = new MyClient(
     process.env.DEV === 'true' ? process.env.DEV_TOKEN : process.env.TOKEN,
 )
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handlers = [
     './modules/handlers/mongohandler',
     './modules/handlers/taghandler',
