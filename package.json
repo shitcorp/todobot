@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "nodemon",
-        "start": "npm run build && cp TODOBOT/src/localization TODOBOT/dist/localization -r && node TODOBOT/dist/index.js",
+        "start": "npm run build && cp TODOBOT/src/localization TODOBOT/dist/localization -r && node TODOBOT/dist/index.js | pino-pretty -c -f -m message",
         "dc:up": "docker-compose up -d",
         "dc:down": "docker-compose down",
         "update": "ncu -u",
