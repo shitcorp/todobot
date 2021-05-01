@@ -1,9 +1,9 @@
 /* eslint-disable no-shadow */
 import mongoose from 'mongoose'
 import { promisify } from 'util'
-import { configmodel } from '../models/configmodel'
-import { todomodel } from '../models/todomodel'
-import { remindermodel } from '../models/remindermodel'
+import configmodel from '../models/configmodel'
+import todomodel from '../models/todomodel'
+import remindermodel from '../models/remindermodel'
 
 const { MONGO_CONNECTION } = process.env
 
@@ -105,8 +105,8 @@ export default (client) => {
      * @param {Object} configobj
      */
 
-    client.decorate('updateconfig', async (_id, configobj) => {
-        configmodel.updateOne({ _id }, configobj, (err) => {
+    client.decorate('updateconfig', async (_id: string, configobj) => {
+        configmodel.updateOne({ _id }, configobj, null, (err) => {
             if (err) client.logger.debug(err)
             client.invalidateCache(_id)
         })

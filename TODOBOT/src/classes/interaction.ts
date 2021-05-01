@@ -1,5 +1,5 @@
 import { GuildMember } from 'discord.js-light'
-import { Colors } from '../modules/util/colors'
+import Colors from '../modules/util/colors'
 import http from '../modules/util/http'
 
 class Interaction {

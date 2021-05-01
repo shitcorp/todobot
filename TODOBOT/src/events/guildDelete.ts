@@ -1,10 +1,8 @@
-import { configmodel } from '../modules/models/configmodel'
+import configmodel from '../modules/models/configmodel'
 
 export default async (client, guild) => {
     await client.cache.del(guild.id)
-    await configmodel.deleteOne({ _id: guild.id }, (err) => {
-        if (err) client.logger.debug(err)
-    })
+    await configmodel.deleteOne({ _id: guild.id })
     // const { RichEmbed } = require('discord.js')
     // let G = client.guilds.cache.get("710022036252262485").channels.cache.get("724031336351793263")
     // let newserv = new RichEmbed()

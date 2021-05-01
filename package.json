@@ -4,8 +4,8 @@
     "description": "Todo bot for mick, maybe going to make this somewhat advanced",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon TODOBOT/index.js",
-        "start": "node TODOBOT/index.js",
+        "dev": "nodemon",
+        "start": "npm run build && node TODOBOT/dist/index.js",
         "dc:up": "docker-compose up -d",
         "dc:down": "docker-compose down",
         "update": "ncu -u",
@@ -15,9 +15,10 @@
         "release:pre": "npm run release -- --prerelease",
         "release:alpha": "npm run release -- --prerelease alpha",
         "release:beta": "npm run release -- --prerelease beta",
-        "register": "node TODOBOT/modules/util/register.js",
+        "register": "npm run build && node TODOBOT/dist/modules/util/register.js",
         "docs": "node DOCGEN/gen.js",
-        "md2js": "node DOCGEN/md2js.js"
+        "md2js": "node DOCGEN/md2js.js",
+        "build": "tsc --resolveJsonModule"
     },
     "config": {
         "commitizen": {
@@ -55,17 +56,22 @@
     "devDependencies": {
         "@types/express": "^4.17.11",
         "@types/redis": "^2.8.28",
+        "@typescript-eslint/eslint-plugin": "^4.22.0",
+        "@typescript-eslint/parser": "^4.22.0",
         "changelog-parser": "^2.8.0",
         "commitizen": "^4.2.3",
         "eslint": "^7.25.0",
         "eslint-config-airbnb-base": "^14.2.1",
-        "eslint-config-prettier": "^8.2.0",
+        "eslint-config-airbnb-typescript": "^12.3.1",
+        "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-import": "^2.22.1",
         "eslint-plugin-prettier": "^3.4.0",
         "i": "^0.3.6",
         "npm": "^7.11.1",
         "prettier": "^2.2.1",
-        "standard-version": "^9.2.0"
+        "standard-version": "^9.2.0",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.4"
     },
     "repository": {
         "type": "git",

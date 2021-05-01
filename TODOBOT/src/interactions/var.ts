@@ -1,3 +1,6 @@
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
 const messages = require('../localization/messages')
 
 const raw = {
@@ -66,7 +69,7 @@ const raw = {
     ],
 }
 
-module.exports = {
+export default {
     raw,
     id: '',
     name: raw.name,
@@ -80,20 +83,20 @@ module.exports = {
         category: 'Utility',
         description: raw.description,
     },
-    run: async (client, interaction) => {
+    run: async (client: MyClient, interaction: Interaction) => {
         const conf = interaction.conf
         const lang = interaction.lang
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
         if (!conf.vars) conf.vars = { example: 'This is an example variable' }
-        const variableMap = await client.mapBuilder(conf.vars)
+        const variableMap = await client.util.get('mapBuilder')(conf.vars)
         let action, commandopts, name, value
 
-        for (index in interaction.data.options) {
+        for (const index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
                 commandopts = interaction.data.options[index].options
         }
-        for (i in commandopts) {
+        for (const i in commandopts) {
             if (commandopts[i].name === 'name') name = commandopts[i].value
             if (commandopts[i].name === 'value') value = commandopts[i].value
         }
@@ -104,9 +107,9 @@ module.exports = {
                 if (variableMap.get(name)) return interaction.errorDisplay(messages.varalreadyexists[lang])
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap
-                await client.updateconfig(interaction.guild_id, conf)
+                await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
-                    client.success(
+                    client.embed.success(
                         messages.savedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
                     ),
                 )
@@ -123,9 +126,9 @@ module.exports = {
             case 'edit':
                 variableMap.set(name, encodeURI(value))
                 conf.vars = variableMap
-                await client.updateconfig(interaction.guild_id, conf)
+                await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
-                    client.success(
+                    client.embed.success(
                         messages.updatedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
                     ),
                 )
@@ -135,9 +138,9 @@ module.exports = {
                 if (!variableMap.has(name)) return interaction.errorDisplay(messages.varmustexist[lang])
                 variableMap.delete(name)
                 conf.vars = variableMap
-                await client.updateconfig(interaction.guild_id, conf)
+                await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
-                    client.success(messages.deletedvar[lang] + ' `${name}`'),
+                    client.embed.success(messages.deletedvar[lang] + ' `${name}`'),
                 )
                 break
         }

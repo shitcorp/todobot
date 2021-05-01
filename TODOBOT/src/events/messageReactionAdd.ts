@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-undef */
-import { todomodel } from '../modules/models/todomodel'
+import todomodel from '../modules/models/todomodel'
 import todo from '../classes/todo'
 import messages from '../localization/messages'
 import findCommonElements from '../modules/util/findCommonElements'
@@ -281,7 +281,8 @@ module.exports = async (client, messageReaction, user) => {
                         todoobj[args[0]] = args[1].includes('+')
                             ? todoobj[args[0]] + args[1].replace('+', ' ')
                             : args[1]
-                        todomodel.updateOne({ _id: todoobj._id }, todoobj, (err) => {
+                        // @ts-ignore
+                        todomodel.updateOne({ _id: todoobj._id }, todoobj, (err: any) => {
                             if (err) return client.logger.debug(err)
                             messageReaction.message.edit(client.todo(todoobj))
                             if (todoobj.shared && todoobj.shared === true)

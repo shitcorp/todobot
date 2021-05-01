@@ -3,9 +3,10 @@
 const interactionRecently = new Set()
 import messages from '../../localization/messages'
 import Interaction from '../../classes/interaction'
+import findCommonElements from './findCommonElements'
 
 // eslint-disable-next-line consistent-return
-module.exports = async (client, raw_interaction) => {
+export default async (client, raw_interaction) => {
     // eslint-disable-next-line global-require
     const getAsync = require('util').promisify(client.cache.get).bind(client.cache)
     const interaction = new Interaction(client, raw_interaction)
@@ -52,10 +53,8 @@ module.exports = async (client, raw_interaction) => {
                     ],
                 )
             // user is a normal bot user
-            // eslint-disable-next-line no-undef
             if (conf && findCommonElements(conf.userroles, interaction.member.roles)) interaction.level = 1
             // user is a staff member and can change bot settings
-            // eslint-disable-next-line no-undef
             if (conf && findCommonElements(conf.staffroles, interaction.member.roles)) interaction.level = 2
             interaction.lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
             interaction.conf = conf

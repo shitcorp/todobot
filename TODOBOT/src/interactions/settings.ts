@@ -1,3 +1,6 @@
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
 const messages = require('../localization/messages')
 
 const raw = {
@@ -111,7 +114,7 @@ const raw = {
     ],
 }
 
-module.exports = {
+export default {
     raw,
     id: '',
     name: raw.name,
@@ -125,15 +128,16 @@ module.exports = {
         category: 'Utility',
         description: raw.description,
     },
-    run: async (client, interaction) => {
+    run: async (client: MyClient, interaction: Interaction) => {
         let action, commandopts
-        for (index in interaction.data.options) {
+        for (const index in interaction.data.options) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
                 commandopts = interaction.data.options[index].options
         }
 
-        let conf = await client.getconfig(interaction.guild_id)
+        let conf = await client.util.get('getconfig')(interaction.guild_id)
+
         if (!conf)
             conf = {
                 _id: interaction.guild_id,
@@ -154,7 +158,7 @@ module.exports = {
         switch (action) {
             case 'set':
                 let staffrole, userrole, todochannel
-                for (i in commandopts) {
+                for (const i in commandopts) {
                     switch (commandopts[i].name) {
                         case 'prefix':
                             conf.prefix = commandopts[i].value
@@ -186,13 +190,15 @@ module.exports = {
                     try {
                         let guild = await client.guilds.fetch(interaction.guild_id)
                         let chann = await guild.channels.fetch(todochannel)
+                        // @ts-expect-error
                         let testmsg = await chann.send(
-                            client.embed(
+                            client.embed.default(
                                 'This is a test message to ensure I have all the permissions I need.',
+                                null,
                             ),
                         )
-                        await testmsg.react(client.emojiMap['edit'])
-                        await testmsg.react(client.emojiMap['accept'])
+                        await testmsg.react(client.util.get('emojiMap').edit)
+                        await testmsg.react(client.util.get('emojiMap').accept)
                         await testmsg.delete()
                         conf.todochannel = todochannel
                     } catch (e) {
@@ -204,15 +210,17 @@ module.exports = {
                 if (userrole) conf.userroles.push(userrole)
 
                 try {
-                    await client.setconfig(conf)
+                    await client.util.get('setconfig')(conf)
                 } catch (e) {
                     try {
-                        await client.updateconfig(interaction.guild_id, conf)
+                        await client.util.get('updateconfig')(interaction.guild_id, conf)
                     } catch (e) {
                         client.logger.debug(e)
                     }
                 }
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedsettings[lang]))
+                interaction.replyWithMessageAndDeleteAfterAWhile(
+                    client.embed.success(messages.savedsettings[lang]),
+                )
                 break
             case 'view':
                 let output = {
@@ -228,7 +236,7 @@ module.exports = {
 
                 let outputString = '**Current Settings** \n\n'
 
-                for (i in output) {
+                for (const i in output) {
                     switch (i) {
                         case 'readonlychannel':
                         case 'todochannel':
@@ -261,7 +269,7 @@ module.exports = {
                     }
                 }
 
-                const embedToSend = client.embed(outputString)
+                const embedToSend = client.embed.default(outputString)
                 embedToSend.setThumbnail(client.user.avatarURL())
                 //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
                 embedToSend.setFooter(
@@ -273,7 +281,7 @@ module.exports = {
                 break
             case 'remove':
                 let staffrole_to_remove, userrole_to_remove
-                for (i in commandopts) {
+                for (const i in commandopts) {
                     if (commandopts[i].name === 'staffrole') staffrole_to_remove = commandopts[i].value
                     if (commandopts[i].name === 'userrole') userrole_to_remove = commandopts[i].value
                 }
@@ -294,11 +302,13 @@ module.exports = {
                     conf.userroles = userroles
                 }
                 try {
-                    await client.setconfig(conf)
+                    await client.util.get('setconfig')(conf)
                 } catch (e) {
-                    await client.updateconfig(interaction.guild_id, conf)
+                    await client.util.get('updateconfig')(interaction.guild_id, conf)
                 }
-                interaction.replyWithMessageAndDeleteAfterAWhile(client.success(messages.savedsettings[lang]))
+                interaction.replyWithMessageAndDeleteAfterAWhile(
+                    client.embed.success(messages.savedsettings[lang]),
+                )
                 break
         }
     },

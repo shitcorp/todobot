@@ -1,11 +1,14 @@
-const { MessageEmbed } = require('discord.js-light');
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
+import { MessageEmbed } from 'discord.js-light'
 
 const raw = {
     name: 'vote',
-    description: 'If you like the bot vote for it!'
-};
+    description: 'If you like the bot vote for it!',
+}
 
-module.exports = {
+export default {
     raw,
     id: '',
     name: raw.name,
@@ -18,15 +21,16 @@ module.exports = {
     },
     help: {
         category: 'Utility',
-        description: raw.description
+        description: raw.description,
     },
-    run: async (client, interaction) => {
-
+    run: async (client: MyClient, interaction: Interaction) => {
         const voteEmbed = new MessageEmbed()
             .setAuthor('Vote Links')
             .setColor('BLUE')
             .setThumbnail(client.user.avatarURL())
-            .addField('\u200b', `
+            .addField(
+                '\u200b',
+                `
             > **•** [Top.gg](https://top.gg/bot/709541772295929909/vote)
             > **•** [Space List](https://discordlist.space/bot/709541772295929909)
             > **•** [Discord Bots](https://discord.bots.gg/bots/709541772295929909)
@@ -34,9 +38,10 @@ module.exports = {
             > **•** [Discord Botlist](https://discordbotlist.com/bots/todo-bot)
             > **•** [Thereisabotforthat.com](https://thereisabotforthat.com/bots/todobot2)
 
-            `)
+            `,
+            )
             .setFooter(`By voting on top.gg you give yourself access to premium features for 24 hrs.`)
 
-        interaction.replyWithMessageAndDeleteAfterAWhile(voteEmbed);
-    }
-};
+        interaction.replyWithMessageAndDeleteAfterAWhile(voteEmbed)
+    },
+}

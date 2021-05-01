@@ -1,3 +1,6 @@
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
+
 /* eslint-disable no-nested-ternary */
 const { v4: uuidv4 } = require('uuid')
 const messages = require('../localization/messages.js')
@@ -46,7 +49,7 @@ const raw = {
     ],
 }
 
-module.exports = {
+export default {
     raw,
     id: '',
     name: raw.name,
@@ -61,7 +64,7 @@ module.exports = {
         description: raw.description,
     },
     // eslint-disable-next-line consistent-return
-    run: async (client, interaction) => {
+    run: async (client: MyClient, interaction: Interaction) => {
         const { conf } = interaction
         // eslint-disable-next-line no-nested-ternary
         const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
@@ -74,6 +77,7 @@ module.exports = {
 
         const todoobject = {
             _id: uuidv4().slice(0, 13),
+            title: '',
             guildid: interaction.guild_id,
             state: 'open',
             submittedby: interaction.member.user.id,

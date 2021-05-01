@@ -2,34 +2,36 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable global-require */
-const { configmodel } = require('../models/configmodel')
-const { remindermodel } = require('../models/remindermodel')
+import configmodel from '../models/configmodel'
+import remindermodel from '../models/remindermodel'
 
 const functions = {}
 
-module.exports = (client) => {
-    // ...client,
-    functions.loadCommand = (category, commandName) => {
+export default (client) => {
+    client.decorate('loadCommand', (category, commandName) => {
         try {
-            const name = category.toUpperCase()
-            client.logger.log(`[${name}] Loading Command: ${commandName}`)
+            client.logger.log({
+                module: 'COMMAND_LOADER',
+                category: category.toUpperCase(),
+                command: commandName,
+            })
             // eslint-disable-next-line import/no-dynamic-require
             const props = require(`../../commands/${category}/${commandName}`)
-            if (props.init) {
+            if (props.init && typeof props.init === 'function') {
                 props.init(client)
             }
             props.help.category = category
-            client.commands.set(props.help.name, props)
+            client.setCommand(props.help.name, props)
             props.conf.aliases.forEach((alias) => {
-                client.aliases.set(alias, props.help.name)
+                client.setAlias(alias, props.help.name)
             })
             return false
         } catch (e) {
             return `Unable to load command ${commandName}: ${e}`
         }
-    }
+    })
 
-    functions.discordlog = ({ error, event, guild, channel, message, command }) => {
+    client.decorate('discordlog', ({ error, event, guild, channel, message, command }) => {
         // DEBUG=false
         // DEBUG_GUILD=709541114633519177
         // DEBUG_CHANNEL=
@@ -58,13 +60,13 @@ module.exports = (client) => {
           > __**Time:**__ 
           ${Date.now().toLocaleString()}`),
             )
-    }
+    })
 
-    functions.awaitreply = async (message, question, time = 60000) => {
+    client.decorate('awaitreply', async (message, question, time = 60000) => {
         message.channel.send(question)
         const filter = (m) => m.author.id === message.author.id
         return message.channel.createMessageCollector(filter, { limit: 1, time })
-    }
+    })
 
     /**
      *
@@ -95,13 +97,13 @@ module.exports = (client) => {
      *
      * Takes in an object and returns a map.
      */
-    functions.mapBuilder = async (obj) => {
-        this.map = new Map()
+    client.decorate('mapBuilder', async (obj) => {
+        const map = new Map()
         Object.keys(obj).forEach((key) => {
-            this.map.set(key, obj[key])
+            map.set(key, obj[key])
         })
-        return this.map
-    }
+        return map
+    })
 
     /**
      * Client.reminderjob
@@ -145,7 +147,7 @@ module.exports = (client) => {
                             await dmchannel.send(output, client.reminder(doc))
                         } catch (dmChannelError) {
                             client.logger.debug(dmChannelError)
-                            remindermodel.deleteOne({ _id: doc._id }, (err) => {
+                            remindermodel.deleteOne({ _id: doc._id }, null, (err) => {
                                 if (err) client.logger.debug(err)
                             })
                             client.apm.endTransaction('fail_reminder_handled')
@@ -155,22 +157,23 @@ module.exports = (client) => {
                     // error, we have to catch the error and delete the reminder(doc) from the database
                 } catch (e) {
                     client.logger.debug(e)
-                    remindermodel.deleteOne({ _id: doc._id }, (err) => {
+                    remindermodel.deleteOne({ _id: doc._id }, null, (err) => {
                         if (err) client.logger.debug(err)
                     })
                     client.apm.endTransaction('fail_reminder_handled')
                 }
                 // if the reminderproperty "loop" is set to false delete the reminder
                 doc.loop === false
-                    ? remindermodel.deleteOne({ _id: doc._id }, (err) => {
+                    ? remindermodel.deleteOne({ _id: doc._id }, null, (err) => {
                           if (err) client.logger.debug(err)
                       })
                     : // else update the reminder in the database with the new expires timestamp
                       remindermodel.updateOne(
                           { _id: doc.id },
                           { systime: new Date(), expires: doc.expires - doc.systime },
+                          null,
                           // eslint-disable-next-line no-unused-vars
-                          (err, aff, resp) => {
+                          (err, resp) => {
                               if (err) client.logger.debug(err)
                           },
                       )
@@ -179,7 +182,7 @@ module.exports = (client) => {
         client.apm.endTransaction('success_reminder_handled')
     })
 
-    functions.clearReactions = async (message, userID) => {
+    client.decorate('clearReactions', async (message, userID) => {
         try {
             const userReactions = message.reactions.cache.filter((reaction) =>
                 reaction.users.cache.has(userID),
@@ -192,18 +195,5 @@ module.exports = (client) => {
             client.logger.error(error)
             client.logger.debug('Failed to remove reactions.', error.toString())
         }
-    }
-
-    Object.assign(client, functions)
-    return client
-}
-
-global.mapBuilder = async (obj) => {
-    this.map = new Map()
-    Object.keys(obj).forEach((key) => {
-        this.map.set(key, obj[key])
     })
-    return this.map
 }
-
-global.findCommonElements = (arr1, arr2) => arr1.some((item) => arr2.includes(item))

@@ -34,12 +34,12 @@ const req = async (route, method, body) => {
     }
 }
 
-const get = async (route) => await req(route)
+const get = async (route) => await req(route, 'GET', null)
 const post = async (route, body) => await req(route, 'POST', body)
 const put = async (route, body) => await req(route, 'PUT', body)
-const del = async (route) => await req(route, 'DELETE')
+const del = async (route) => await req(route, 'DELETE', null)
 
-module.exports = {
+export default {
     setToken,
     get,
     post,

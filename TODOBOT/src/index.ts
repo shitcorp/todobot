@@ -3,7 +3,7 @@
 /* eslint-disable import/no-dynamic-require */
 require('dotenv').config()
 
-const apm = require('elastic-apm-node')
+import apm from 'elastic-apm-node'
 
 // apm.start({
 //    serverUrl: process.env.DEBUG_URL_APM_SERVER,
@@ -13,11 +13,12 @@ const apm = require('elastic-apm-node')
 //    // logLevel: 'trace',
 // })
 
+import { Agenda } from 'agenda'
+import MyClient from './classes/client'
+import API from './classes/api'
+import handle from './modules/util/interactionhandler'
+
 const readdir = require('util').promisify(require('fs').readdir)
-const { Agenda } = require('agenda')
-const { MyClient } = require('./classes/client')
-const { API } = require('./classes/api.ts')
-const handle = require('./modules/util/interactionhandler')
 
 const agenda = new Agenda({
     db: {
@@ -32,7 +33,6 @@ const client = new MyClient(apm)
 
 require('./modules/util/functions.js')(client)
 require('./modules/util/permissions')(client)
-require('./modules/util/embeds.js')(client)
 require('./modules/util/emojis')(client)
 require('./modules/handlers/mongohandler')(client)
 
@@ -54,7 +54,8 @@ require('./modules/handlers/mongohandler')(client)
         const cmdFilesFun = await readdir(`${__dirname}/commands/${category}/`)
         cmdFilesFun.forEach((f) => {
             if (!f.endsWith('.js')) return
-            const response = client.loadCommand(category, f)
+            const load = client.getUtil('loadCommand')
+            const response = load(category, f)
             if (response) throw new Error(response)
         })
     }
@@ -80,7 +81,7 @@ require('./modules/handlers/mongohandler')(client)
 
     // start the API
     // eslint-disable-next-line no-unused-vars
-    const web = new API(client, process.env.HEALTH_ENDPOINT_PORT)
+    const web = new API(client, Number(process.env.HEALTH_ENDPOINT_PORT))
 
     // login the bot
     client.login(process.env.DEV === 'true' ? process.env.DEV_TOKEN : process.env.TOKEN)
@@ -97,8 +98,9 @@ require('./modules/handlers/mongohandler')(client)
     // this is for development reasons so the data for my dev server is always fresh
     const inval = client.getUtil('invalidateCache')
     inval('709541114633519177')
-    console.log(client.s)
+
     // interaction"handler"
+    // @ts-expect-error
     client.ws.on('INTERACTION_CREATE', async (rawInteraction) => handle(client, rawInteraction))
 })()
 
@@ -108,12 +110,12 @@ process.on('unhandledRejection', (err, promise) => {
     client.logger.debug(promise)
     // client.apm.captureError(err)
     // client.apm.captureError(promise)
-    client.discordlog({ error: err, content: `Promise: ${promise}` })
+    // client.discordlog({ error: err, content: `Promise: ${promise}` })
 })
 
 process.on('uncaughtException', (err) => {
     console.error(err)
     client.logger.debug(err)
-    client.discordlog({ error: err })
+    // client.discordlog({ error: err })
     // client.apm.captureError(err)
 })

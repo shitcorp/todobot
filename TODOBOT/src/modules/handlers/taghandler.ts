@@ -81,7 +81,7 @@ export default (client) =>
         // eslint-disable-next-line no-shadow
         const embedhandler = async (tag) => {
             let cont = tag.replace('<EMBED>', '').replace('</EMBED>', '')
-            const obj = {}
+            const obj: Record<string | number, unknown> = {}
 
             if (tag.includes('<COLOR>')) {
                 const returned = getValue(cont, 'COLOR')

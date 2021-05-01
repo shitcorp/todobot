@@ -1,7 +1,7 @@
-const { MessageEmbed } = require('discord.js-light')
-const { configmodel } = require('../modules/models/configmodel')
+import { MessageEmbed } from 'discord.js-light'
+import configmodel from '../modules/models/configmodel'
 
-module.exports = async (client, guild) => {
+export default async (client, guild) => {
     client.logger.mongo(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot.`)
     // if we have the guildconfig already saved or cached we should
     // return so we get no errors

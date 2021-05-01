@@ -1,3 +1,6 @@
+import { User } from 'discord.js-light'
+import MyClient from '../classes/client'
+import Interaction from '../classes/interaction'
 import todo from '../classes/todo'
 import messages from '../localization/messages'
 
@@ -39,21 +42,23 @@ export default {
         Welcome to the documentation of the \`assign\` command. It is used to assign members to tasks.
         `,
     },
-    run: async (client, interaction) => {
+    run: async (client: MyClient, interaction: Interaction) => {
         // acknowledge the interaction
 
         if (!interaction.conf) return interaction.errorDisplay(messages.addbottoguild['en'])
         let lang = interaction.conf ? (interaction.conf.lang ? interaction.conf.lang : 'en') : 'en'
 
-        let user = Object.values(interaction.data.resolved.users)[0]
+        // @ts-expect-error
+        let user: User = Object.values(interaction.data.resolved.users)[0]
 
         if (user.bot === true) return interaction.errorDisplay(messages.cannotassignbots[lang])
 
         let id
-        for (index in interaction.data.options)
+        for (const index in interaction.data.options)
             if (interaction.data.options[index].name === 'id') id = interaction.data.options[index].value
 
-        const check = await client.getonetodo(id)
+        const getOne = client.getUtil('getonetodo')
+        const check = await getOne(id)
 
         if (!check) return interaction.errorDisplay(messages.tododoesntexist[lang])
 
@@ -64,16 +69,20 @@ export default {
 
         if (todoClass.state === 'open') todoClass.state = 'assigned'
 
-        todoClass.assigned.push(user.id)
+        todoClass.assign(user.id)
 
-        await client.updatetodo(todoClass._id, todoClass)
+        const update = client.getUtil('updatetodo')
+        await update(todoClass._id, todoClass)
 
         let todochannel = await client.guilds.cache
             .get(interaction.guild_id)
             .channels.cache.get(todoClass.todochannel)
+
+        // @ts-expect-error
         let msg = await todochannel.messages.fetch(todoClass.todomsg)
 
-        await msg.edit(client.todo(todoClass))
-        interaction.replyWithMessageAndDeleteAfterAWhile(client.success('User assigned.'))
+        await msg.edit(client.embed.todo(todoClass))
+
+        interaction.replyWithMessageAndDeleteAfterAWhile(client.embed.success('User assigned.'))
     },
 }
