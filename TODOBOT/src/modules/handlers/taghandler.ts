@@ -12,6 +12,7 @@ export default (client) =>
             const arr = guild.members.cache.array() // Create an array with every member
             arr.sort((a, b) => a.joinedAt - b.joinedAt) // Sort them by join date
             const len = arr.length
+            if (len > 1000) return 1000
             for (let i = 0; i < len; i += 1) {
                 // Loop though every element
                 if (arr[i].id === ID) return i // When you find the user, return it's position

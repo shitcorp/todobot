@@ -76,7 +76,7 @@ export default class Todo {
         this.error = ''
     }
 
-    errordisplay(message: Message, user, error: string) {
+    errorDisplay(message: Message, user, error: string) {
         this.error = error
         this._client.util.get('clearReactions')(message, user)
         message.edit(this._client.embed.todo(this))
@@ -97,5 +97,9 @@ export default class Todo {
 
     update() {
         return Todomodel.updateOne({ _id: this._id }, this)
+    }
+
+    isAssigned(user: string): boolean {
+        return this.assigned.includes(user)
     }
 }
