@@ -1,14 +1,14 @@
 version: 2
 updates:
   # Maintain dependencies for npm
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: 'daily'
+      interval: daily
     reviewers:
-      - 'MeerBiene'
+      - MeerBiene
     assignees:
-      - 'MeerBiene'
+      - MeerBiene
     commit-message:
       prefix: chore
-      include: 'scope'
+      include: scope

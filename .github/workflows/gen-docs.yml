@@ -3,9 +3,6 @@ name: 'Docgen'
 on:
   push:
     branches: [main, master]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [main, master]
 
 jobs:
   lint:
@@ -16,9 +13,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '15.x'
       - name: Install Packages
-        run: npm install -D
+        run: npm install common-tags
       - name: Generate Docs
         run: npm run docs
       - name: Commit and push Changes
@@ -30,18 +27,3 @@ jobs:
           git checkout develop
           git merge main
           git push --all
-
-  build:
-    needs: lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - name: Install Packages
-        run: yarn install
-      - name: Build
-        run: yarn build
