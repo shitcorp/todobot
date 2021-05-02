@@ -63,7 +63,7 @@ files
         if (required.help.mddescription && required.help.mddescription !== '')
             docString += `\n\n${stripIndents`${required.help.mddescription}`}`
         // add back button
-        docString += `\n\n [🔙 Go back](../README)`
+        docString += `\n\n [🔙 Go back](../README#%EF%B8%8F-commands)`
         writeFileSync(join(__dirname, `../docs/${cmdName}.md`), docString)
         console.log(`Finished generating docs for ${cmdName}.`)
     })
