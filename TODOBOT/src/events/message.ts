@@ -1,8 +1,11 @@
+import { Message } from 'discord.js-light'
+import MyClient from '../classes/Client'
+
 /* eslint-disable consistent-return */
 const cmdRecently = new Set()
 
-export default async (client, message) => {
-    const timeout = process.env.MSG_DELETE || 90000
+export default async (client: MyClient, message: Message) => {
+    const timeout = Number(process.env.MSG_DELETE) || 90000
 
     const messageTrans = client.apm.startTransaction('MessageEvent', 'eventhandler')
     client.apm.setUserContext({
@@ -41,7 +44,7 @@ export default async (client, message) => {
         console.log(key)
         // using guildid together with the img title so
         // later on we only have to search for guildid+img
-        const success = client.cache.set(key, `${message.attachments.first().url}`, client.cache.print)
+        const success = client.cache.set(key, `${message.attachments.first().url}`, client.logger.redis)
         client.cache.expire(key, 172800)
         // eslint-disable-next-line no-console
         if (success === true) await message.react('✅')
@@ -50,7 +53,7 @@ export default async (client, message) => {
 
     let settings
 
-    if (message.guild) settings = await client.getconfig(message.guild.id)
+    if (message.guild) settings = await client.config.get(message.guild.id)
 
     const Prefix = settings.prefix || '//'
 
@@ -68,9 +71,11 @@ export default async (client, message) => {
 
     const prefixMention = new RegExp(`^<@!?${client.user.id}>( |)$`)
     if (message.content.match(prefixMention)) {
-        return message.reply(client.embed(`My prefix on this guild is ${Prefix}`)).then((msg) => {
-            msg.delete({ timeout }).catch((e) => client.logger.debug(e))
-        })
+        return message
+            .reply(client.embed.default(`My prefix on this guild is ${Prefix}`))
+            .then((msg: Message) => {
+                msg.delete({ timeout }).catch((e) => client.logger.debug(e))
+            })
     }
 
     if (message.content.indexOf(Prefix) !== 0) return
@@ -94,15 +99,15 @@ export default async (client, message) => {
         /**
          * Start Taghandler
          */
-        const tags = await client.mapBuilder(settings.tags)
-        if (tags.has(command)) client.taghandler(message, tags.get(command))
+        const tags = await client.util.get('mapBuilder')(settings.tags)
+        if (tags.has(command)) client.util.get('taghandler')(message, tags.get(command))
 
         /**
          *  End Taghandler
          */
     }
 
-    if (message.guild && !message.member) await message.guild.fetchMember(message.author)
+    if (message.guild && !message.member) return
 
     const cmd = client.commands.get(command) || client.commands.get(client.aliases.get(command))
 
@@ -110,30 +115,16 @@ export default async (client, message) => {
 
     if (cmd && !message.guild && cmd.conf.guildOnly)
         return message.channel.send(
-            client.warning(
+            client.embed.warning(
                 'This command is unavailable via private message. Please run this command in a guild.',
             ),
         )
-
-    // eslint-disable-next-line no-param-reassign
-    message.flags = []
-    for (let k = 0; k < args.length; k += 1) {
-        while (args[k].startsWith('-')) {
-            message.flags.push(args.shift().slice(1))
-        }
-    }
-
-    if (message.flags.includes('h') || message.flags.includes('help')) {
-        const helpcmd = client.commands.get('help')
-        const arg = [command]
-        return helpcmd.run(client, message, arg)
-    }
 
     // global cooldown here
     if (cmdRecently.has(message.author.id)) {
         message
             .reply(
-                client.warning(
+                client.embed.warning(
                     `Please wait  \`${client.cooldown / 1000}\`  seconds before doing this command again!`,
                 ),
             )

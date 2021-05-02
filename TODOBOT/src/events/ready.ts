@@ -1,5 +1,6 @@
 import { Agenda } from 'agenda'
 import { setLogging, handle } from 'blapi'
+import MyClient from '../classes/Client'
 import stati from '../data/stati'
 
 const agenda = new Agenda({
@@ -11,19 +12,17 @@ const agenda = new Agenda({
     },
 })
 
-export default async (client) => {
+export default async (client: MyClient) => {
     // Log that the bot is online.
     client.logger.log(
         `${client.user.tag}, ready to serve ${await client.users.cache.size} users in ${
             client.guilds.cache.size
         } servers.`,
-        'ready',
     )
     client.user.setActivity('you', { type: 'WATCHING' })
     let i = 0
     agenda.define('botstatusjob', () => {
         client.user.setActivity(stati[i], { type: 'WATCHING' })
-        client.updater.updateAll()
         i += 1
         if (i >= stati.length) i = 0
     })

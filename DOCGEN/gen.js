@@ -19,7 +19,7 @@ function parseOption({ name, description, type, required = false }) {
     `
 }
 
-const files = readdirSync(join(__dirname, '../TODOBOT/interactions'))
+const files = readdirSync(join(__dirname, '../TODOBOT/dist/interactions'))
 
 files
     .filter((f) => f.endsWith('.js') && !f.includes('_') && !f.includes('.template'))
@@ -60,7 +60,7 @@ files
             docString += `\n> ${raw.description}`
         }
         // add back button
-        docString += `\n<br>\n [🔙 Go back](../README.md#%EF%B8%8F-commands)`
+        docString += `\n\n [🔙 Go back](../README#%EF%B8%8F-commands)`
         writeFileSync(join(__dirname, `../docs/${cmdName}.md`), docString)
         console.log(`Finished generating docs for ${cmdName}.`)
     })

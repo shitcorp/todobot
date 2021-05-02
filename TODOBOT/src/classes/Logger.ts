@@ -12,6 +12,8 @@ export default class Logger {
         this._Log = pino(ecsFormat({ convertReqRes: true }))
     }
 
+    info = (args: any) => this._Log.info(args)
+
     log = (args: any) => this._Log.info(args)
 
     warn = (args: any) => this._Log.warn(args)

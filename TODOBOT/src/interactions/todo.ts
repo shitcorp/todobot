@@ -2,7 +2,6 @@ import { Message } from 'discord.js-light'
 import MyClient from '../classes/Client'
 import Interaction from '../classes/Interaction'
 import Todo from '../classes/Todo'
-import { emojiMap } from '../modules/util/emojis'
 
 /* eslint-disable no-nested-ternary */
 const { v4: uuidv4 } = require('uuid')
@@ -166,9 +165,8 @@ export default {
                             : conf.todochannel
                         : conf.todochannel,
                 )
-            const resolved = await client.guilds.cache.get(interaction.guild_id).channels.resolve()
-            resolved.fetch()
-            resolved.todomsg = await todochannel.send(client.embed.todo(todoobject))
+            // @ts-expect-error
+            todomsg = await todochannel.send(client.embed.todo(todoobject))
         } catch (e) {
             client.logger.debug(e)
 
@@ -190,9 +188,9 @@ export default {
             : conf.todochannel
         todoobject.shared = false
 
-        todomsg.react('820577055342985216')
+        await todomsg.react('✍️')
         try {
-            await todomsg.react('heart')
+            // await todomsg.react('heart')
 
             // eslint-disable-next-line @typescript-eslint/dot-notation
             // todomsg.react(client.util.get('emojiMap').accept)

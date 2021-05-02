@@ -1,6 +1,8 @@
+import { Guild } from 'discord.js-light'
+import MyClient from '../classes/Client'
 import configmodel from '../modules/models/configmodel'
 
-export default async (client, guild) => {
+export default async (client: MyClient, guild: Guild) => {
     await client.cache.del(guild.id)
     await configmodel.deleteOne({ _id: guild.id })
     // const { RichEmbed } = require('discord.js')
