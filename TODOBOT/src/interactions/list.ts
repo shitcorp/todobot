@@ -1,5 +1,5 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const Pagination = require('discord-paginationembed')
 
@@ -30,15 +30,16 @@ export default {
         const getGuildTodos = client.getUtil('getguildtodos')
         const guildTodos = await getGuildTodos(interaction.guild_id)
         const embeds = []
-        for (const doc of guildTodos) {
-            if (doc.state === 'closed') continue
-            let em = client.embed.todo(doc, true)
+        for (let x = 0; x < guildTodos.length; x += 1) {
+            const doc = guildTodos[x]
+            if (doc.state === 'closed') return
+            const em = client.embed.todo(doc, true)
             em.setFooter(`
             🔄 - Repost the current todo
             `)
             if (doc.todochannel && doc.todomsg) {
                 const dcbase = 'https://discordapp.com/channels/'
-                const URL = dcbase + doc.guildid + '/' + doc.todochannel + '/' + doc.todomsg
+                const URL = `${dcbase}${doc.guildid}/${doc.todochannel}/${doc.todomsg}`
                 em.addField('\u200b', `[Original Message](${URL})`)
             }
             embeds.push(em)
@@ -49,18 +50,18 @@ export default {
             .setChannel(
                 await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id),
             )
-            .setTimeout(parseInt(process.env.EMBED_DELETE) ?? 120000)
+            .setTimeout(Number(process.env.EMBED_DELETE) ?? 120000)
             .setDeleteOnTimeout(true)
             // Initial page on deploy
-            //.setPage(1)
+            // .setPage(1)
             .setPageIndicator(true)
             .setFunctionEmojis({
                 '🔄': async (user, instance) => {
-                    //TODO FIXME Delete old message in channel
+                    // TODO FIXME Delete old message in channel
                     const newTodoMsg = await client.guilds.cache
                         .get(interaction.guild_id)
                         .channels.cache.get(interaction.conf.todochannel)
-                        //@ts-expect-error
+                        // @ts-expect-error
                         .send(client.embed.todo(guildTodos[instance.page - 1]))
                     const emoMap = client.getUtil('emojiMap')
                     const update = client.getUtil('updatetodo')

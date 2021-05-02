@@ -1,5 +1,5 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const messages = require('../localization/messages')
 
@@ -83,24 +83,29 @@ export default {
         category: 'Utility',
         description: raw.description,
     },
+    // eslint-disable-next-line consistent-return
     run: async (client: MyClient, interaction: Interaction) => {
-        const conf = interaction.conf
-        const lang = interaction.lang
+        const { conf } = interaction
+        const { lang } = interaction
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
         if (!conf.vars) conf.vars = { example: 'This is an example variable' }
         const variableMap = await client.util.get('mapBuilder')(conf.vars)
-        let action, commandopts, name, value
+        let action
+        let commandopts
+        let name
+        let value
 
-        for (const index in interaction.data.options) {
-            if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
-            if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
-                commandopts = interaction.data.options[index].options
+        for (let i = 0; i < interaction.data.options; i += 1) {
+            if (interaction.data.options[i].type === 1) action = interaction.data.options[i].name
+            if (interaction.data.options[i].type === 1 && interaction.data.options[i].options)
+                commandopts = interaction.data.options[i].options
         }
-        for (const i in commandopts) {
-            if (commandopts[i].name === 'name') name = commandopts[i].value
-            if (commandopts[i].name === 'value') value = commandopts[i].value
+        for (let j = 0; j < commandopts.length; j += 1) {
+            if (commandopts[j].name === 'name') name = commandopts[j].value
+            if (commandopts[j].name === 'value') value = commandopts[j].value
         }
-        //use args for command
+        // use args for command
+        // eslint-disable-next-line default-case
         switch (action) {
             // set a new key value pair
             case 'create':
@@ -110,12 +115,13 @@ export default {
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
                     client.embed.success(
-                        messages.savedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
+                        `${messages.savedvar}\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
                     ),
                 )
                 break
             // view key value pair by key (maybe add -all flag)
             case 'view':
+                // eslint-disable-next-line no-case-declarations
                 let output = ''
                 Object.keys(conf.vars).forEach((key) => {
                     output += `• \`${key}\` =>  ${conf.vars[key].slice(0, 69)} \n`
@@ -129,7 +135,7 @@ export default {
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
                     client.embed.success(
-                        messages.updatedvar + `\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
+                        `${messages.updatedvar}\n\n> Name => \`${name}\` \n\n> Value => \`${value}\``,
                     ),
                 )
                 break
@@ -140,7 +146,7 @@ export default {
                 conf.vars = variableMap
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
-                    client.embed.success(messages.deletedvar[lang] + ' `${name}`'),
+                    client.embed.success(`${messages.deletedvar[lang]} \`\${name}\``),
                 )
                 break
         }

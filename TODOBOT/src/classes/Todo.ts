@@ -1,30 +1,56 @@
-class todo {
+import { Message } from 'discord.js-light'
+import Todomodel from '../modules/models/todomodel'
+import MyClient from './Client'
+
+export default class Todo {
     _id: any
-    client: any
+
+    _client: any
+
     guildid: any
+
     title: any
+
     content: any
+
     tasks: any
+
     attachlink: any
+
     submittedby: any
+
     timestamp: any
+
     time_started: any
+
     time_finished: any
+
     state: any
+
     severity: any
+
     loop: any
+
     shared: any
+
     todomsg: any
+
     todochannel: any
+
     readonlymessage: any
+
     readonlychannel: any
+
     assigned: any
+
     category: any
+
     error: string
+
     // eslint-disable-next-line camelcase
-    constructor(client, raw_todo) {
+    constructor(client: MyClient, raw_todo) {
         this._id = raw_todo._id
-        this.client = client
+        this._client = client
         // this.guild = client.guilds.fetch(raw_todo.guildid);
         this.guildid = raw_todo.guildid
         this.title = raw_todo.title
@@ -50,20 +76,30 @@ class todo {
         this.error = ''
     }
 
-    errordisplay(message, user, error) {
+    errorDisplay(message: Message, user, error: string) {
         this.error = error
-        this.client.clearReactions(message, user)
-        message.edit(this.client.todo(this))
+        this._client.util.get('clearReactions')(message, user)
+        message.edit(this._client.embed.todo(this))
         setTimeout(async () => {
             this.error = ''
-            this.client.clearReactions(message, user)
-            message.edit(this.client.todo(this))
+            this._client.util.get('clearReactions')(message, user)
+            message.edit(this._client.embed.todo(this))
         }, 10000)
     }
 
-    assign(user) {
-        this.assigned.push(user)
+    assign(user: string) {
+        return this.assigned.push(user)
+    }
+
+    save() {
+        return new Todomodel(this).save()
+    }
+
+    update() {
+        return Todomodel.updateOne({ _id: this._id }, this)
+    }
+
+    isAssigned(user: string): boolean {
+        return this.assigned.includes(user)
     }
 }
-
-export default todo

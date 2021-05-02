@@ -1,12 +1,16 @@
 import express, { Application } from 'express'
 import { RedisClient } from 'redis'
 import { MessageEmbed } from 'discord.js-light'
+import MyClient from './Client'
 
-class API {
+export default class API {
     PORT: number
+
     app: Application
+
     redisClient: RedisClient
-    constructor(client: any, PORT: number) {
+
+    constructor(client: MyClient, PORT: number) {
         this.PORT = PORT
         this.app = express()
         this.redisClient = client.cache
@@ -41,6 +45,7 @@ class API {
                     client.guilds.cache
                         .get(process.env.MOTHER_GUILD)
                         .channels.cache.get(process.env.VOTING_WEBHOOK_CHANNEL)
+                        // @ts-expect-error
                         .send(votedEmbed)
                 } catch (e) {
                     client.logger.debug(e)
@@ -50,7 +55,7 @@ class API {
             client.logger.http({ req, res })
         })
 
-        this.app.listen(PORT, () => {
+        this.app.listen(this.PORT, () => {
             client.logger.log({
                 module: 'API',
                 port: PORT,
@@ -63,5 +68,3 @@ class API {
         return this.app
     }
 }
-
-export default API

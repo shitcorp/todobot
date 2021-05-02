@@ -4,26 +4,47 @@ import http from '../modules/util/http'
 
 class Interaction {
     client: any
+
     application_id: any
+
     id: any
+
     token: any
+
     guild_id: any
+
     guild: any
+
     channel_id: any
+
     channel: any
+
     data: any
+
     member: any
+
     GuildMember: GuildMember
+
     type: any
+
     timestamp: number
+
     lang: any
+
     conf: any
+
     level: any
+
     embed: {
-        default: (...args: any[]) => any
-        success: (...args: any[]) => any
-        error: (...args: any[]) => any
+        default: (msg: string) => any
+        success: (msg: string) => any
+        error: (msg: string) => any
     }
+
+    subcmds: Record<any, any>[]
+
+    commandopts: Record<any, any>[]
+
     constructor(client, rawInteraction) {
         this.client = client
         this.application_id = rawInteraction.application_id
@@ -46,6 +67,31 @@ class Interaction {
             default: (msg: string) => this.defaultEmbed(msg),
             success: (msg: string) => this.successEmbed(msg),
             error: (msg) => this.errorEmbed(msg),
+        }
+
+        this.subcmds = []
+        this.commandopts = []
+
+        if (this.data.options && this.data.options.length > 0) {
+            let opts
+            let action
+            for (let i = 0; i < this.data.options.length; i += 1) {
+                /**
+                 *  if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
+                    if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
+                    commandopts = interaction.data.options[index].options
+                 */
+                if (this.data.options[i].type === 1) action = this.data.options[i].name
+                if (this.data.options[i].type === 1 && this.data.options[i].options)
+                    opts = this.data.options[i].options
+            }
+            const subCmd = {
+                name: null,
+                options: null,
+            }
+            if (action) subCmd.name = action
+            if (opts) subCmd.options = opts
+            if (subCmd.name !== null) this.subcmds.push(subCmd)
         }
     }
 
@@ -75,7 +121,7 @@ class Interaction {
         http.setToken(process.env.TOKEN)
         if (!timeout)
             // eslint-disable-next-line no-return-await
-            return await http.delete(
+            return http.delete(
                 `https://discord.com/api/v8/webhooks/${process.env.APPLICATION_ID}/${this.token}/messages/@original`,
             )
         setTimeout(async () => {

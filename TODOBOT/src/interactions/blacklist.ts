@@ -1,5 +1,9 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable global-require */
+/* eslint-disable no-nested-ternary */
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const raw = {
     name: 'blacklist',
@@ -65,32 +69,35 @@ export default {
         category: 'System',
         description: raw.description,
     },
+    // eslint-disable-next-line consistent-return
     run: async (client: MyClient, interaction: Interaction) => {
         const messages = require('../localization/messages')
-        const conf = interaction.conf
+        const { conf } = interaction
         const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
 
-        let action, commandopts
-        for (const index in interaction.data.options) {
-            if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
-            if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
-                commandopts = interaction.data.options[index].options
+        let action
+        let commandopts
+        for (let i = 0; i < interaction.data.options; i += 1) {
+            if (interaction.data.options[i].type === 1) action = interaction.data.options[i].name
+            if (interaction.data.options[i].type === 1 && interaction.data.options[i].options)
+                commandopts = interaction.data.options[i].options
         }
         if (action !== 'list' && !commandopts)
             return interaction.errorDisplay(messages.nouserorchannelgiven[lang])
         /**
          * interaction.data.resolved either holds a members object or channels object
          */
-        let chann, user
+        let chann
+        let user
         if (interaction.data.resolved) {
             if (interaction.data.resolved.channels)
                 chann = interaction.data.resolved.channels[Object.keys(interaction.data.resolved.channels)[0]]
             if (interaction.data.resolved.users)
                 user = interaction.data.resolved.users[Object.keys(interaction.data.resolved.users)[0]]
         }
-        let blacklist_users = [],
-            blacklist_channels = []
+        const blacklist_users = []
+        const blacklist_channels = []
         Object.keys(conf.blacklist_users).forEach((key) => blacklist_users.push(conf.blacklist_users[key]))
         Object.keys(conf.blacklist_channels).forEach((key) =>
             blacklist_channels.push(conf.blacklist_channels[key]),
@@ -98,6 +105,7 @@ export default {
 
         const updateConf = client.getUtil('updateconfig')
 
+        // eslint-disable-next-line default-case
         switch (action) {
             case 'add':
                 if (user && user.bot === true)
@@ -130,16 +138,17 @@ export default {
                 )
                 break
             case 'list':
+                // eslint-disable-next-line no-case-declarations
                 let output = ''
                 if (blacklist_users.length > 0) {
                     output += '**Blacklisted Users:** \n'
-                    for (let i = 0; i < blacklist_users.length; i++) {
+                    for (let i = 0; i < blacklist_users.length; i += 1) {
                         output += `> • ${await client.users.fetch(blacklist_users[i])} \n`
                     }
                 }
                 if (blacklist_channels.length > 0) {
                     output += '\n\n **Blacklisted Channels:** \n'
-                    for (let i = 0; i < blacklist_channels.length; i++) {
+                    for (let i = 0; i < blacklist_channels.length; i += 1) {
                         output += `> • ${await client.guilds.cache
                             .get(interaction.guild_id)
                             .channels.fetch(blacklist_channels[i])} \n`

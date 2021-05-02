@@ -1,11 +1,15 @@
-export default async (client, todoobj) => {
+import MyClient from '../classes/Client'
+import Todo from '../classes/Todo'
+
+export default async (client: MyClient, todoobj: Todo) => {
     if (!todoobj.readonlychannel || todoobj.readonlychannel === '') return
     if (!todoobj.readonlymessage || todoobj.readonlymessage === '') return
     try {
-        const chann = await client.guilds.cache.get(todoobj.guildid).channels.fetch(todoobj.readonlychannel)
-        const msg = await chann.messages.fetch(todoobj.readonlymessage)
-        await msg.edit(client.todo(todoobj))
+        const channel = await client.channels.fetch(todoobj.readonlychannel)
+        if (!channel.isText()) return
+        const msg = await channel.messages.fetch(todoobj.readonlymessage)
+        await msg.edit(client.embed.todo(todoobj))
     } catch (e) {
-        client.logger.log(e)
+        client.logger.debug(e)
     }
 }

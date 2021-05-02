@@ -1,8 +1,10 @@
+/* eslint-disable class-methods-use-this */
 import { MessageEmbed } from 'discord.js-light'
 import { format } from 'date-fns'
 
 export default class EmbedManager {
     client: any
+
     constructor(client) {
         this.client = client
     }
@@ -61,41 +63,43 @@ export default class EmbedManager {
             ) {
                 embed.setImage(todoobj.attachlink)
             } else {
-                embed.addField('Attachment**', '```' + todoobj.attachlink + '```')
+                embed.addField('Attachment**', `\`\`\`${todoobj.attachlink}\`\`\``)
             }
         }
 
         if (todoobj.tasks && todoobj.tasks.length > 0) {
             let output = ''
             let count = 0
-            let tasks = []
-            let progressBar = []
+            const tasks = []
+            const progressBar = []
 
-            for (let i = 0; i < todoobj.tasks.length; i++) {
+            for (let i = 0; i < todoobj.tasks.length; i += 1) {
                 output = `${
                     todoobj.tasks[i].includes('finished_')
-                        ? '<:checksquareregular:820384679562838046> ' +
-                          todoobj.tasks[i].replace('finished_', '')
-                        : '<:squareregular:820381667881517118> ' + todoobj.tasks[i]
+                        ? `<:checksquareregular:820384679562838046> ${todoobj.tasks[i].replace(
+                              'finished_',
+                              '',
+                          )}`
+                        : `<:squareregular:820381667881517118> ${todoobj.tasks[i]}`
                 }`
                 tasks.push(output)
                 const EmojiMap = this.client.getUtil('emojiMap')
                 if (todoobj.tasks[i].includes('finished_')) {
-                    count++
+                    count += 1
                     progressBar.push(EmojiMap['+'])
                 } else {
                     progressBar.push(EmojiMap['-'])
                 }
             }
             embed.addField(`Tasks (${count} / ${todoobj.tasks.length}):`, `${progressBar.join('')}`)
-            for (let j = 0; j < tasks.length; j++) embed.addField('\u200b', tasks[j])
+            for (let j = 0; j < tasks.length; j += 1) embed.addField('\u200b', tasks[j])
         }
 
         if (todoobj.content)
             embed.addField(
                 'Content',
                 `> ${
-                    todoobj.content.length >= 1024 ? todoobj.content.slice(0, 1020) + '...' : todoobj.content
+                    todoobj.content.length >= 1024 ? `${todoobj.content.slice(0, 1020)}...` : todoobj.content
                 }`,
             )
         if (todoobj.category) embed.addField('Category', todoobj.category, true)
@@ -131,17 +135,18 @@ export default class EmbedManager {
                 Object.keys(todoobj.assigned).forEach((key) => {
                     output += `<@${todoobj.assigned[key]}> \n`
                 })
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 output !== '' ? embed.addField('Processed', output, true) : null
             }
             embed.addField('Submitted By', `<@${todoobj.submittedby}>`, true)
-            embed.addField('Submitting Time', `> ${format(parseInt(todoobj.timestamp), 'PPpp')}`, true)
+            embed.addField('Submitting Time', `> ${format(parseInt(todoobj.timestamp, 2), 'PPpp')}`, true)
             embed.addField('Severity', todoobj.severity, true)
             embed.addField('Loop', todoobj.loop, true)
             embed.addField('ID', `> ${todoobj._id}`, true)
         }
 
         if (todoobj.error && todoobj.error !== '') {
-            embed.addField('Error', '```' + todoobj.error + '```')
+            embed.addField('Error', `\`\`\`${todoobj.error}\`\`\``)
             embed.setColor('RED')
         }
         return embed

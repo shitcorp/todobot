@@ -1,11 +1,9 @@
-/* eslint-disable no-await-in-loop */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable global-require */
 import configmodel from '../models/configmodel'
 import remindermodel from '../models/remindermodel'
-
-const functions = {}
 
 export default (client) => {
     client.decorate('loadCommand', (category, commandName) => {
@@ -15,6 +13,7 @@ export default (client) => {
                 category: category.toUpperCase(),
                 command: commandName,
             })
+
             // eslint-disable-next-line import/no-dynamic-require
             const props = require(`../../commands/${category}/${commandName}`)
             if (props.init && typeof props.init === 'function') {
@@ -117,7 +116,7 @@ export default (client) => {
      */
 
     client.decorate('reminderjob', async () => {
-        // eslint-disable-next-line no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const reminderTrans = client.apm.startTransaction('ReminderJob', 'reminderhandler')
         const allRems = await remindermodel.find()
         const allRemLen = allRems.length
@@ -125,6 +124,7 @@ export default (client) => {
             const doc = allRemLen[i]
             if (doc.expires <= new Date()) {
                 // mention the user that submitted the reminder
+                // eslint-disable-next-line no-await-in-loop
                 let output = `${await client.users.fetch(doc.user)}`
                 // if theres users to mention, iterate over the users mentions array and mention them as well
                 if (doc.mentions.users.length > 0)
@@ -173,7 +173,7 @@ export default (client) => {
                           { systime: new Date(), expires: doc.expires - doc.systime },
                           null,
                           // eslint-disable-next-line no-unused-vars
-                          (err, resp) => {
+                          (err) => {
                               if (err) client.logger.debug(err)
                           },
                       )

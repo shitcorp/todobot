@@ -1,8 +1,8 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
+import http from '../modules/util/http'
 
 const messages = require('../localization/messages')
-import http from '../modules/util/http'
 
 const raw = {
     name: 'shorten',
@@ -51,8 +51,8 @@ export default {
         category: 'Utility',
         description: raw.description,
     },
+    // eslint-disable-next-line consistent-return
     run: async (client: MyClient, interaction: Interaction) => {
-        const conf = interaction.conf
         const lang = 'en'
         let domain = 'm.stlf.me'
         if (!interaction.data.options) return interaction.errorDisplay(messages.nolinkgiven[lang])
@@ -62,7 +62,7 @@ export default {
 
         let response
         try {
-            response = await http.post('https://' + domain + '/shorten', JSON.stringify({ urlToShort }))
+            response = await http.post(`https://${domain}/shorten`, JSON.stringify({ urlToShort }))
         } catch (e) {
             if (e.toString().includes('Not Acceptable'))
                 return interaction.errorDisplay(messages.notacceptablelink[lang])
@@ -74,13 +74,13 @@ export default {
         if (!response) return interaction.errorDisplay(messages.backendoffline[lang])
         if (response && response.status && response.status >= 500)
             return interaction.errorDisplay(messages.backendoffline[lang])
-        let url = response.url ? response.url.replace('http', 'https') : messages.somethingwentwrong[lang]
+        const url = response.url ? response.url.replace('http', 'https') : messages.somethingwentwrong[lang]
         interaction.reply(' ', 2)
         const embedToSend = client.embed.success(
-            messages.shortenedurl[lang] + '\n*Original*\n> ' + urlToShort + '\n\n> ' + url,
+            `${messages.shortenedurl[lang]}\n*Original*\n> ${urlToShort}\n\n> ${url}`,
         )
         embedToSend.setThumbnail(client.user.avatarURL())
-        //cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+        // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
         embedToSend.setFooter(
             `Requested by ${interaction.member.user.username}#${interaction.member.user.discriminator}   •    www.todo-bot.xyz`,
             `https://cdn.discordapp.com/avatars/${interaction.member.user.id}/${interaction.member.user.avatar}.png`,

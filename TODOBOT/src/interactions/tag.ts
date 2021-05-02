@@ -1,5 +1,7 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+/* eslint-disable no-nested-ternary */
+/* eslint-disable consistent-return */
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const messages = require('../localization/messages.js')
 
@@ -85,37 +87,44 @@ export default {
     },
     run: async (client: MyClient, interaction: Interaction) => {
         if (!interaction.data.options) return
-        const conf = interaction.conf
-        let lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
+        const { conf } = interaction
+        const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
-        let action, commandopts
-        for (const index in interaction.data.options) {
-            if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
-            if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
-                commandopts = interaction.data.options[index].options
+        let action
+        let commandopts
+        for (let i = 0; i < interaction.data.options.length; i += 1) {
+            if (interaction.data.options[i].type === 1) action = interaction.data.options[i].name
+            if (interaction.data.options[i].type === 1 && interaction.data.options[i].options)
+                commandopts = interaction.data.options[i].options
         }
         if (!action) return
         const tagMap = await client.util.get('mapBuilder')(conf.tags)
-        let tag, value
+        let tag
+        let value
         if (commandopts) {
-            for (const i in commandopts) {
-                if (commandopts[i].name === 'name') tag = commandopts[i].value
-                if (commandopts[i].name === 'content') value = commandopts[i].value
+            for (let j = 0; j < commandopts.length; j += 1) {
+                if (commandopts[j].name === 'name') tag = commandopts[j].value
+                if (commandopts[j].name === 'content') value = commandopts[j].value
             }
         }
+        // eslint-disable-next-line default-case
         switch (action) {
             case 'list':
-                //FIXME this is probably still erroring, needs some big brain time to find a fix
+                // FIXME this is probably still erroring, needs some big brain time to find a fix
                 // temporary fix: just slice the output if it gets too long
+                // eslint-disable-next-line no-case-declarations
                 let output = ''
                 Object.keys(conf.tags).forEach((key) => {
                     output += `• \`${key}\` =>  ${
                         conf.tags[key].length > 69 ? conf.tags[key].slice(0, 69) : conf.tags[key]
                     } \n`
+                    // eslint-disable-next-line no-useless-return
                     if (output.length > 2000) return
                 })
-                if (output.length > 2000) output.slice(0, 2000) + '...'
-                interaction.embed.default(`**` + messages.availabletags[lang] + `**` + `\n\n${output}`)
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                if (output.length > 2000) `${output.slice(0, 2000)}...`
+                // eslint-disable-next-line no-useless-concat
+                interaction.embed.default(`**${messages.availabletags[lang]}**` + `\n\n${output}`)
                 break
             case 'learn':
                 if (client.commands.get(tag) || client.aliases.get(tag))
@@ -128,7 +137,7 @@ export default {
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
                     client.embed.success(
-                        messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``,
+                        `${messages.tagsaved[lang]}\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``,
                     ),
                 )
                 break
@@ -137,7 +146,7 @@ export default {
                 tagMap.delete(tag)
                 conf.tags = tagMap
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
-                interaction.embed.success(messages.tagunlearned[lang] + `\`${tag}\`.`)
+                interaction.embed.success(`${messages.tagunlearned[lang]}\`${tag}\`.`)
                 break
             case 'edit':
                 if (!tagMap.get(tag)) return interaction.errorDisplay(messages.tagdoesnotexist[lang])
@@ -148,7 +157,7 @@ export default {
                 await client.util.get('updateconfig')(interaction.guild_id, conf)
                 interaction.replyWithMessageAndDeleteAfterAWhile(
                     client.embed.success(
-                        messages.tagsaved[lang] + `\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``,
+                        `${messages.tagsaved[lang]}\n\n> Tag:  \`${tag}\` \n\n> Description:  \`${value}\``,
                     ),
                 )
                 break

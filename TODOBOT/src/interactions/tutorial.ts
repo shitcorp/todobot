@@ -1,6 +1,6 @@
-import { Message } from 'discord.js'
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import { Message } from 'discord.js-light'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 /**
  * @fileoverview
@@ -90,6 +90,7 @@ export default {
             other.on('collect', (r, u) => {
                 r.users.remove(u)
             })
+            // eslint-disable-next-line consistent-return
             update.on('collect', async (r, u) => {
                 time = Date.now()
                 if (r.emoji.name === stopEmoji) {
@@ -97,13 +98,13 @@ export default {
                 }
                 if (r.emoji.name === nextEmoji) {
                     if (page === pages.length) return r.users.remove(u)
-                    page++
+                    page += 1
                     await r.users.remove(u)
                     tutorialEmbed.setFooter(`Page ${page} of ${pages.length}`)
                 }
                 if (r.emoji.name === beforeEmoji) {
                     if (page === 1) return r.users.remove(u)
-                    page--
+                    page -= 1
                     await r.users.remove(u)
                     tutorialEmbed.setFooter(`Page ${page} of ${pages.length}`)
                 }
@@ -213,6 +214,7 @@ export default {
             let condition = true
             while (condition) {
                 if (!time) condition = false
+                // eslint-disable-next-line no-await-in-loop
                 await sleep(30000)
                 if (Date.now() - time >= 300000) {
                     condition = false

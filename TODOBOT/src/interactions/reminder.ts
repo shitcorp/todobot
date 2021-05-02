@@ -1,12 +1,17 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable consistent-return */
+/* eslint-disable no-case-declarations */
+/* eslint-disable no-nested-ternary */
+import { formatDistanceToNow } from 'date-fns'
+import { v4 as uuidv4 } from 'uuid'
+import Pagination from 'discord-paginationembed'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
+
+import messages from '../localization/messages'
+import Remindermodel from '../modules/models/remindermodel'
 
 const systime = Date.now()
-import { v4 as uuidv4 } from 'uuid'
-import messages from '../localization/messages'
-import { formatDistanceToNow } from 'date-fns'
-import Pagination from 'discord-paginationembed'
-import remindermodel from '../modules/models/remindermodel'
 
 const raw = {
     name: 'reminder',
@@ -72,6 +77,94 @@ const raw = {
     ],
 }
 
+const newviewer = async (client, interaction, arr) => {
+    // in order for discord to show the interaction we have to reply
+    // with something. even a space will do :D its just to acknowledge
+    // the interaction/slash command, so the user gets instant feedback
+
+    const FieldsEmbed = new Pagination.FieldsEmbed()
+        .setArray(arr)
+        .setAuthorizedUsers([interaction.member.user.id])
+        .setChannel(
+            await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id),
+        )
+        .setElementsPerPage(1)
+        // Initial page on deploy
+        .setPage(1)
+        .setPageIndicator(true)
+        .formatField(
+            'Created',
+            (i: Record<any, any>) => `\`\`\`${formatDistanceToNow(Number(i.systime))} ago.\`\`\``,
+            false,
+        )
+        .formatField(
+            'Expires',
+            (i: Record<any, any>) => `\`\`\`in ${formatDistanceToNow(Number(i.expires))}.\`\`\``,
+            false,
+        )
+        .formatField('Content', (i: Record<any, any>) => `> ${i.content}`, false)
+        // Deletes the embed upon awaiting timeout
+        .setDeleteOnTimeout(true)
+        // Disable built-in navigation emojis, in this case: 🗑 (Delete Embed)
+        // .setDisabledNavigationEmojis(['delete'])
+        .setFunctionEmojis({
+            '✏️': async (user, i) => {
+                // @ts-expect-error
+                // edit the remider on the current page
+                const filter = (m) => m.author.id === message.author.id
+                // @ts-expect-error
+                message.channel
+                    .send(
+                        client.embed(`
+                Enter the new text for your reminder now:
+                `),
+                    )
+                    .then(() => {
+                        // @ts-expect-error
+                        if (message.deletable) message.delete({ timeout })
+                        // @ts-expect-error
+                        message.channel
+                            .awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
+                            .then((collected) => {
+                                if (collected.first().deletable) collected.first().delete()
+                                Remindermodel.updateOne(
+                                    { _id: arr[i.page - 1]._id },
+                                    { content: collected.first().content },
+                                    null,
+                                    (err) => {
+                                        if (err) client.logger.debug(err)
+                                        interaction.replyWithMessageAndDeleteAfterAWhile(
+                                            client.success(messages.updatedreminder.en),
+                                        )
+                                    },
+                                )
+                            })
+                            .catch((collected) => {
+                                // Delete message here
+                                client.logger.debug(collected)
+                            })
+                    })
+            },
+            '❌': async (user, i) => {
+                // Delete the reminder on the current page
+                Remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, null, (err) => {
+                    if (err) client.logger.debug(err)
+                    interaction.replyWithMessageAndDeleteAfterAWhile(
+                        client.success(messages.deletedreminder.en),
+                    )
+                })
+            },
+        })
+        // Sets whether function emojis should be deployed after navigation emojis
+        .setEmojisFunctionAfterNavigation(false)
+
+    FieldsEmbed.embed.setColor('BLUE').setFooter(`Manual:
+✏️          Edit the reminder
+❌          Delete the reminder
+🗑️          Destroy this embed`)
+    await FieldsEmbed.build()
+}
+
 export default {
     raw,
     id: '',
@@ -86,25 +179,29 @@ export default {
         category: 'Utility',
         description: raw.description,
     },
+
     run: async (client: MyClient, interaction: Interaction) => {
         if (!interaction.data.options) return
-        const conf = interaction.conf
-        let lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
+        const { conf } = interaction
+        const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
         if (!conf) return interaction.errorDisplay(messages.addbottoguild[lang])
-        let action, commandopts
-        for (const index in interaction.data.options) {
+        let action
+        let commandopts
+        for (let index = 0; index < interaction.data.options.length; index += 1) {
             if (interaction.data.options[index].type === 1) action = interaction.data.options[index].name
             if (interaction.data.options[index].type === 1 && interaction.data.options[index].options)
                 commandopts = interaction.data.options[index].options
         }
         if (!action) return
+        // eslint-disable-next-line default-case
         switch (action) {
             case 'view':
                 // query db for reminders by user and push them
                 // to the cache array to hand over to the paginator
                 // function
-                let cache = []
-                for await (const doc of await remindermodel.find({ user: interaction.member.user.id }))
+                const cache = []
+                // eslint-disable-next-line no-restricted-syntax
+                for await (const doc of await Remindermodel.find({ user: interaction.member.user.id }))
                     cache.push(doc)
                 // Make sure theres something in the array for
                 // the embed paginator, else return an error
@@ -113,8 +210,12 @@ export default {
                     : interaction.errorDisplay(messages.noopenreminders[lang])
                 break
             case 'create':
-                let time, unit, content, participants, participatingroles
-                for (const i in commandopts) {
+                let time
+                let unit
+                let content
+                let participants
+                let participatingroles
+                for (let i = 0; i < commandopts.length; i += 1) {
                     if (commandopts[i].name === 'time') time = commandopts[i].value
                     if (commandopts[i].name === 'unit') unit = commandopts[i].value
                     if (commandopts[i].name === 'content') content = commandopts[i].value
@@ -123,6 +224,7 @@ export default {
                         participatingroles = commandopts[i].value
                 }
                 let expires
+                // eslint-disable-next-line default-case
                 switch (unit) {
                     case 'm':
                         expires = systime + time * 60000
@@ -153,13 +255,13 @@ export default {
                     loop: false,
                 }
                 if (participants) {
-                    rem['mentions'].users = participants
+                    rem.mentions.users = participants
                 } else delete rem.mentions.users
                 if (participatingroles) {
-                    rem['mentions'].roles = participatingroles
+                    rem.mentions.roles = participatingroles
                 } else delete rem.mentions.roles
-                const newreminder = new remindermodel(rem)
-                newreminder.save(function (err) {
+                const newreminder = new Remindermodel(rem)
+                newreminder.save((err) => {
                     err
                         ? client.logger.debug(err)
                         : interaction.replyWithMessageAndDeleteAfterAWhile(
@@ -169,92 +271,4 @@ export default {
                 break
         }
     },
-}
-
-const newviewer = async (client, interaction, arr) => {
-    // in order for discord to show the interaction we have to reply
-    // with something. even a space will do :D its just to acknowledge
-    // the interaction/slash command, so the user gets instant feedback
-
-    const FieldsEmbed = new Pagination.FieldsEmbed()
-        .setArray(arr)
-        .setAuthorizedUsers([interaction.member.user.id])
-        .setChannel(
-            await client.guilds.cache.get(interaction.guild_id).channels.fetch(interaction.channel_id),
-        )
-        .setElementsPerPage(1)
-        // Initial page on deploy
-        .setPage(1)
-        .setPageIndicator(true)
-        .formatField(
-            'Created',
-            (i: Record<any, any>) => `\`\`\`${formatDistanceToNow(parseInt(i.systime))} ago.\`\`\``,
-            false,
-        )
-        .formatField(
-            'Expires',
-            (i: Record<any, any>) => `\`\`\`in ${formatDistanceToNow(parseInt(i.expires))}.\`\`\``,
-            false,
-        )
-        .formatField('Content', (i: Record<any, any>) => `> ${i.content}`, false)
-        // Deletes the embed upon awaiting timeout
-        .setDeleteOnTimeout(true)
-        // Disable built-in navigation emojis, in this case: 🗑 (Delete Embed)
-        //.setDisabledNavigationEmojis(['delete'])
-        .setFunctionEmojis({
-            '✏️': async (user, i) => {
-                // @ts-expect-error
-                // edit the remider on the current page
-                const filter = (m) => m.author.id === message.author.id
-                // @ts-expect-error
-                message.channel
-                    .send(
-                        client.embed(`
-                Enter the new text for your reminder now:
-                `),
-                    )
-                    .then(() => {
-                        // @ts-expect-error
-                        if (message.deletable) message.delete({ timeout })
-                        // @ts-expect-error
-                        message.channel
-                            .awaitMessages(filter, { max: 1, time: 30000, errors: ['time'] })
-                            .then((collected) => {
-                                if (collected.first().deletable) collected.first().delete()
-                                remindermodel.updateOne(
-                                    { _id: arr[i.page - 1]._id },
-                                    { content: collected.first().content },
-                                    null,
-                                    (err) => {
-                                        if (err) client.logger.debug(err)
-                                        interaction.replyWithMessageAndDeleteAfterAWhile(
-                                            client.success(messages.updatedreminder['en']),
-                                        )
-                                    },
-                                )
-                            })
-                            .catch((collected) => {
-                                // Delete message here
-                                client.logger.debug(collected)
-                            })
-                    })
-            },
-            '❌': async (user, i) => {
-                // Delete the reminder on the current page
-                remindermodel.deleteOne({ _id: arr[i.page - 1]._id }, null, (err) => {
-                    if (err) client.logger.debug(err)
-                    interaction.replyWithMessageAndDeleteAfterAWhile(
-                        client.success(messages.deletedreminder['en']),
-                    )
-                })
-            },
-        })
-        // Sets whether function emojis should be deployed after navigation emojis
-        .setEmojisFunctionAfterNavigation(false)
-
-    FieldsEmbed.embed.setColor('BLUE').setFooter(`Manual:
-✏️          Edit the reminder
-❌          Delete the reminder
-🗑️          Destroy this embed`)
-    await FieldsEmbed.build()
 }

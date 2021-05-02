@@ -1,5 +1,5 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const raw = {
     name: 'search',
@@ -74,6 +74,7 @@ export default {
         description: raw.description,
     },
     run: async (client: MyClient, interaction: Interaction) => {
+        // eslint-disable-next-line no-console
         console.log(interaction.conf)
     },
 }

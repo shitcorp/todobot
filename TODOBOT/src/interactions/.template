@@ -17,7 +17,8 @@ export default {
     },
     help: {
         category: 'Utility',
-        description: raw.description
+        description: raw.description,
+        mddescription: `something...`
     },
     run: async (client: MyClient, interaction: Interaction) => {
 

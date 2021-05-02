@@ -1,17 +1,18 @@
-import { MessageEmbed } from 'discord.js-light'
+import { Guild, MessageEmbed } from 'discord.js-light'
+import MyClient from '../classes/Client'
 import configmodel from '../modules/models/configmodel'
 
-export default async (client, guild) => {
+export default async (client: MyClient, guild: Guild) => {
     client.logger.mongo(`[GUILD JOIN] ${guild.name} (${guild.id}) added the bot.`)
     // if we have the guildconfig already saved or cached we should
     // return so we get no errors
-    let confcheck = await configmodel.findOne({ _id: guild.id })
-    let cachecheck = await client.cache.get(guild.id)
+    const confcheck = await configmodel.findOne({ _id: guild.id })
+    const cachecheck = await client.cache.get(guild.id)
     if (confcheck) return
     if (cachecheck) return
 
-    //create the configobject and insert the default settings
-    let configobject = {
+    // create the configobject and insert the default settings
+    const configobject = {
         _id: guild.id,
         prefix: '//',
         color: 'BLUE',
@@ -24,37 +25,45 @@ export default async (client, guild) => {
         blacklist_users: [],
         vars: new Map(),
         lang: 'en',
+        blackboard: {
+            channel: null,
+            message: null,
+        },
+        autopurge: false,
+        todomode: 'simple',
     }
-    await client.setconfig(configobject)
+    await client.config.set(configobject)
     const channel =
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.name === 'bot-commands') ||
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.name === 'general') ||
         guild.channels.cache.filter((c) => c.type === 'text').find((x) => x.position === 0)
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
         .setAuthor('Hello!')
         .setFooter(client.user.username)
         .setTimestamp()
-        .setThumbnail(client.user.avatarURL)
+        .setThumbnail(client.user.avatarURL())
         .setDescription(
             `Thank you for adding me to your server! \n \nTo start the bot setup, go into your bot-command channel and run the command \`//setup\`. \n\n__**Note:**__ \nThe setup command requires you to have the \`ADMINISTRATOR\` permission. Make sure you have it.`,
         )
         .setColor('#2C2F33')
+    if (!channel || !channel.isText()) return
     channel.send(embed)
 
-    let motherGuild = client.guilds.cache
+    const motherGuild = client.guilds.cache
         .get(process.env.MOTHER_GUILD)
-        .channels.cache.get('724022857767583805')
-    let newserv = new MessageEmbed()
+        .channels.cache.get('724031336351793263')
+    const newserv = new MessageEmbed()
         .setTitle(`New guild has been joined.`)
-        .setThumbnail(guild.iconURL)
+        .setThumbnail(guild.iconURL())
         .setDescription(`${guild.name} (ID: ${guild.id})`)
-        //.addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
+        // .addField(`Owner:`, `> ${guild.owner} (${client.users.get(guild.owner.id).tag})`, true)
         .addField(`Region:`, `> ${guild.region}`, true)
         .addField(`Membercount:`, `> ${guild.memberCount}`, true)
         .setColor('GREEN')
 
     if (!motherGuild) return
     try {
+        if (!motherGuild.isText()) return
         motherGuild.send(newserv)
     } catch (e) {
         client.logger.debug(e)

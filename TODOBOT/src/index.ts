@@ -1,9 +1,8 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable import/no-dynamic-require */
-require('dotenv').config()
-
 import apm from 'elastic-apm-node'
+import { join } from 'path'
 
 // apm.start({
 //     serverUrl: process.env.DEBUG_URL_APM_SERVER,
@@ -14,9 +13,11 @@ import apm from 'elastic-apm-node'
 // })
 
 import { Agenda } from 'agenda'
-import MyClient from './classes/client'
-import API from './classes/api'
+import MyClient from './classes/Client'
+import API from './classes/Api'
 import handle from './modules/util/interactionhandler'
+
+require('dotenv').config()
 
 const readdir = require('util').promisify(require('fs').readdir)
 
@@ -38,7 +39,7 @@ const clientOpts = {
     cacheRoles: true,
     cacheEmojis: true,
     cachePresences: false,
-    ws: { intents: ['GUILDS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] },
+    ws: { intents: ['GUILDS', 'GUILD_EMOJIS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS'] },
 }
 
 const client = new MyClient(
@@ -47,13 +48,13 @@ const client = new MyClient(
     process.env.DEV === 'true' ? process.env.DEV_TOKEN : process.env.TOKEN,
 )
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const handlers = [
     './modules/handlers/mongohandler',
     './modules/handlers/taghandler',
     './modules/util/functions.js',
     './modules/util/permissions',
-    './modules/util/emojis',
-].forEach((f) => require(f).default(client))
+].forEach((f) => require(join(__dirname, f)).default(client))
 
 // eslint-disable-next-line import/newline-after-import
 ;(async function init() {

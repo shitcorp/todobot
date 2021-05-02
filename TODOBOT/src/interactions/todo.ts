@@ -1,5 +1,7 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import { Message } from 'discord.js-light'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
+import Todo from '../classes/Todo'
 
 /* eslint-disable no-nested-ternary */
 const { v4: uuidv4 } = require('uuid')
@@ -62,6 +64,13 @@ export default {
     help: {
         category: 'todo',
         description: raw.description,
+        mddescription: `
+        # Images & Attachments
+        If you want to attach an image to your task, you can simply upload an image and give it a title like so: {{thisismytitle}} ("thisismytitle" will then be the title to reference). 
+        
+        \nWhen creating your task then reference the image with your title in the image options. The image will then be embedded into your todo list. **Note:** The image will be available 24hrs after uploading (for every guild member). This is due to the bot caching the links to images that are uploaded with the special tags (the double curly brackets {{}}).
+        
+        \nFor attaching normal links, just put them in the url option, if will then be shown as attachment in your todo list.`,
     },
     // eslint-disable-next-line consistent-return
     run: async (client: MyClient, interaction: Interaction) => {
@@ -99,54 +108,60 @@ export default {
         }
 
         // eslint-disable-next-line array-callback-return
-        Object.entries(interaction.data.options).map(function ([key, value]: [
-            key: any,
-            value: Record<any, any>,
-        ]) {
-            console.log(key, value)
-            switch (value.name) {
-                case 'title':
-                    todoobject.title = value.value
-                    break
-                case 'content':
-                    todoobject.content = value.value
-                    break
-                case 'tasks':
-                    if (value.value === '') return
-                    if (value.value.includes(';')) {
-                        // split the string containing the tasks at the semicolon and filter out all empty
-                        // tasks as well as task strings that are too long. If theres more than 10, were just
-                        // capping the array by setting the length to 10
-                        const temp = value.value
-                            .split(';')
-                            .filter((task) => task !== '' && task.length < 1020)
-                        if (temp.length > 10) temp.length = 10
-                        todoobject.tasks = temp
-                    } else {
-                        todoobject.tasks = [value.value]
-                    }
-                    break
-                case 'loop':
-                    todoobject.loop = value.value
-                    break
-                case 'category':
-                    todoobject.category = value.value
-                    break
-                case 'url':
-                    todoobject.attachlink = `url_${value.value}`
-                    break
-                case 'image':
-                    client.cache.get(`${interaction.guild_id}${value.value}`, (res) => {
-                        console.log(res)
-                    })
-                    break
-                default:
-                    console.log('fuck eslint')
-                    break
-            }
-        })
+        Object.entries(interaction.data.options).map(
+            ([key, value]: [
+                key: any,
+                value: Record<any, any>,
+                // eslint-disable-next-line array-callback-return
+            ]) => {
+                // eslint-disable-next-line no-console
+                console.log(key, value)
+                switch (value.name) {
+                    case 'title':
+                        todoobject.title = value.value
+                        break
+                    case 'content':
+                        todoobject.content = value.value
+                        break
+                    case 'tasks':
+                        if (value.value === '') return
+                        if (value.value.includes(';')) {
+                            // split the string containing the tasks at the semicolon and filter out all empty
+                            // tasks as well as task strings that are too long. If theres more than 10, were just
+                            // capping the array by setting the length to 10
+                            const temp = value.value
+                                .split(';')
+                                .filter((task) => task !== '' && task.length < 1020)
+                            if (temp.length > 10) temp.length = 10
+                            todoobject.tasks = temp
+                        } else {
+                            todoobject.tasks = [value.value]
+                        }
+                        break
+                    case 'loop':
+                        todoobject.loop = value.value
+                        break
+                    case 'category':
+                        todoobject.category = value.value
+                        break
+                    case 'url':
+                        todoobject.attachlink = `url_${value.value}`
+                        break
+                    case 'image':
+                        client.cache.get(`${interaction.guild_id}${value.value}`, (res) => {
+                            // eslint-disable-next-line no-console
+                            console.log(res)
+                        })
+                        break
+                    default:
+                        // eslint-disable-next-line no-console
+                        console.log('fuck eslint')
+                        break
+                }
+            },
+        )
 
-        let todomsg
+        let todomsg: Message | undefined
         try {
             const todochannel = await client.guilds.cache
                 .get(interaction.guild_id)
@@ -158,9 +173,10 @@ export default {
                         : conf.todochannel,
                 )
             // @ts-expect-error
-            todomsg = await todochannel.send(await client.embed.todo(todoobject))
+            todomsg = await todochannel.send(client.embed.todo(todoobject))
         } catch (e) {
             client.logger.debug(e)
+
             return interaction.errorDisplay(messages.unabletoposttodo[lang])
         }
 
@@ -179,13 +195,18 @@ export default {
             : conf.todochannel
         todoobject.shared = false
 
+        await todomsg.react('✍️')
         try {
-            await todomsg.react(client.util.get('emojiMap').edit)
-            await todomsg.react(client.util.get('emojiMap').accept)
+            // await todomsg.react('heart')
+
+            // eslint-disable-next-line @typescript-eslint/dot-notation
+            // todomsg.react(client.util.get('emojiMap').accept)
+            // save the todo to database
+            const todo = new Todo(interaction.client, todoobject)
+            await todo.save()
         } catch (e) {
-            interaction.errorDisplay(messages.unabletoposttodo[lang])
+            console.error(e)
+            // interaction.channel.send(messages.unabletoposttodo[lang])
         }
-        // save the todo to database
-        await client.util.get('settodo')(todoobject)
     },
 }
