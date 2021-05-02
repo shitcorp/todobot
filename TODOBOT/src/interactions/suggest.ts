@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const { MessageEmbed } = require('discord.js-light')
 const messages = require('../localization/messages')

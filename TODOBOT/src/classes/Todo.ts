@@ -1,6 +1,6 @@
 import { Message } from 'discord.js-light'
 import Todomodel from '../modules/models/todomodel'
-import MyClient from './client'
+import MyClient from './Client'
 
 export default class Todo {
     _id: any

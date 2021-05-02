@@ -1,5 +1,8 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import { Message } from 'discord.js-light'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
+import Todo from '../classes/Todo'
+import { emojiMap } from '../modules/util/emojis'
 
 /* eslint-disable no-nested-ternary */
 const { v4: uuidv4 } = require('uuid')
@@ -152,7 +155,7 @@ export default {
             },
         )
 
-        let todomsg
+        let todomsg: Message | undefined
         try {
             const todochannel = await client.guilds.cache
                 .get(interaction.guild_id)
@@ -163,10 +166,12 @@ export default {
                             : conf.todochannel
                         : conf.todochannel,
                 )
-            // @ts-expect-error
-            todomsg = await todochannel.send(await client.embed.todo(todoobject))
+            const resolved = await client.guilds.cache.get(interaction.guild_id).channels.resolve()
+            resolved.fetch()
+            resolved.todomsg = await todochannel.send(client.embed.todo(todoobject))
         } catch (e) {
             client.logger.debug(e)
+
             return interaction.errorDisplay(messages.unabletoposttodo[lang])
         }
 
@@ -185,13 +190,18 @@ export default {
             : conf.todochannel
         todoobject.shared = false
 
+        todomsg.react('820577055342985216')
         try {
-            await todomsg.react(client.util.get('emojiMap').edit)
-            await todomsg.react(client.util.get('emojiMap').accept)
+            await todomsg.react('heart')
+
+            // eslint-disable-next-line @typescript-eslint/dot-notation
+            // todomsg.react(client.util.get('emojiMap').accept)
+            // save the todo to database
+            const todo = new Todo(interaction.client, todoobject)
+            await todo.save()
         } catch (e) {
-            interaction.errorDisplay(messages.unabletoposttodo[lang])
+            console.error(e)
+            // interaction.channel.send(messages.unabletoposttodo[lang])
         }
-        // save the todo to database
-        await client.util.get('settodo')(todoobject)
     },
 }

@@ -1,5 +1,5 @@
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 import http from '../modules/util/http'
 
 const messages = require('../localization/messages')

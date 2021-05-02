@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
-import Todo from '../classes/todo'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
+import Todo from '../classes/Todo'
 import messages from '../localization/messages'
 
 const raw = {

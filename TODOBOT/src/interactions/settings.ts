@@ -4,8 +4,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-case-declarations */
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 const messages = require('../localization/messages')
 
@@ -143,7 +143,7 @@ export default {
                 commandopts = interaction.data.options[index].options
         }
 
-        let conf = await client.util.get('getconfig')(interaction.guild_id)
+        let conf = await client.config.get(interaction.guild_id)
 
         if (!conf)
             conf = {
@@ -159,6 +159,12 @@ export default {
                 blacklist_users: [],
                 vars: new Map(),
                 lang: 'en',
+                blackboard: {
+                    message: null,
+                    channel: null,
+                },
+                autopurge: false,
+                todomode: 'simple',
             }
         // eslint-disable-next-line no-nested-ternary
         const lang = conf ? (conf.lang ? conf.lang : 'en') : 'en'
@@ -209,8 +215,8 @@ export default {
                                 null,
                             ),
                         )
-                        await testmsg.react(client.util.get('emojiMap').edit)
-                        await testmsg.react(client.util.get('emojiMap').accept)
+                        await testmsg.react(client.getUtil('emojiMap').edit)
+                        await testmsg.react(client.getUtil('emojiMap').accept)
                         await testmsg.delete()
                         conf.todochannel = todochannel
                     } catch (e) {
@@ -222,10 +228,10 @@ export default {
                 if (userrole) conf.userroles.push(userrole)
 
                 try {
-                    await client.util.get('setconfig')(conf)
+                    await client.config.set(conf)
                 } catch (e) {
                     try {
-                        await client.util.get('updateconfig')(interaction.guild_id, conf)
+                        await client.config.update(interaction.guild_id, conf)
                     } catch (e) {
                         client.logger.debug(e)
                     }
@@ -263,7 +269,7 @@ export default {
                             break
                         case 'userroles':
                         case 'staffroles':
-                            if (output[i] === [] || output[i] === '[]')
+                            if (output[i] === [])
                                 outputString += `> ${i}  =>  \`${
                                     output[i] === undefined ? 'undefined' : output[i]
                                 }\` \n`
@@ -316,9 +322,9 @@ export default {
                     conf.userroles = userroles
                 }
                 try {
-                    await client.util.get('setconfig')(conf)
+                    await client.config.set(conf)
                 } catch (e) {
-                    await client.util.get('updateconfig')(interaction.guild_id, conf)
+                    client.config.update(interaction.guild_id, conf)
                 }
                 interaction.replyWithMessageAndDeleteAfterAWhile(
                     client.embed.success(messages.savedsettings[lang]),

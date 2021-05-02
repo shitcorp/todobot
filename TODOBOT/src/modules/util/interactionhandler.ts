@@ -1,16 +1,16 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
 import messages from '../../localization/messages'
-import Interaction from '../../classes/interaction'
+import Interaction from '../../classes/Interaction'
 import findCommonElements from './findCommonElements'
+import MyClient from '../../classes/Client'
 
 const interactionRecently = new Set()
 
 // eslint-disable-next-line consistent-return
-export default async (client, raw_interaction) => {
+export default async (client: MyClient, raw_interaction) => {
     // eslint-disable-next-line global-require
-    const getAsync = require('util').promisify(client.cache.get).bind(client.cache)
-    const interaction = new Interaction(client, raw_interaction)
+    const interaction: Interaction = new Interaction(client, raw_interaction)
 
     if (interactionRecently.has(raw_interaction.member.user.id)) {
         interaction.errorDisplay(
@@ -19,7 +19,10 @@ export default async (client, raw_interaction) => {
     } else {
         // eslint-disable-next-line no-param-reassign
         raw_interaction.level = 0
-        const isThere = await getAsync(interaction.member.user.id)
+        const isThere = await client.getAsync(interaction.member.user.id)
+
+        // eslint-disable-next-line no-console
+        console.log(isThere)
         const iscmd = await client.interactions.get(interaction.data.name)
         if (iscmd && iscmd.conf.premium !== false && isThere === null)
             return interaction.errorDisplay(`
@@ -39,7 +42,8 @@ export default async (client, raw_interaction) => {
                 username: `${interaction.member.user.username}#${interaction.member.user.discriminator}`,
             })
             const permSpan = trans.startSpan('permission_checks', 'permission_checks')
-            const conf = await client.util.get('getconfig')(interaction.guild_id)
+            const conf = await client.config.get(interaction.guild_id)
+
             // if the user or channel are blacklisted we return an error
             if (conf && Object.values(conf.blacklist_users).includes(interaction.member.user.id))
                 return interaction.errorDisplay(

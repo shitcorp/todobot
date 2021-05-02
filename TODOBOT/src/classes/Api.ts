@@ -1,7 +1,7 @@
 import express, { Application } from 'express'
 import { RedisClient } from 'redis'
 import { MessageEmbed } from 'discord.js-light'
-import MyClient from './client'
+import MyClient from './Client'
 
 export default class API {
     PORT: number

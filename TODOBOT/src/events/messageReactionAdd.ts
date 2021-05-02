@@ -3,10 +3,10 @@
 /* eslint-disable no-undef */
 import { MessageReaction } from 'discord.js-light'
 import todomodel from '../modules/models/todomodel'
-import Todo from '../classes/todo'
+import Todo from '../classes/Todo'
 import messages from '../localization/messages'
 import findCommonElements from '../modules/util/findCommonElements'
-import MyClient from '../classes/client'
+import MyClient from '../classes/Client'
 
 export default async (client: MyClient, messageReaction: MessageReaction, user) => {
     const reactionTrans = client.apm.startTransaction('MessageReactionAddEvent', 'eventhandler')

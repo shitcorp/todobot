@@ -5,8 +5,8 @@
 import { formatDistanceToNow } from 'date-fns'
 import { v4 as uuidv4 } from 'uuid'
 import Pagination from 'discord-paginationembed'
-import MyClient from '../classes/client'
-import Interaction from '../classes/interaction'
+import MyClient from '../classes/Client'
+import Interaction from '../classes/Interaction'
 
 import messages from '../localization/messages'
 import Remindermodel from '../modules/models/remindermodel'
