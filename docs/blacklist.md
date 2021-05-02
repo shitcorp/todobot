@@ -8,23 +8,18 @@
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | user | The user you want to blacklist | User | ❌ | 
-
-    | channel | The channel you want to blacklist | Channel | ❌ | 
-
-    ## /blacklist remove 
+| channel | The channel you want to blacklist | Channel | ❌ | 
+## /blacklist remove 
 
 | Name | Description | Type | Required? | 
 | :-- | :-- | :-- | :-- | 
 | user | The user you want to blacklist | User | ❌ | 
-
-    | channel | The channel you want to blacklist | Channel | ❌ | 
-
-    ## /blacklist list 
+| channel | The channel you want to blacklist | Channel | ❌ | 
+## /blacklist list 
 
 No arguments required. Description: 
 > Show your current blacklists. 
 
-                            
 
-<br>
- [🔙 Go back](../README.md#%EF%B8%8F-commands)
+
+ [🔙 Go back](../README)
