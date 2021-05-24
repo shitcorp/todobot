@@ -1,5 +1,6 @@
 // import { Document } from 'mongoose'
 import { Configmodel } from '../modules/models'
+import type MyClient from './Client'
 
 interface RawConfig {
   _id: string
@@ -23,7 +24,7 @@ interface RawConfig {
 }
 
 export default class ConfigManager {
-  private _client: any
+  private _client: MyClient
 
   constructor(client) {
     this._client = client
@@ -66,7 +67,7 @@ export default class ConfigManager {
   update(_id: string, configobj) {
     Configmodel.updateOne({ _id }, configobj, null, (err) => {
       if (err) this._client.logger.debug(err)
-      this._client.invalidateCache(_id)
+      this._client.util.get('invalidateCache')(_id)
     })
   }
 }
