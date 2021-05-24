@@ -27,4 +27,4 @@ No arguments required. Description:
 
 
 
- [🔙 Go back](../README#commands)
+ [🔙 Go back](../)
