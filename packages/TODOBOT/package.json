@@ -1,0 +1,84 @@
+{
+  "name": "todo-bot",
+  "version": "1.10.2",
+  "description": "Todo bot for mick, maybe going to make this somewhat advanced",
+  "main": "src/index.js",
+  "scripts": {
+    "_dev": "nodemon",
+    "start:clean": "npm run build && cp TODOBOT/src/localization TODOBOT/dist/localization -r && node TODOBOT/dist/index.js | pino-pretty -c -f -m message",
+    "_start": "cp TODOBOT/src/localization TODOBOT/dist/localization -r && node TODOBOT/dist/index.js | pino-pretty -c -f -m message",
+    "start:dev": "cp TODOBOT/src/localization TODOBOT/dist/localization -r && nodemon TODOBOT/dist/index.js | pino-pretty -c -f -m message",
+    "dc:up": "docker-compose up -d",
+    "dc:down": "docker-compose down",
+    "update": "ncu -u",
+    "upgrade": "ncu -u && npm install",
+    "commit": "cz",
+    "release": "standard-version",
+    "release:pre": "npm run release -- --prerelease",
+    "release:alpha": "npm run release -- --prerelease alpha",
+    "release:beta": "npm run release -- --prerelease beta",
+    "register": "npm run build && node TODOBOT/dist/modules/util/register.js",
+    "docs": "npm run build && node DOCGEN/gen.js",
+    "md2js": "node DOCGEN/md2js.js",
+    "build": "tsc",
+    "build:clean": "rm dist -rf && npm run build",
+    "start:pretty": "node dist | pino-pretty -c -f -m message"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "author": "MeerBiene",
+  "license": "WTFPL",
+  "dependencies": {
+    "@aero/centra": "^1.0.6",
+    "@elastic/ecs-pino-format": "^1.1.1",
+    "agenda": "^4.1.2",
+    "blapi": "^2.1.0",
+    "bufferutil": "^4.0.3",
+    "date-fns": "^2.21.1",
+    "discord-paginationembed": "^2.1.0",
+    "discord.js-light": "^3.5.9",
+    "dotenv": "^8.2.0",
+    "elastic-apm-node": "^3.14.0",
+    "erlpack": "github:discord/erlpack",
+    "express": "^4.17.1",
+    "file-type": "^16.3.0",
+    "fs": "0.0.1-security",
+    "mongoose": "^5.12.7",
+    "pino": "^6.11.3",
+    "prompts": "^2.4.1",
+    "redis": "^3.1.2",
+    "slash-commands": "^1.4.0",
+    "standard-version": "^9.2.0",
+    "utf-8-validate": "^5.0.4",
+    "uuid": "^8.3.2",
+    "zlib-sync": "^0.1.7"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/pino": "^6.3.8",
+    "@types/redis": "^2.8.28",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "commitizen": "^4.2.3",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.2.1",
+    "standard-version": "^9.2.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shitcorp/TODOBOT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shitcorp/TODOBOT/issues"
+  }
+}

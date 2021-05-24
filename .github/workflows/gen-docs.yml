@@ -1,11 +1,11 @@
-name: 'Docgen'
+name: "Docgen"
 
 on:
   push:
     branches: [main, master]
 
 jobs:
-  lint:
+  docgen:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -13,11 +13,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '15.x'
+          node-version: "16.x"
       - name: Install Packages
-        run: npm install common-tags
+        run: cd packages/DOCGEN && npm install
       - name: Generate Docs
-        run: npm run docs
+        run: cd packages/DOCGEN && npm run gen
       - name: Commit and push Changes
         run: |
           git config user.email "actions@github.com"
@@ -25,5 +25,5 @@ jobs:
           git add .
           git diff --staged --quiet || git commit -m "ci (build | docs): generate docs for $GITHUB_SHA"
           git checkout develop
-          git merge main
+          git merge master
           git push --all
