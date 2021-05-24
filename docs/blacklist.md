@@ -20,9 +20,3 @@
 No arguments required. Description: 
 > Show your current blacklists. 
 
-<<<<<<< HEAD
-
-
- [🔙 Go back](../)
-=======
->>>>>>> main-patch

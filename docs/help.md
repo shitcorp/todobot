@@ -7,9 +7,3 @@
 | :-- | :-- | :-- | :-- | 
 | command | The command you want specific infomation about. | String (Text) | ❌ | 
 
-<<<<<<< HEAD
-
-
- [🔙 Go back](../)
-=======
->>>>>>> main-patch

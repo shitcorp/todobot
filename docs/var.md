@@ -25,9 +25,3 @@ No arguments required. Description:
 | :-- | :-- | :-- | :-- | 
 | name | Name of the variable you want to delete | String (Text) | ✔️ | 
 
-<<<<<<< HEAD
-
-
- [🔙 Go back](../)
-=======
->>>>>>> main-patch
