@@ -17,7 +17,7 @@ jobs:
       - name: Install DOCGEN Packages
         run: cd packages/DOCGEN && npm install
       - name: Install TODOBOT Packages
-        run: cd packages/TODOBOT && npm install
+        run: cd packages/TODOBOT && npm install typescript
       - name: Compile TODOBOT
         run: cd packages/TODOBOT && npm run build
       - name: Generate Docs
