@@ -1,4 +1,4 @@
-name: "Docgen"
+name: "Generate Docs"
 
 on:
   push:
@@ -14,8 +14,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "16.x"
-      - name: Install Packages
+      - name: Install DOCGEN Packages
         run: cd packages/DOCGEN && npm install
+      - name: Install TODOBOT Packages
+        run: cd packages/TODOBOT && npm install
+      - name: Compile TODOBOT
+        run: cd packages/TODOBOT && npm run build
       - name: Generate Docs
         run: cd packages/DOCGEN && npm run gen
       - name: Commit and push Changes
