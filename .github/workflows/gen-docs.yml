@@ -24,10 +24,13 @@ jobs:
         run: "cd packages/DOCGEN && npm run gen"
       - name: Commit and push Changes
         run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git add .
-          git diff --staged --quiet || git commit -m "ci (build | docs): generate docs for $GITHUB_SHA"
-          git checkout develop
-          git merge master
-          git push --all
+          "git config user.email \"actions@github.com\""
+          "git config user.name \"GitHub Actions\""
+
+          "git add ."
+          "git diff --staged --quiet || git commit -m \"ci (build | docs): generate docs for $GITHUB_SHA\""
+
+          "git checkout develop"
+          "git merge master"
+
+          "git push --all"
