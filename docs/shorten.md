@@ -8,6 +8,9 @@
 | Link | The link that you want to get shortened. | String (Text) | ✔️ | 
 | Domain | The domain you want to use for your shortened link. | String (Text) | ❌ | 
 
+<<<<<<< HEAD
 
 
  [🔙 Go back](../)
+=======
+>>>>>>> main-patch
