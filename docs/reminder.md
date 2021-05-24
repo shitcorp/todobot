@@ -17,6 +17,3 @@
 No arguments required. Description: 
 > View your reminder(s). 
 
-
-
- [🔙 Go back](../)

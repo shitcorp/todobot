@@ -23,5 +23,3 @@ When creating your task then reference the image with your title in the image op
 
 
 For attaching normal links, just put them in the url option, if will then be shown as attachment in your todo list.
-
- [🔙 Go back](../)

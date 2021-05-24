@@ -25,6 +25,3 @@
 No arguments required. Description: 
 > List available tags. 
 
-
-
- [🔙 Go back](../)
