@@ -27,7 +27,7 @@ export default {
     description: raw.description,
   },
   run: async (client: MyClient, interaction: Interaction) => {
-    interaction.reply(' ', 5)
+    interaction.reply(' ')
     // Define the arrays of the commands separed by category
     const pages = [
       ' ',

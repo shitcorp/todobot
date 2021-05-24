@@ -211,8 +211,8 @@ export default {
                 null,
               ),
             )
-            await testmsg.react(client.getUtil('emojiMap').edit)
-            await testmsg.react(client.getUtil('emojiMap').accept)
+            // await testmsg.react(client.getUtil('emojiMap').edit)
+            // await testmsg.react(client.getUtil('emojiMap').accept)
             await testmsg.delete()
             conf.todochannel = todochannel
           } catch (e) {

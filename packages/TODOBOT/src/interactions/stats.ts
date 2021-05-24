@@ -1,8 +1,7 @@
 import os from 'os'
 import { MessageEmbed } from 'discord.js-light'
-import MyClient from '../classes/Client'
+import { MyClient, Interaction } from '../classes'
 
-import Interaction from '../classes/Interaction'
 import todomodel from '../modules/models/todomodel'
 
 const raw = {
