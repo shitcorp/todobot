@@ -1,4 +1,4 @@
 # /stats
 > Show some bot statistics like memory or CPU Usage.
 
- [🔙 Go back](../README)
+ [🔙 Go back](../README#commands)
