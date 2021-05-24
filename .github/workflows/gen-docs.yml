@@ -2,7 +2,7 @@ name: "Generate Docs"
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master]
 
 jobs:
   docgen:
