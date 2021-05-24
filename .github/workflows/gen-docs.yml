@@ -15,13 +15,13 @@ jobs:
         with:
           node-version: "16.x"
       - name: Install DOCGEN Packages
-        run: cd packages/DOCGEN && npm install
+        run: "cd packages/DOCGEN && npm install"
       - name: Install TODOBOT Packages
-        run: cd packages/TODOBOT && npm install typescript
+        run: "cd packages/TODOBOT && npm install --no-optional"
       - name: Compile TODOBOT
-        run: cd packages/TODOBOT && npm run build
+        run: "cd packages/TODOBOT && npm run build"
       - name: Generate Docs
-        run: cd packages/DOCGEN && npm run gen
+        run: "cd packages/DOCGEN && npm run gen"
       - name: Commit and push Changes
         run: |
           git config user.email "actions@github.com"
