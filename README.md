@@ -52,27 +52,305 @@ To view all the commands the bot supports, run the `/help` command. If you want 
 
 **Available Commands:**
 
+
 <!--STARTCMDSECTION-->
 
- - [assign](./docs/assign "Assign someone to a task no matter if they want or not.") 
- - [blacklist](./docs/blacklist "Blacklist user(s) and/or channel(s)") 
- - [help](./docs/help "Show all available commands and their usage.") 
- - [invite](./docs/invite "Invite the bot to your server.") 
- - [list](./docs/list "List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.") 
- - [reminder](./docs/reminder "Create, edit and view reminders") 
- - [settings](./docs/settings "View and edit bot settings.") 
- - [shorten](./docs/shorten "Shorten a link.") 
- - [stats](./docs/stats "Show some bot statistics like memory or CPU Usage.") 
- - [suggest](./docs/suggest "Suggest new features to be added into the bot") 
- - [support](./docs/support "Get information on how to contact the developer(s).") 
- - [tag](./docs/tag "Bild your own commands like a pro.") 
- - [todo](./docs/todo "Create a new TODO object") 
- - [tutorial](./docs/tutorial "Get a short tutorial on how to use the bot.") 
- - [var](./docs/var "Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo'") 
- - [vote](./docs/vote "If you like the bot vote for it!") 
+<details>
+<summary>assign</summary>
+
+# /assign
+> Assign someone to a task no matter if they want or not. 
+
+# Arguments
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| user | The user you want to assign. | User | ✔️ | 
+| id | ID of the task that you want to assing the user to. | String (Text) | ✔️ | 
+
+
+
+# Assign Command
+Welcome to the documentation of the `assign` command. It is used to assign members to tasks.
+
+</details>
+<details>
+<summary>blacklist</summary>
+
+# /blacklist
+> Blacklist user(s) and/or channel(s) 
+
+# Subcommands
+
+## /blacklist add 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| user | The user you want to blacklist | User | ❌ | 
+| channel | The channel you want to blacklist | Channel | ❌ | 
+## /blacklist remove 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| user | The user you want to blacklist | User | ❌ | 
+| channel | The channel you want to blacklist | Channel | ❌ | 
+## /blacklist list 
+
+No arguments required. Description: 
+> Show your current blacklists. 
+
+
+
+</details>
+<details>
+<summary>help</summary>
+
+# /help
+> Show all available commands and their usage. 
+
+# Arguments
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| command | The command you want specific infomation about. | String (Text) | ❌ | 
+
+
+
+</details>
+<details>
+<summary>invite</summary>
+
+# /invite
+> Invite the bot to your server.
+
+</details>
+<details>
+<summary>list</summary>
+
+# /list
+> List todos for your server. Use the 🔄 emoji to repot the currently open todo. Use the arrow emojis to navigate.
+
+</details>
+<details>
+<summary>reminder</summary>
+
+# /reminder
+> Create, edit and view reminders 
+
+# Subcommands
+
+## /reminder create 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| time | After this timespan you will be reminded. | Number (0, 1, 2, 3, 4 ...) | ✔️ | 
+| unit | Minutes? Hours? Seconds? Choose now. | String (Text) | ✔️ | 
+| content | Reminder Text that will be shown when the reminder expires. | String (Text) | ✔️ | 
+| participants | Choose another user or users that should also be reminded. | User | ❌ | 
+| participatingRoles | Choose a role that should be reminded. | Role | ❌ | 
+## /reminder view 
+
+No arguments required. Description: 
+> View your reminder(s). 
+
+
+
+</details>
+<details>
+<summary>settings</summary>
+
+# /settings
+> View and edit bot settings. 
+
+# Subcommands
+
+## /settings set 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| prefix | The prefix the bot will use for your custom commands or tags. | String (Text) | ❌ | 
+| todochannel | The channel that will be used to post your todos in. | Channel | ❌ | 
+| readonlychannel | The channel that will be used to keep your community updated. | Channel | ❌ | 
+| userrole | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌ | 
+| staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users. | Role | ❌ | 
+| language | The language the bot uses to talk to you. | String (Text) | ❌ | 
+| autopurge | Toggle messages being auto purged in the todochannel. | Boolean (true or false) | ❌ | 
+| todomode | Toggle between simple (one channel) and advanced (multiple channels) mode | String (Text) | ❌ | 
+## /settings view 
+
+No arguments required. Description: 
+> View your current settings. 
+## /settings remove 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| userrole | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌ | 
+| staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users. | Role | ❌ | 
+
+
+
+</details>
+<details>
+<summary>shorten</summary>
+
+# /shorten
+> Shorten a link. 
+
+# Arguments
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| Link | The link that you want to get shortened. | String (Text) | ✔️ | 
+| Domain | The domain you want to use for your shortened link. | String (Text) | ❌ | 
+
+
+
+</details>
+<details>
+<summary>stats</summary>
+
+# /stats
+> Show some bot statistics like memory or CPU Usage.
+
+</details>
+<details>
+<summary>suggest</summary>
+
+# /suggest
+> Suggest new features to be added into the bot 
+
+# Arguments
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| text | Your suggestion | String (Text) | ✔️ | 
+| image | If you want to attach an image, paste the link here | String (Text) | ❌ | 
+| hidden | Hide the server where this suggestion was sent | Boolean (true or false) | ❌ | 
+
+
+
+</details>
+<details>
+<summary>support</summary>
+
+# /support
+> Get information on how to contact the developer(s).
+
+</details>
+<details>
+<summary>tag</summary>
+
+# /tag
+> Bild your own commands like a pro. 
+
+# Subcommands
+
+## /tag learn 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | The name of your new command/tag. | String (Text) | ✔️ | 
+| content | This is the content that will be sent when your custom command is run. | String (Text) | ✔️ | 
+## /tag unlearn 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | The command you want to delete. | String (Text) | ✔️ | 
+## /tag edit 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | Name of the command you want to edit. | String (Text) | ✔️ | 
+| content | The content that you want to save as the new tag | String (Text) | ✔️ | 
+## /tag list 
+
+No arguments required. Description: 
+> List available tags. 
+
+
+
+</details>
+<details>
+<summary>todo</summary>
+
+# /todo
+> Create a new TODO object 
+
+# Arguments
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| title | Title of the TODO object | String (Text) | ✔️ | 
+| tasks | The tasks that belong to this todo. Seperate them with a semicolon (;). Maximum 10 tasks allowed! | String (Text) | ❌ | 
+| content | Content of the TODO object | String (Text) | ❌ | 
+| url | Attach a link to the todo | String (Text) | ❌ | 
+| image | Attach an image to the todo. Has to be a discord attachment link. | String (Text) | ❌ | 
+| category | The category this todo should belong to. | String (Text) | ❌ | 
+| loop | Create repeating tasks | Boolean (true or false) | ❌ | 
+
+
+
+# Images & Attachments
+If you want to attach an image to your task, you can simply upload an image and give it a title like so: {{thisismytitle}} ("thisismytitle" will then be the title to reference). 
+
+
+When creating your task then reference the image with your title in the image options. The image will then be embedded into your todo list. **Note:** The image will be available 24hrs after uploading (for every guild member). This is due to the bot caching the links to images that are uploaded with the special tags (the double curly brackets {{}}).
+
+
+For attaching normal links, just put them in the url option, if will then be shown as attachment in your todo list.
+
+</details>
+<details>
+<summary>tutorial</summary>
+
+# /tutorial
+> Get a short tutorial on how to use the bot.
+
+</details>
+<details>
+<summary>var</summary>
+
+# /var
+> Set, view, edit and delete configvariables. Use them in your tags like so: <%foo%> to be replaced with the variable 'foo' 
+
+# Subcommands
+
+## /var create 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | How you want your variable to be named. | String (Text) | ✔️ | 
+| value | The value your variable should hold. | String (Text) | ✔️ | 
+## /var view 
+
+No arguments required. Description: 
+> Show your already registered variables 
+## /var edit 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | Name of the variable you want to edit | String (Text) | ✔️ | 
+| value | The new value for your variable | String (Text) | ✔️ | 
+## /var delete 
+
+| Name | Description | Type | Required? | 
+| :-- | :-- | :-- | :-- | 
+| name | Name of the variable you want to delete | String (Text) | ✔️ | 
+
+
+
+</details>
+<details>
+<summary>vote</summary>
+
+# /vote
+> If you like the bot vote for it!
+
+</details>
 
 
 <!--ENDCMDSECTION-->
+
 
 
 <br>

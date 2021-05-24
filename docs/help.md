@@ -7,6 +7,3 @@
 | :-- | :-- | :-- | :-- | 
 | command | The command you want specific infomation about. | String (Text) | ❌ | 
 
-
-
- [🔙 Go back](../README#commands)

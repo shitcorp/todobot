@@ -49,6 +49,7 @@ class Interaction {
   commandopts: Record<any, any>[]
 
   constructor(client, rawInteraction) {
+    this.responded = false
     this.client = client
     this.application_id = rawInteraction.application_id
     this.id = rawInteraction.id
@@ -99,6 +100,7 @@ class Interaction {
   }
 
   reply(msg: string, type = 4) {
+    if (this.responded === true) this.responded = true
     return this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type,

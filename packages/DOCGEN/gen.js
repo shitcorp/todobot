@@ -5,6 +5,9 @@ const { join } = require("path");
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { stripIndents } = require("common-tags");
 
+const docStringsForReadme = [];
+const commandsForFrontend = [];
+
 let TOCString = ``;
 const tableHeader = `| Name | Description | Type | Required? | \n| :-- | :-- | :-- | :-- | \n`;
 const typeMap = {
@@ -30,6 +33,7 @@ files
   )
   .forEach((file) => {
     const cmdName = file.replace(".js", "");
+    commandsForFrontend.push(cmdName);
     let docString = "";
     docString += `# /${cmdName}`;
     // eslint-disable-next-line import/no-dynamic-require
@@ -70,8 +74,8 @@ files
     }
     if (required.help.mddescription && required.help.mddescription !== "")
       docString += `\n\n${stripIndents`${required.help.mddescription}`}`;
-    // add back button
-    docString += `\n\n [🔙 Go back](../README#commands)`;
+
+    docStringsForReadme.push({ cmdName, docString });
     writeFileSync(join(__dirname, `../../docs/${cmdName}.md`), docString);
     console.log(`Finished generating docs for ${cmdName}.`);
   });
@@ -82,6 +86,18 @@ files
   const startTag = "<!--STARTCMDSECTION-->";
   const endTag = "<!--ENDCMDSECTION-->";
 
+  let readMeSectionString = "";
+
+  docStringsForReadme.forEach((command) => {
+    readMeSectionString += `<details>
+<summary>${command.cmdName}</summary>
+
+${command.docString}
+
+</details>
+`;
+  });
+
   const startIndex = currentReadme.indexOf(startTag) + startTag.length;
   const endIndex = currentReadme.indexOf(endTag);
 
@@ -90,10 +106,14 @@ files
     `${currentReadme.substring(
       0,
       startIndex
-    )}\n\n${TOCString}\n\n${currentReadme.substring(
+    )}\n\n${readMeSectionString}\n\n${currentReadme.substring(
       endIndex,
       currentReadme.length
     )}`
+  );
+  writeFileSync(
+    join(__dirname, `../../docs/commands.json`),
+    JSON.stringify({ commands: commandsForFrontend })
   );
   console.log(`Finished adding new commands section to readme.`);
 })();
