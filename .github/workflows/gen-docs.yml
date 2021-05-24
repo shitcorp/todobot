@@ -2,7 +2,7 @@ name: "Generate Docs"
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
 
 jobs:
   docgen:
@@ -28,5 +28,4 @@ jobs:
           git config user.name "GitHub Actions"
           git add .
           git diff --staged --quiet || git commit -m "ci (build | docs): generate docs for $GITHUB_SHA"
-          git merge
           git push --all

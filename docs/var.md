@@ -25,6 +25,3 @@ No arguments required. Description:
 | :-- | :-- | :-- | :-- | 
 | name | Name of the variable you want to delete | String (Text) | ✔️ | 
 
-
-
- [🔙 Go back](../README#commands)

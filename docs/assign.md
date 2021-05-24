@@ -12,5 +12,3 @@
 
 # Assign Command
 Welcome to the documentation of the `assign` command. It is used to assign members to tasks.
-
- [🔙 Go back](../README#commands)

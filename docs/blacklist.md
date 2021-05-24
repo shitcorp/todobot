@@ -20,6 +20,3 @@
 No arguments required. Description: 
 > Show your current blacklists. 
 
-
-
- [🔙 Go back](../README#commands)
