@@ -22,7 +22,7 @@ export default {
     description: raw.description,
   },
   run: async (client: MyClient, interaction: Interaction) =>
-    interaction.embed.default(
+    interaction.successDisplay(
       messages.invitemessage[
         interaction.conf ? (interaction.conf.lang ? interaction.conf.lang : 'en') : 'en'
       ],

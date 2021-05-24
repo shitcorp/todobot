@@ -101,7 +101,7 @@ export default class Interaction {
 
   async replyMsg(msg: string | MessageEmbed, timeout = 0) {
     const repliedMsg = await this.channel.send(msg)
-    if (timeout > 0) repliedMsg.delete({ timeout })
+    if (timeout && timeout > 0) repliedMsg.delete({ timeout })
   }
 
   replyInteraction(msg: string, type = 4) {
@@ -110,6 +110,7 @@ export default class Interaction {
       data: {
         type,
         data: {
+          flags: 64,
           content: msg,
         },
       },
@@ -122,18 +123,19 @@ export default class Interaction {
       data: {
         type: 4,
         data: {
+          flags: 64,
           embeds: [embed],
         },
       },
     })
   }
 
-  reply(msg: any, timeout) {
+  reply(msg: any, timeout?: number) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.responded === true ? this.replyMsg(msg, timeout) : this.replyInteraction(msg)
   }
 
-  replyEmbed(msg: any, timeout) {
+  replyEmbed(msg: any, timeout?: number) {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.responded === true ? this.replyMsg(msg, timeout) : this.replyInteractionEmbed(msg)
   }
@@ -168,6 +170,10 @@ export default class Interaction {
 
   errorDisplay(msg: string) {
     this.replyWithMessageAndDeleteAfterAWhile(this.errorEmbed(msg))
+  }
+
+  successDisplay(msg: string) {
+    this.replyWithMessageAndDeleteAfterAWhile(this.successEmbed(msg))
   }
 
   defaultEmbed(msg: string, color = 'BLUE') {

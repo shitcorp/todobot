@@ -83,7 +83,7 @@ export default {
         output += `\` ${c.name} \` |`
       })
       output += `\n\n> ${messages.moreinformation[lang]}`
-      interaction.embed.default(output)
+      interaction.replyEmbed(interaction.defaultEmbed(output))
     }
     // no command speciefied, user wants information about all commands
     if (command) showOnlyOneCommand()

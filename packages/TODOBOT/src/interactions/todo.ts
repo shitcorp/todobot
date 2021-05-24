@@ -174,7 +174,7 @@ export default {
 
     if (!todomsg) return interaction.errorDisplay(messages.unabletoposttodo[lang])
 
-    interaction.replyWithMessageAndDeleteAfterAWhile(client.embed.success(messages.todoposted[lang]))
+    interaction.successDisplay(messages.todoposted[lang])
 
     // were saving the channel for future reference, if the todo channel gets changed
     // and we repost a task/todo and put the link to the original message. Dont know
@@ -187,7 +187,8 @@ export default {
       : conf.todochannel
     todoobject.shared = false
 
-    await todomsg.react('<:edit:820577055342985216>')
+    todomsg.react('😁')
+    todomsg.react('<:edit:820577055342985216>')
     try {
       // await todomsg.react('heart')
 
@@ -197,6 +198,7 @@ export default {
       const todo = new Todo(interaction.client, todoobject)
       await todo.save()
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e)
       // interaction.channel.send(messages.unabletoposttodo[lang])
     }
