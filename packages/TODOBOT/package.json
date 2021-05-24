@@ -42,7 +42,6 @@
     "discord.js-light": "^3.5.9",
     "dotenv": "^8.2.0",
     "elastic-apm-node": "^3.14.0",
-    "erlpack": "github:discord/erlpack",
     "express": "^4.17.1",
     "file-type": "^16.3.0",
     "fs": "0.0.1-security",
@@ -55,6 +54,9 @@
     "utf-8-validate": "^5.0.4",
     "uuid": "^8.3.2",
     "zlib-sync": "^0.1.7"
+  },
+  "optionalDependencies": {
+    "erlpack": "github:discord/erlpack"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
