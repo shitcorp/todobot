@@ -5,7 +5,7 @@ on:
     branches: [main, master]
 
 jobs:
-  lint:
+  docgen:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '15.x'
       - name: Install Packages
-        run: npm install common-tags
+        run: npm install common-tags typescript
       - name: Generate Docs
         run: npm run docs
       - name: Commit and push Changes
