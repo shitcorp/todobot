@@ -1,4 +1,4 @@
 # /invite
 > Invite the bot to your server.
 
- [🔙 Go back](../README)
+ [🔙 Go back](../README#commands)
