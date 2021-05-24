@@ -80,9 +80,6 @@ export default {
     if (!conf.todochannel || conf.todoochannel === '')
       return interaction.errorDisplay(messages.notodochannel[lang])
 
-    if (!interaction.data.options || interaction.data.options.length < 1)
-      return interaction.errorDisplay(messages.todonoargs[lang])
-
     const todoobject = {
       _id: uuidv4().slice(0, 13),
       title: '',

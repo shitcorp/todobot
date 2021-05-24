@@ -2,7 +2,7 @@
   "name": "todo-bot",
   "version": "1.10.2",
   "description": "Todo bot for mick, maybe going to make this somewhat advanced",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "_dev": "nodemon",
     "start:clean": "npm run build && cp TODOBOT/src/localization TODOBOT/dist/localization -r && node TODOBOT/dist/index.js | pino-pretty -c -f -m message",
@@ -20,7 +20,9 @@
     "register": "npm run build && node TODOBOT/dist/modules/util/register.js",
     "docs": "npm run build && node DOCGEN/gen.js",
     "md2js": "node DOCGEN/md2js.js",
-    "build": "tsc"
+    "build": "tsc",
+    "build:clean": "rm dist -rf && npm run build",
+    "start:pretty": "node dist | pino-pretty -c -f -m message"
   },
   "config": {
     "commitizen": {
@@ -60,17 +62,13 @@
     "@types/redis": "^2.8.28",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
-    "changelog-parser": "^2.8.0",
     "commitizen": "^4.2.3",
-    "common-tags": "^1.8.0",
     "eslint": "^7.25.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.4.0",
-    "i": "^0.3.6",
-    "npm": "^7.11.2",
     "prettier": "^2.2.1",
     "standard-version": "^9.2.0",
     "ts-node": "^9.1.1",

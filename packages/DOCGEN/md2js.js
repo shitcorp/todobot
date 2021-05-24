@@ -3,7 +3,7 @@ const parseChangelog = require('changelog-parser')
 const { readFileSync, writeFileSync } = require('fs')
 const { join } = require('path')
 
-const text = readFileSync(join(__dirname, '../CHANGELOG.md')).toString()
+const text = readFileSync(join(__dirname, '../../CHANGELOG.md')).toString()
 
 /**
   IDEA:
@@ -15,6 +15,6 @@ const text = readFileSync(join(__dirname, '../CHANGELOG.md')).toString()
 */
 
 parseChangelog({ text }, (err, result) => {
-    if (err) throw err
-    writeFileSync(join(__dirname, '../CHANGELOG.json'), JSON.stringify(result))
+  if (err) throw err
+  writeFileSync(join(__dirname, '../../CHANGELOG.json'), JSON.stringify(result))
 })

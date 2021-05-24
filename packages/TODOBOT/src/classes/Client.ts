@@ -8,7 +8,7 @@ import ConfigManager from './ConfigManager'
 import ReminderManager from './ReminderManager'
 import Logger from './Logger'
 
-class MyClient extends Client {
+export default class MyClient extends Client {
   cooldown: number
 
   commands: Map<string | number, any>
@@ -159,5 +159,3 @@ class MyClient extends Client {
     this.login(this._token)
   }
 }
-
-export default MyClient
