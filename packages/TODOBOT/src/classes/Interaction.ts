@@ -1,7 +1,7 @@
-import { GuildMember } from 'discord.js-light'
+import { GuildMember, MessageEmbed } from 'discord.js-light'
 import { http, colors } from '../modules/util'
 
-class Interaction {
+export default class Interaction {
   client: any
 
   application_id: any
@@ -99,8 +99,13 @@ class Interaction {
     }
   }
 
-  reply(msg: string, type = 4) {
-    if (this.responded === true) this.responded = true
+  async replyMsg(msg: string | MessageEmbed, timeout = 0) {
+    const repliedMsg = await this.channel.send(msg)
+    if (timeout > 0) repliedMsg.delete({ timeout })
+  }
+
+  replyInteraction(msg: string, type = 4) {
+    this.responded = true
     return this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type,
@@ -111,7 +116,8 @@ class Interaction {
     })
   }
 
-  replyRawEmbed(embed) {
+  replyInteractionEmbed(embed) {
+    this.responded = true
     return this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: 4,
@@ -120,6 +126,16 @@ class Interaction {
         },
       },
     })
+  }
+
+  reply(msg: any, timeout) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.responded === true ? this.replyMsg(msg, timeout) : this.replyInteraction(msg)
+  }
+
+  replyEmbed(msg: any, timeout) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.responded === true ? this.replyMsg(msg, timeout) : this.replyInteractionEmbed(msg)
   }
 
   async deleteOriginal(timeout?: number) {
@@ -138,84 +154,55 @@ class Interaction {
   }
 
   replyWithMessageAndDeleteAfterAWhile(msg) {
-    try {
-      this.replyRawEmbed(msg)
-      this.deleteOriginal(Number(process.env.MSG_DELETE))
-    } catch (replyRawError) {
-      this.client.logger.debug(replyRawError)
-      try {
-        this.reply(msg)
-        this.deleteOriginal(Number(process.env.MSG_DELETE))
-      } catch (replyMsgError) {
-        this.client.logger.debug(replyMsgError)
-      }
+    switch (typeof msg) {
+      case 'string':
+        this.reply(msg, Number(process.env.MSG_DELETE))
+        if (this.responded === true) this.deleteOriginal(Number(process.env.MSG_DELETE))
+        break
+      default:
+        this.replyEmbed(msg, Number(process.env.MSG_DELETE))
+        if (this.responded === true) this.deleteOriginal(Number(process.env.MSG_DELETE))
+        break
     }
   }
 
   errorDisplay(msg: string) {
-    this.replyWithMessageAndDeleteAfterAWhile(this.client.embed.error(msg))
+    this.replyWithMessageAndDeleteAfterAWhile(this.errorEmbed(msg))
   }
 
-  defaultEmbed(msg: string, type = 4, color = 'BLUE') {
-    return this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type,
-        data: {
-          embeds: [
-            {
-              description: msg,
-              color: colors[color],
-              author: {
-                name: this.client.user.username,
-              },
-              thumbnail: {
-                url: this.client.user.avatarURL(),
-              },
-              footer: {
-                text: `Requested by ${this.member.user.username}#${this.member.user.discriminator}   •    www.todo-bot.xyz`,
-                // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
-                icon_url: `https://cdn.discordapp.com/avatars/${this.member.user.id}/${this.member.user.avatar}.png`,
-              },
-            },
-          ],
-        },
+  defaultEmbed(msg: string, color = 'BLUE') {
+    return {
+      description: msg,
+      color: colors[color],
+      author: {
+        name: this.client.user.username,
       },
-    })
+      thumbnail: {
+        url: this.client.user.avatarURL(),
+      },
+      footer: {
+        text: `Requested by ${this.member.user.username}#${this.member.user.discriminator}   •    www.todo-bot.xyz`,
+        // cdn.discordapp.com/avatars/ user.id + user.avatar + .png
+        icon_url: `https://cdn.discordapp.com/avatars/${this.member.user.id}/${this.member.user.avatar}.png`,
+      },
+    }
   }
 
-  successEmbed(msg: string, type = 4, color = 'GREEN') {
-    return this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type,
-        data: {
-          embeds: [
-            {
-              title: '✅ Success!',
-              description: msg,
-              color: colors[color],
-            },
-          ],
-        },
-      },
-    })
+  // eslint-disable-next-line class-methods-use-this
+  successEmbed(msg: string, color = 'GREEN') {
+    return {
+      title: '✅ Success!',
+      description: msg,
+      color: colors[color],
+    }
   }
 
-  errorEmbed(msg: string, type = 4, color = 'RED') {
-    return this.client.api.interactions(this.id, this.token).callback.post({
-      data: {
-        type,
-        data: {
-          embeds: [
-            {
-              title: '❌ Error',
-              description: msg,
-              color: colors[color],
-            },
-          ],
-        },
-      },
-    })
+  // eslint-disable-next-line class-methods-use-this
+  errorEmbed(msg: string, color = 'RED') {
+    return {
+      title: '❌ Error',
+      description: msg,
+      color: colors[color],
+    }
   }
 }
-
-export default Interaction

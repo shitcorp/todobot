@@ -1,9 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { Message } from 'discord.js-light'
 import { v4 as uuidv4 } from 'uuid'
-import MyClient from '../classes/Client'
-import Interaction from '../classes/Interaction'
-import Todo from '../classes/Todo'
+import { MyClient, Interaction, Todo } from '../classes'
 import messages from '../localization/messages'
 
 const raw = {
