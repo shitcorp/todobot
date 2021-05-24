@@ -113,7 +113,7 @@ ${command.docString}
   );
   writeFileSync(
     join(__dirname, `../../docs/commands.json`),
-    JSON.stringify(commandsForFrontend)
+    JSON.stringify({ commands: commandsForFrontend })
   );
   console.log(`Finished adding new commands section to readme.`);
 })();

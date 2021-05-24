@@ -1,4 +1,6 @@
+/* eslint-disable import/first */
 import { config } from 'dotenv'
+
 config()
 /* eslint-disable global-require */
 /* eslint-disable no-console */

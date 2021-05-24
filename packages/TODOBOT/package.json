@@ -22,7 +22,7 @@
     "md2js": "node DOCGEN/md2js.js",
     "build": "tsc",
     "build:clean": "rm dist -rf && npm run build",
-    "start:pretty": "node dist | pino-pretty -c -f -m message"
+    "start": "node dist | pino-pretty -c -f -m message"
   },
   "config": {
     "commitizen": {
