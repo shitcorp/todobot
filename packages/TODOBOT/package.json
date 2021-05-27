@@ -45,6 +45,7 @@
     "express": "^4.17.1",
     "file-type": "^16.3.0",
     "fs": "0.0.1-security",
+    "mongodb-sanitize": "^1.0.1",
     "mongoose": "^5.12.7",
     "pino": "^6.11.3",
     "prompts": "^2.4.1",

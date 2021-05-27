@@ -1,4 +1,5 @@
 // import { Document } from 'mongoose'
+import { sanitize } from 'mongodb-sanitize'
 import { Configmodel } from '../modules/models'
 import type MyClient from './Client'
 
@@ -40,7 +41,7 @@ export default class ConfigManager {
    * when called
    */
   async set(configobj: RawConfig) {
-    const newconf = new Configmodel(configobj)
+    const newconf = new Configmodel(sanitize(configobj))
     const cache = await this._client.getAsync(configobj._id)
     if (cache !== null) {
       this._client.cache.del(configobj._id, (err) => {
@@ -65,7 +66,7 @@ export default class ConfigManager {
   }
 
   update(_id: string, configobj) {
-    Configmodel.updateOne({ _id }, configobj, null, (err) => {
+    Configmodel.updateOne({ _id }, sanitize(configobj), null, (err) => {
       if (err) this._client.logger.debug(err)
       this._client.util.get('invalidateCache')(_id)
     })
