@@ -1,9 +1,0 @@
-{
-    "conventionalCommits.scopes": [
-        "repo",
-        "TODOBOT",
-        "DOCGEN",
-        "DOCKER",
-        "vscode"
-    ]
-}
