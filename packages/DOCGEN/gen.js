@@ -42,7 +42,7 @@ files
       `../TODOBOT/dist/src/interactions/${file}`
     )).default;
     const { raw } = required;
-    TOCString += ` - [${cmdName}](./docs/${cmdName} "${raw.description}") \n`;
+    TOCString += ` - [${cmdName}](./docs/data/${cmdName} "${raw.description}") \n`;
 
     if (Object.keys(raw).includes("options")) {
       let output = "";
@@ -76,7 +76,7 @@ files
       docString += `\n\n${stripIndents`${required.help.mddescription}`}`;
 
     docStringsForReadme.push({ cmdName, docString });
-    writeFileSync(join(__dirname, `../../docs/${cmdName}.md`), docString);
+    writeFileSync(join(__dirname, `../../docs/data/${cmdName}.md`), docString);
     console.log(`Finished generating docs for ${cmdName}.`);
   });
 (async function writeReadme() {
@@ -112,7 +112,7 @@ ${command.docString}
     )}`
   );
   writeFileSync(
-    join(__dirname, `../../docs/commands.json`),
+    join(__dirname, `../../docs/data/commands.json`),
     JSON.stringify({ commands: commandsForFrontend })
   );
   console.log(`Finished adding new commands section to readme.`);

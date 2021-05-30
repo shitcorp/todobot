@@ -22,6 +22,10 @@ jobs:
         run: "cd packages/TODOBOT && npm run build"
       - name: Generate Docs
         run: "cd packages/DOCGEN && npm run gen"
+      - name: Install Frontend Packages
+        run: "cd packages/FRONTEND && npm install"
+      - name: Build Frontend
+        run: "cd packages/FRONTEND && npm run build:prod"
       - name: Commit and push Changes
         run: |
           git config user.email "actions@github.com"
