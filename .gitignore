@@ -6,7 +6,7 @@ data.sqlite-wal4
 playground.js
 update.json
 package-lock.json
-data
+/data
 *.log
 .history
 .env
