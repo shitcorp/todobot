@@ -57,7 +57,7 @@ export default {
             **Description:** 
             > ${clientCommand.help.description}
             **Documentation:**
-            > [Click here](https://shitcorp.github.io/TODOBOT/docs/${clientCommand.name}) to read the full documentation.`)
+            > [Click here](https://github.com/shitcorp/TODOBOT/tree/main/docs/data/${clientCommand.name}.md) to read the full documentation.`)
     }
     const showAllCommands = async () => {
       let currentCategory = ''
