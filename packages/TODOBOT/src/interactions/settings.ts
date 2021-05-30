@@ -129,6 +129,33 @@ export default {
   help: {
     category: 'Utility',
     description: raw.description,
+    mddescription: `
+        # Some Additional Information
+        
+        ## Readonly Setting
+
+        If you set a readonly channel, you can from now on use the \`share\` reaction ![](https://cdn.discordapp.com/attachments/724022854231916684/844963684501684234/unknown.png) to share the todo to the channel that you configured. All changes to that TODO will be mirrored to that channel, so if someone finishes a task, edits the todo or closes it, everything will be shown in the read only channel.
+
+        ## User/Staff Roles
+
+        These roles are used to determine permissions. "USERs" are users that can interact with the bot. People with the "STAFF" role are users that can change and edit bot settings and force assing users. Having the discord permission \`MANAGE GUILD\` will override this permission system and allow you to edit the bots settings.
+
+        ## Autopurge
+
+        If you enable this setting, all messages that are sent in your configured todo channel and are not from the bot or a user without the \`STAFF\` role will be deleted. This is useful if you want to use your todochannel for tasks only and keep the chatting in other channels.
+
+        ## Todomode
+
+        As you may have seen, there are 2 choices for this: \`simple\` and \`advanced\`:
+
+        **Simple**
+
+        > In this mode all "todo activity" will happen in the preconfigured TODO channel. Means if you run the todo command in lets say the \`general\` channel, your todo will pop up in the configured todo channel (lets call it \`tasks\`).
+        
+        **Advanced**
+        
+        > In this mode, the todos will be created in the channel, where the todo command is run in. So lets say you run the todo command in the \`general\` channel, the todo will pop up in this very \`general\` channel.
+        `,
   },
   run: async (client: MyClient, interaction: Interaction) => {
     let action
