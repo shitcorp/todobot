@@ -1,6 +1,7 @@
 const run = async (client, message) => {
     // TODO: show available tags for guild here, if there are none, show message about slash commands
     if (message.author.id === '686669011601326281') message.reply('die.')
+    if (message.author.id === '582849062399901696') message.reply('Du hast TODO-Bot verbot Skulli'); // Prevent Skulli73 from using this command
     message.channel
         .send(
             client.embed(
