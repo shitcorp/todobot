@@ -1,5 +1,5 @@
 {
-  "name": "@todobot/docs",
+  "name": "@todobot/doc-viewer",
   "packageManager": "yarn@3.1.0",
   "dependencies": {
     "polka": "^0.5.2",

@@ -10,7 +10,7 @@
     "backend",
     "bot",
     "docgen",
-    "docs"
+    "doc-viewer"
   ],
   "devDependencies": {
     "lerna": "^4.0.0",
