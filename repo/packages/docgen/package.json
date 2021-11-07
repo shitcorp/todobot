@@ -1,0 +1,18 @@
+{
+  "name": "@todobot/docgen",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gen.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "gen": "node gen.js",
+    "parse": "node md2js.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "changelog-parser": "^2.8.0",
+    "common-tags": "^1.8.0"
+  }
+}
