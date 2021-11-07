@@ -18,8 +18,15 @@ app.register(swagger, Options);
 // @ts-ignore
 app.register(fastifyFormbody);
 // @ts-ignore
-app.register(fastifyCors, {
-	// put your options here
+app.register(fastifyCors, instance => (req, callback) => {
+	let corsOptions;
+	// do not include CORS headers for requests from localhost
+	if (req.headers.origin && /localhost/.test(req.headers.origin)) {
+		corsOptions = { origin: true };
+	} else {
+		corsOptions = { origin: true };
+	}
+	callback(null, corsOptions); // callback expects two parameters: error and options
 });
 
 routes.forEach(route => {

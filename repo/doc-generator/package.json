@@ -1,5 +1,5 @@
 {
-  "name": "@todobot/docgen",
+  "name": "@todobot/doc-generator",
   "version": "1.0.0",
   "description": "",
   "main": "gen.js",

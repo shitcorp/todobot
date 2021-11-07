@@ -9,7 +9,7 @@
     "shared",
     "backend",
     "bot",
-    "docgen",
+    "doc-generator",
     "doc-viewer"
   ],
   "devDependencies": {

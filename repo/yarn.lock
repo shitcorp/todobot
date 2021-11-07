@@ -1253,18 +1253,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@todobot/docgen@workspace:docgen":
+"@todobot/doc-generator@workspace:doc-generator":
   version: 0.0.0-use.local
-  resolution: "@todobot/docgen@workspace:docgen"
+  resolution: "@todobot/doc-generator@workspace:doc-generator"
   dependencies:
     changelog-parser: ^2.8.0
     common-tags: ^1.8.0
   languageName: unknown
   linkType: soft
 
-"@todobot/docs@workspace:docs":
+"@todobot/doc-viewer@workspace:doc-viewer":
   version: 0.0.0-use.local
-  resolution: "@todobot/docs@workspace:docs"
+  resolution: "@todobot/doc-viewer@workspace:doc-viewer"
   dependencies:
     polka: ^0.5.2
     sirv: ^1.0.18
