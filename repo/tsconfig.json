@@ -23,9 +23,9 @@
   },
   "exclude": ["node_modules", "**/*/lib", "**/*/dist"],
   "references": [
-    { "path": "./packages/bot/tsconfig.json" }, 
+    { "path": "./bot/tsconfig.json" }, 
         // if you tsconfig is something different
-    { "path": "./packages/backend/tsconfig.json" },
-    { "path": "./packages/shared/" },
+    { "path": "./backend/tsconfig.json" },
+    { "path": "./shared/" },
   ]
 }

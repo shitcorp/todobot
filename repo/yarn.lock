@@ -1187,9 +1187,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@todobot/backend@workspace:packages/backend":
+"@todobot/backend@workspace:backend":
   version: 0.0.0-use.local
-  resolution: "@todobot/backend@workspace:packages/backend"
+  resolution: "@todobot/backend@workspace:backend"
   dependencies:
     "@hapi/boom": ^9.1.4
     "@todobot/shared": "workspace:^"
@@ -1211,9 +1211,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@todobot/bot@workspace:packages/bot":
+"@todobot/bot@workspace:bot":
   version: 0.0.0-use.local
-  resolution: "@todobot/bot@workspace:packages/bot"
+  resolution: "@todobot/bot@workspace:bot"
   dependencies:
     "@types/express": ^4.17.11
     "@types/node": ^14.14.37
@@ -1232,18 +1232,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@todobot/docgen@workspace:packages/docgen":
+"@todobot/docgen@workspace:docgen":
   version: 0.0.0-use.local
-  resolution: "@todobot/docgen@workspace:packages/docgen"
+  resolution: "@todobot/docgen@workspace:docgen"
   dependencies:
     changelog-parser: ^2.8.0
     common-tags: ^1.8.0
   languageName: unknown
   linkType: soft
 
-"@todobot/shared@workspace:^, @todobot/shared@workspace:packages/shared":
+"@todobot/shared@workspace:^, @todobot/shared@workspace:shared":
   version: 0.0.0-use.local
-  resolution: "@todobot/shared@workspace:packages/shared"
+  resolution: "@todobot/shared@workspace:shared"
   dependencies:
     mongoose: ^6.0.12
     typescript: ^4.4.4

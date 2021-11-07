@@ -6,10 +6,10 @@
   },
   "private": true,
   "workspaces": [
-    "packages/shared",
-    "packages/backend",
-    "packages/bot",
-    "packages/docgen"
+    "shared",
+    "backend",
+    "bot",
+    "docgen"
   ],
   "devDependencies": {
     "lerna": "^4.0.0",
