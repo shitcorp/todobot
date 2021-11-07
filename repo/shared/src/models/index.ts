@@ -1,3 +1,3 @@
-export { default as Todomodel } from './todomodel'
-export { default as Configmodel } from './configmodel'
-export { default as Remindermodel } from './remindermodel'
+export { default as TodoScheme } from './todoscheme';
+export { default as ConfigScheme } from './configscheme';
+export { default as ReminderScheme } from './reminderscheme';

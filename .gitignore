@@ -19,4 +19,7 @@ lerna-debug.log
 npm-debug.log
 packages/*/dist
 .idea
-.yarn/cache/*
+.yarn/cache
+cache/
+*.gz
+*.tsbuildinfo

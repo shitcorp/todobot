@@ -1,14 +1,10 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "composite": true,
-    "target": "es6",
-    "module": "commonjs",
     "outDir": "dist",
     "strict": false,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types", "types"]
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "./src/**/*"

@@ -5,14 +5,13 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "cd dist && node index.js",
-    "build": "npx tsc",
-    "lint": "npx eslint --ext .ts ./src",
-    "lint:fix": "npx eslint --ext .ts ./src --fix"
+    "build": "rimraf ./dist && tsc"
   },
   "dependencies": {
     "cat-loggr": "^1.1.0",
     "dotenv": "^8.2.0",
     "fastify": "^3.9.2",
+    "rimraf": "^3.0.2",
     "slash-create": "^4.0.1"
   },
   "devDependencies": {

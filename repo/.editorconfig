@@ -10,14 +10,14 @@ charset = utf-8
 # 4 space indentation
 [*.{js,ts}]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Indentation override for all JS under lib directory
 [lib/**.js]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Matches the exact files either package.json, tsconfig.json or .travis.yml
 [{package.json,.tsconfig,.travis.yml}]
 indent_style = space
-indent_size = 4
+indent_size = 2

@@ -1,18 +1,10 @@
 {
+    "extends": "../tsconfig.json",
     "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "lib": [
-            "es6"
-        ],
-        "allowJs": true,
+        "composite": true,
         "outDir": "dist",
         "rootDir": "src",
-        "strict": true,
-        "noImplicitAny": true,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "composite": true
+        "skipLibCheck": true
     },
-    "exclude": ["node_modules", "**/*.spec.ts"]
+    "exclude": ["node_modules", "**/*.spec.ts", "dist"]
 }

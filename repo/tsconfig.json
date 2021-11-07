@@ -19,7 +19,6 @@
     "lib": ["dom", "dom.iterable", "esnext", "webworker"],
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
   },
   "exclude": ["node_modules", "**/*/lib", "**/*/dist"],
   "references": [
