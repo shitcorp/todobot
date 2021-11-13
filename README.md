@@ -13,13 +13,13 @@
 </a>
 
 <img src="https://img.shields.io/github/license/MeerBiene/TODOBOT?style=for-the-badge"/>
-<img src="https://img.shields.io/endpoint?url=https://wakapi.stlf.me/api/compat/shields/v1/meerbiene/interval:any/project:TODOBOT&color=green&style=for-the-badge">
+
 
 </h4>
 
 <h3 align="center">
 
-<img src="https://raw.githubusercontent.com/shitcorp/TODOBOT/master/assets/todo_cmd_demo.gif" />
+<img src="https://raw.githubusercontent.com/shitcorp/TODOBOT/master/assets/gifs/todo_cmd_demo.gif" />
 </h3>
 
 <br>
@@ -37,7 +37,7 @@ After inviting the Bot to your server, run the command `/settings set todochanne
 <details>
 <summary>Click to see the bot in action</summary>
 
-![getting started demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/getting-started.gif)
+![getting started demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/gifs/getting-started.gif)
 
 </details>
 
@@ -59,10 +59,10 @@ To view all the commands the bot supports, run the `/help` command. If you want 
 
 # Arguments
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| user | The user you want to assign. | User | ✔️ | 
-| id | ID of the task that you want to assing the user to. | String (Text) | ✔️ | 
+| Name | Description                                         | Type          | Required? |
+| :--- | :-------------------------------------------------- | :------------ | :-------- |
+| user | The user you want to assign.                        | User          | ✔️         |
+| id   | ID of the task that you want to assing the user to. | String (Text) | ✔️         |
 
 
 
@@ -80,16 +80,16 @@ Welcome to the documentation of the `assign` command. It is used to assign membe
 
 ## /blacklist add 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| user | The user you want to blacklist | User | ❌ | 
-| channel | The channel you want to blacklist | Channel | ❌ | 
+| Name    | Description                       | Type    | Required? |
+| :------ | :-------------------------------- | :------ | :-------- |
+| user    | The user you want to blacklist    | User    | ❌         |
+| channel | The channel you want to blacklist | Channel | ❌         |
 ## /blacklist remove 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| user | The user you want to blacklist | User | ❌ | 
-| channel | The channel you want to blacklist | Channel | ❌ | 
+| Name    | Description                       | Type    | Required? |
+| :------ | :-------------------------------- | :------ | :-------- |
+| user    | The user you want to blacklist    | User    | ❌         |
+| channel | The channel you want to blacklist | Channel | ❌         |
 ## /blacklist list 
 
 No arguments required. Description: 
@@ -106,9 +106,9 @@ No arguments required. Description:
 
 # Arguments
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| command | The command you want specific infomation about. | String (Text) | ❌ | 
+| Name    | Description                                     | Type          | Required? |
+| :------ | :---------------------------------------------- | :------------ | :-------- |
+| command | The command you want specific infomation about. | String (Text) | ❌         |
 
 
 
@@ -137,13 +137,13 @@ No arguments required. Description:
 
 ## /reminder create 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| time | After this timespan you will be reminded. | Number (0, 1, 2, 3, 4 ...) | ✔️ | 
-| unit | Minutes? Hours? Seconds? Choose now. | String (Text) | ✔️ | 
-| content | Reminder Text that will be shown when the reminder expires. | String (Text) | ✔️ | 
-| participants | Choose another user or users that should also be reminded. | User | ❌ | 
-| participatingRoles | Choose a role that should be reminded. | Role | ❌ | 
+| Name               | Description                                                 | Type                       | Required? |
+| :----------------- | :---------------------------------------------------------- | :------------------------- | :-------- |
+| time               | After this timespan you will be reminded.                   | Number (0, 1, 2, 3, 4 ...) | ✔️         |
+| unit               | Minutes? Hours? Seconds? Choose now.                        | String (Text)              | ✔️         |
+| content            | Reminder Text that will be shown when the reminder expires. | String (Text)              | ✔️         |
+| participants       | Choose another user or users that should also be reminded.  | User                       | ❌         |
+| participatingRoles | Choose a role that should be reminded.                      | Role                       | ❌         |
 ## /reminder view 
 
 No arguments required. Description: 
@@ -162,26 +162,26 @@ No arguments required. Description:
 
 ## /settings set 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| prefix | The prefix the bot will use for your custom commands or tags. | String (Text) | ❌ | 
-| todochannel | The channel that will be used to post your todos in. | Channel | ❌ | 
-| readonlychannel | The channel that will be used to keep your community updated. | Channel | ❌ | 
-| userrole | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌ | 
-| staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users. | Role | ❌ | 
-| language | The language the bot uses to talk to you. | String (Text) | ❌ | 
-| autopurge | Toggle messages being auto purged in the todochannel. | Boolean (true or false) | ❌ | 
-| todomode | Toggle between simple (one channel) and advanced (multiple channels) mode | String (Text) | ❌ | 
+| Name            | Description                                                                             | Type                    | Required? |
+| :-------------- | :-------------------------------------------------------------------------------------- | :---------------------- | :-------- |
+| prefix          | The prefix the bot will use for your custom commands or tags.                           | String (Text)           | ❌         |
+| todochannel     | The channel that will be used to post your todos in.                                    | Channel                 | ❌         |
+| readonlychannel | The channel that will be used to keep your community updated.                           | Channel                 | ❌         |
+| userrole        | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role                    | ❌         |
+| staffrole       | Add a new staffrole. Staffroles can edit bot settings and force assign users.           | Role                    | ❌         |
+| language        | The language the bot uses to talk to you.                                               | String (Text)           | ❌         |
+| autopurge       | Toggle messages being auto purged in the todochannel.                                   | Boolean (true or false) | ❌         |
+| todomode        | Toggle between simple (one channel) and advanced (multiple channels) mode               | String (Text)           | ❌         |
 ## /settings view 
 
 No arguments required. Description: 
 > View your current settings. 
 ## /settings remove 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| userrole | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌ | 
-| staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users. | Role | ❌ | 
+| Name      | Description                                                                             | Type | Required? |
+| :-------- | :-------------------------------------------------------------------------------------- | :--- | :-------- |
+| userrole  | Add a new userrole. Userroles can interact with the bot but cannot change bot settings. | Role | ❌         |
+| staffrole | Add a new staffrole. Staffroles can edit bot settings and force assign users.           | Role | ❌         |
 
 
 
@@ -220,10 +220,10 @@ As you may have seen, there are 2 choices for this: `simple` and `advanced`:
 
 # Arguments
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| Link | The link that you want to get shortened. | String (Text) | ✔️ | 
-| Domain | The domain you want to use for your shortened link. | String (Text) | ❌ | 
+| Name   | Description                                         | Type          | Required? |
+| :----- | :-------------------------------------------------- | :------------ | :-------- |
+| Link   | The link that you want to get shortened.            | String (Text) | ✔️         |
+| Domain | The domain you want to use for your shortened link. | String (Text) | ❌         |
 
 
 
@@ -243,11 +243,11 @@ As you may have seen, there are 2 choices for this: `simple` and `advanced`:
 
 # Arguments
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| text | Your suggestion | String (Text) | ✔️ | 
-| image | If you want to attach an image, paste the link here | String (Text) | ❌ | 
-| hidden | Hide the server where this suggestion was sent | Boolean (true or false) | ❌ | 
+| Name   | Description                                         | Type                    | Required? |
+| :----- | :-------------------------------------------------- | :---------------------- | :-------- |
+| text   | Your suggestion                                     | String (Text)           | ✔️         |
+| image  | If you want to attach an image, paste the link here | String (Text)           | ❌         |
+| hidden | Hide the server where this suggestion was sent      | Boolean (true or false) | ❌         |
 
 
 
@@ -269,21 +269,21 @@ As you may have seen, there are 2 choices for this: `simple` and `advanced`:
 
 ## /tag learn 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | The name of your new command/tag. | String (Text) | ✔️ | 
-| content | This is the content that will be sent when your custom command is run. | String (Text) | ✔️ | 
+| Name    | Description                                                            | Type          | Required? |
+| :------ | :--------------------------------------------------------------------- | :------------ | :-------- |
+| name    | The name of your new command/tag.                                      | String (Text) | ✔️         |
+| content | This is the content that will be sent when your custom command is run. | String (Text) | ✔️         |
 ## /tag unlearn 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | The command you want to delete. | String (Text) | ✔️ | 
+| Name | Description                     | Type          | Required? |
+| :--- | :------------------------------ | :------------ | :-------- |
+| name | The command you want to delete. | String (Text) | ✔️         |
 ## /tag edit 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | Name of the command you want to edit. | String (Text) | ✔️ | 
-| content | The content that you want to save as the new tag | String (Text) | ✔️ | 
+| Name    | Description                                      | Type          | Required? |
+| :------ | :----------------------------------------------- | :------------ | :-------- |
+| name    | Name of the command you want to edit.            | String (Text) | ✔️         |
+| content | The content that you want to save as the new tag | String (Text) | ✔️         |
 ## /tag list 
 
 No arguments required. Description: 
@@ -300,15 +300,15 @@ No arguments required. Description:
 
 # Arguments
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| title | Title of the TODO object | String (Text) | ✔️ | 
-| tasks | The tasks that belong to this todo. Seperate them with a semicolon (;). Maximum 10 tasks allowed! | String (Text) | ❌ | 
-| content | Content of the TODO object | String (Text) | ❌ | 
-| url | Attach a link to the todo | String (Text) | ❌ | 
-| image | Attach an image to the todo. Has to be a discord attachment link. | String (Text) | ❌ | 
-| category | The category this todo should belong to. | String (Text) | ❌ | 
-| loop | Create repeating tasks | Boolean (true or false) | ❌ | 
+| Name     | Description                                                                                       | Type                    | Required? |
+| :------- | :------------------------------------------------------------------------------------------------ | :---------------------- | :-------- |
+| title    | Title of the TODO object                                                                          | String (Text)           | ✔️         |
+| tasks    | The tasks that belong to this todo. Seperate them with a semicolon (;). Maximum 10 tasks allowed! | String (Text)           | ❌         |
+| content  | Content of the TODO object                                                                        | String (Text)           | ❌         |
+| url      | Attach a link to the todo                                                                         | String (Text)           | ❌         |
+| image    | Attach an image to the todo. Has to be a discord attachment link.                                 | String (Text)           | ❌         |
+| category | The category this todo should belong to.                                                          | String (Text)           | ❌         |
+| loop     | Create repeating tasks                                                                            | Boolean (true or false) | ❌         |
 
 
 
@@ -339,25 +339,25 @@ For attaching normal links, just put them in the url option, if will then be sho
 
 ## /var create 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | How you want your variable to be named. | String (Text) | ✔️ | 
-| value | The value your variable should hold. | String (Text) | ✔️ | 
+| Name  | Description                             | Type          | Required? |
+| :---- | :-------------------------------------- | :------------ | :-------- |
+| name  | How you want your variable to be named. | String (Text) | ✔️         |
+| value | The value your variable should hold.    | String (Text) | ✔️         |
 ## /var view 
 
 No arguments required. Description: 
 > Show your already registered variables 
 ## /var edit 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | Name of the variable you want to edit | String (Text) | ✔️ | 
-| value | The new value for your variable | String (Text) | ✔️ | 
+| Name  | Description                           | Type          | Required? |
+| :---- | :------------------------------------ | :------------ | :-------- |
+| name  | Name of the variable you want to edit | String (Text) | ✔️         |
+| value | The new value for your variable       | String (Text) | ✔️         |
 ## /var delete 
 
-| Name | Description | Type | Required? | 
-| :-- | :-- | :-- | :-- | 
-| name | Name of the variable you want to delete | String (Text) | ✔️ | 
+| Name | Description                             | Type          | Required? |
+| :--- | :-------------------------------------- | :------------ | :-------- |
+| name | Name of the variable you want to delete | String (Text) | ✔️         |
 
 
 
@@ -383,7 +383,7 @@ To set the role, use the settings command like so:
 
 (yes multiple roles are allowed)
 
-![permissions demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/permissions.gif)
+![permissions demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/gifs/permissions.gif)
 
 To remove a role from the user of staffroles array just use the `/settings remove userrole: | staffrole:` command
 
@@ -398,7 +398,7 @@ Delete a custom command by using the `/tag unlearn` command followed by the name
 <details>
 <summary>Click to see the custom commands in action</summary>
 
-![tag command demo video](https://github.com/shitcorp/TODOBOT/raw/main/assets/tagcmd_demo.gif)
+![tag command demo video](https://github.com/shitcorp/TODOBOT/raw/main/assets/gifs/tagcmd_demo.gif)
 
 </details>
 
@@ -443,7 +443,7 @@ Available Placeholders:
 
 Variables are a way to store key-value pairs for your guild/server, so you can use them in your tags. This is useful if you have a discord for lets say a game server where the ip could change. To follow our example, we would create a variable called `ip` and store the ip adress:
 
-![variable command demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/vars_demo.gif)
+![variable command demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/gifs/vars_demo.gif)
 
 </details>
 
@@ -451,7 +451,7 @@ Variables are a way to store key-value pairs for your guild/server, so you can u
 
 # 🔔 Reminders
 
-![reminder command demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/reminder_cmd_demo.gif)
+![reminder command demo](https://github.com/shitcorp/TODOBOT/raw/main/assets/gifs/reminder_cmd_demo.gif)
 
 Note:
 
