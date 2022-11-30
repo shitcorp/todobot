@@ -1,5 +1,5 @@
 <h1 align="center"> TODO Bot for  Discord  
-<a href="http://invite.todo-bot.xyz">
+<a href="http://todobot.stlf.me/z">
     <img src="https://img.shields.io/badge/Add%20Bot-7289DA.svg?style=for-the-badge"/>
 </a>
 </h1>
